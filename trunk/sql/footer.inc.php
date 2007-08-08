@@ -1,4 +1,4 @@
-<div id="error" <?if (empty($error)) echo 'style="display: none;"';?> onclick="setStyle(this,'display','none')">
+﻿<div id="error" <?if (empty($error)) echo 'style="display: none;"';?> onclick="setStyle(this,'display','none')">
 <span><?if (!empty($error)) echo $error;?></span><br/>
 </div>
 <div class="clearer">&nbsp;</div>

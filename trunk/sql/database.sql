@@ -1,4 +1,4 @@
--- phpMyAdmin SQL Dump
+﻿-- phpMyAdmin SQL Dump
 -- version 2.9.1.1
 -- http://www.phpmyadmin.net
 -- Import this to your otserv database

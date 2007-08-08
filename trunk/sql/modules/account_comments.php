@@ -1,4 +1,4 @@
-<?
+﻿<?
 include ("../include.inc.php");
 $_SESSION['last_activity']=time();
 //load account if loged in
