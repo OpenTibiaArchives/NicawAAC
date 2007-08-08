@@ -1,4 +1,4 @@
-﻿<?
+<?
 include ("include.inc.php");
 $ptitle= "Empty - $cfg[server_name]";
 include ("header.inc.php");

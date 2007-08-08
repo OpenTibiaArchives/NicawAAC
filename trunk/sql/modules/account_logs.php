@@ -1,4 +1,4 @@
-﻿<?
+<?
 include ("../include.inc.php");
 
 $account = new Account($_SESSION['account']);

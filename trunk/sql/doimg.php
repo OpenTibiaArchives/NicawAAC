@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 function myImageBlur($im,$distance=1)
 {

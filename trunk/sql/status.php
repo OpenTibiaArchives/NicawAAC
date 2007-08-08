@@ -1,4 +1,4 @@
-﻿<?
+<?
 include_once('include.inc.php');
 
 if (time() - filemtime('status.xml') > 1*60){
