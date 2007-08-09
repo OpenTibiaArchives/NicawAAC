@@ -159,11 +159,6 @@ public function isValidNumber()
 		return ereg('^[0-9]{6,8}$',$this->attrs['accno']);
 	}
 
-public function isAdmin()
-	{global $cfg;
-		return (in_array($this->attrs['accno'],$cfg['admin_accounts']) || ($_SERVER['REMOTE_ADDR'] == '127.0.0.1' && $cfg['admin_local']));
-	}	
-	
 public function logAction($action)
 	{
 		return $this->myInsert('nicaw_logs',array('id' => NULL, 'ip' => $_SERVER['REMOTE_ADDR'], 'account' => $this->attrs['accno'], 'date' => time(), 'action' => $action));

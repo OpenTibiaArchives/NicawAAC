@@ -56,7 +56,7 @@ include ("header.inc.php");
 <div class="mid">
 <fieldset>
 <legend><b>Account Login</b></legend>
-<form id="login_form" action="login.php?redirect=<?=$_GET['redirect']?>" method="post">
+<form id="login_form" action="login.php?redirect=<?=htmlspecialchars($_GET['redirect'])?>" method="post">
 <table>
 <tr><td style="text-align: right"><label for="account">Account:</label></td>
 <td><input id="account" name="account" type="password" class="textfield" maxlength="8" size="10"/></td></tr>

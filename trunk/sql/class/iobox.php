@@ -54,7 +54,7 @@ public function addSubmit($text){
 	$this->buttons[]= '<input style="width: 100px; height: 25px;" type="submit" name="'.$this->name.'__'.$this->name.'" value="'.$text.'"/>';
 }
 public function addReload($text){
-	$this->buttons[]= '<input style="width: 100px; height: 25px;" onclick="ajax(\'form\',\''.$_SERVER['PHP_SELF'].'\',\'\',true)" type="button" name="'.$this->name.'__'.$this->name.'" value="'.$text.'"/>';
+	$this->buttons[]= '<input style="width: 100px; height: 25px;" onclick="ajax(\'form\',\''.htmlspecialchars($_SERVER['PHP_SELF']).'\',\'\',true)" type="button" name="'.$this->name.'__'.$this->name.'" value="'.$text.'"/>';
 }
 public function addRefresh($text){
 	$this->buttons[]= '<input onclick="location.reload(false)" type="button" style="width: 100px; height: 25px;" value="'.$text.'"/>';
@@ -70,9 +70,9 @@ public function addLabel($code){
 }
 public function getCode(){
 	if (isset($_POST['ajax']))
-		$code = '<div onmouseup="Cookies.create(\'iobox_x\',document.getElementById(\'iobox\').style.left,1);Cookies.create(\'iobox_y\',document.getElementById(\'iobox\').style.top,1);" style="visibility:hidden" id="iobox" class="draggable"><fieldset style="">'.$this->label.'<form id="'.$this->name.'" action="javascript:ajax(\'form\',\''.$this->target.'\',getParams(document.getElementById(\''.$this->name.'\')),true)" method="post">';
+		$code = '<div onmouseup="Cookies.create(\'iobox_x\',document.getElementById(\'iobox\').style.left,1);Cookies.create(\'iobox_y\',document.getElementById(\'iobox\').style.top,1);" style="visibility:hidden" id="iobox" class="draggable"><fieldset style="">'.$this->label.'<form id="'.$this->name.'" action="javascript:ajax(\'form\',\''.htmlspecialchars($this->target).'\',getParams(document.getElementById(\''.$this->name.'\')),true)" method="post">';
 	else
-		$code = '<div id="iobox" class="iobox"><fieldset>'.$this->label.'<form id="'.$this->name.'" action="'.$this->target.'" method="post">';
+		$code = '<div id="iobox" class="iobox"><fieldset>'.$this->label.'<form id="'.$this->name.'" action="'.htmlspecialchars($this->target).'" method="post">';
 	foreach ($this->elements as $element)
 		$code.= $element."<br/><div style=\"margin-top: 5px;\"></div>\r\n";
 	$code.= '<hr style="margin: 10px 2px 2px 2px; padding: 0;"/> | ';

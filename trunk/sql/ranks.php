@@ -38,11 +38,11 @@ $p = (int) $_GET['page'];
 if (empty($p) || $p < 0) $p = 0;
 ?>
 </div>
-<input type="button" value="&lt;&lt;" onclick="self.window.location.href='ranks.php?sort=<?=$_GET['sort']?>&amp;page=<?=$p-1?>'"/>
+<input type="button" value="&lt;&lt;" onclick="self.window.location.href='ranks.php?sort=<?=htmlspecialchars($_GET['sort'])?>&amp;page=<?=$p-1?>'"/>
 <b>Statistics page: <?=$p+1?></b>
-<input type="button" value="&gt;&gt;" onclick="self.window.location.href='ranks.php?sort=<?=$_GET['sort']?>&amp;page=<?=$p+1?>'"/>
+<input type="button" value="&gt;&gt;" onclick="self.window.location.href='ranks.php?sort=<?=htmlspecialchars($_GET['sort'])?>&amp;page=<?=$p+1?>'"/>
 <table style="width: 100%;">
-<tr class="color0"><td>#</td><td><b>Name</b></td><td><b><?=ucfirst($_GET['sort'])?></b></td></tr>
+<tr class="color0"><td>#</td><td><b>Name</b></td><td><b><?=htmlspecialchars(ucfirst($_GET['sort']))?></b></td></tr>
 <?
 if ($_GET['sort'] == 'level' || $_GET['sort'] == 'maglevel'){
 	$query = 'SELECT groups.access, groups.id, players.name, players.level, players.maglevel, players.experience FROM players LEFT OUTER JOIN groups ON players.group_id = groups.id ORDER BY '.mysql_escape_string($_GET['sort']).' DESC LIMIT '.$cfg['ranks_per_page']*$p.', '.$cfg['ranks_per_page'].';';

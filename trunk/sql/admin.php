@@ -17,13 +17,9 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 include ("include.inc.php");
+include ('tools/check.php');
+$_SESSION['last_activity']=time();
 
-$account = new Account($_SESSION['account']);
-if (!($account->isAdmin())){
-		$_SESSION['account'] = '';
-		header('location: login.php?redirect=admin.php');
-		die();
-}
 $ptitle="Admin Panel - $cfg[server_name]";
 include ("header.inc.php");
 ?>
