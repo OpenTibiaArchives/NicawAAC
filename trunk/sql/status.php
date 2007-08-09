@@ -1,7 +1,8 @@
 <?
 include_once('include.inc.php');
 
-if (time() - filemtime('status.xml') > 1*60){
+$modtime = filemtime('status.xml');
+if (time() - $modtime > 1*60 || $modtime > time()){
 	touch('status.xml');
 	$info = getinfo($cfg['server_ip'],$cfg['server_port']);
 	file_put_contents('status.xml',$info);
@@ -21,6 +22,7 @@ $infoXML = simplexml_load_string($info);
 	if ($m < 10) {$m = "0".$m;}
 	echo "<span class=\"online\">Online</span><br/>\n";
 	echo "<span class=\"players\">Players: <b>$online/$max</b></span><br/>\n";
+	//echo "<span class=\"monsters\">Monsters: <b>".$infoXML->monsters['total']."</b></span><br/>\n";
 	echo "<span class=\"uptime\">Uptime: <b>$h:$m</b></span><br/>\n";
 } else {
 	echo "<span class=\"offline\">Offline</span>\n";
