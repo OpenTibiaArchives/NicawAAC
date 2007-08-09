@@ -228,10 +228,10 @@ public function addRecoveryKey()
 		return $key;
 	}
 
-public function checkRecoveryKey($account,$key)
+public function checkRecoveryKey($key)
 	{
 		if (empty($key)) return false;
-		$sql = $this->myRetrieve('nicaw_recovery',array('accno' => $account, 'key' => $key));
+		$sql = $this->myRetrieve('nicaw_recovery',array('accno' => $this->attrs['accno'], 'key' => $key));
 		if ($sql === false) 
 			return false;
 		else

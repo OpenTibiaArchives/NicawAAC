@@ -92,7 +92,7 @@ If you don\'t want to recover your account, simply ignore this letter.';
 	$account = new Account($_GET['account']);
 	if ($account->load()){
 		//check recovery key against database
-		if ($account->checkRecoveryKey($_GET['account'],$_GET['key'])){
+		if ($account->checkRecoveryKey($_GET['key'])){
 			//set new password if key correct
 			$password = substr(str_shuffle('qwertyuipasdfhjklzxcvnm12345789'), 0, 8);
 			$account->setPassword($password);

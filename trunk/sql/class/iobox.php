@@ -40,8 +40,12 @@ public function addSelect($name,$options){
 public function addCaptcha(){
 	global $cfg;
 	if(!$cfg['use_captcha']) return;
+	if (isset($_POST['ajax']))
+		$img = 'doimg.php?'.time();
+	else
+		$img = '../doimg.php?'.time();
 	$_SESSION['RandomText'] = substr(str_shuffle(strtolower('qwertyuipasdfhjklzxcvnm12345789')), 0, 6);
-	$this->elements[]= '<img width="250px" height="40px" src="doimg.php?'.time().'" alt="Verification Image"/>';
+	$this->elements[]= '<img width="250px" height="40px" src="'.$img.'" alt="Verification Image"/>';
 	$this->elements[]= '<label for="captcha" style="position: absolute; width:100px; text-align:right;">Verification:&nbsp;</label><input id="captcha" style="text-transform: uppercase; margin-left: 100px;" name="'.$this->name.'__captcha" type="text" maxlength="10"/>';
 }
 public function addInput($name, $type = 'text', $value = '', $length = 100){
