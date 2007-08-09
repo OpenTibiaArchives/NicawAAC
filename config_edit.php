@@ -16,8 +16,22 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-$cfg_lines = file('trunk/sql/config.inc.php',FILE_IGNORE_NEW_LINES);
-foreach ($cfg_lines as $line){
-	if (substr($line,0,4) == '$cfg') echo $line;
+$lines = file('trunk/sql/config.inc.php');
+for ($i=1; $i<=count($lines); $i++){
+	if (substr($lines[$i],0,4) == '$cfg'){
+		if (substr($lines[$i-1],0,1) == '#')
+			$item['des'] = $lines[$i-1];
+		$pattern = '/^\$cfg\[\'([^\r\n\[\]\']+?)\'\]\s+?=\s+?\'?(.+?)\'?;/';
+		preg_match($pattern,$lines[$i],$out);
+		$item['name'] = $out[1];
+		$item['value'] = $out[2];
+		$pattern = '/array\((.+)?\);/';
+		if (preg_match($pattern,$lines[$i],$out) > 0){
+			$item['value'] = $out[1];
+			$item['value'] = explode(',',$item['value']);
+		}			
+		print_r($item);
+		unset($item);
+	}
 }
 ?>
