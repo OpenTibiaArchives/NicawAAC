@@ -56,21 +56,21 @@ $cfg['server_ip'] = 'localhost';
 $cfg['server_port'] = 7171;
 
 # Allow teleportation to temple
-$cfg['char_repair'] = true;
+$cfg['char_repair'] = false;
 
 # Email can be validated by sending login details
 # For email functions to work, SMTP server must be configured correctly
-$cfg['Email_Validate'] = true;
+$cfg['Email_Validate'] = false;
 
 # Allow email based account recovery?
-$cfg['Email_Recovery'] = true;
+$cfg['Email_Recovery'] = false;
 
 # Enable extension=php_openssl.dll in php.ini in order to use gmail
 $cfg['SMTP_Host'] = 'ssl://smtp.gmail.com';
 $cfg['SMTP_Port'] = 465;
 $cfg['SMTP_Auth'] = true;
 $cfg['SMTP_User'] = 'storm.ots@gmail.com';
-$cfg['SMTP_Password'] = 'xb749qmBQzEpVPGt';
+$cfg['SMTP_Password'] = 'pass';
 $cfg['SMTP_From'] = 'storm.ots@gmail.com';
 
 # Whether to show skills in character search
