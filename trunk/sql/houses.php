@@ -34,7 +34,7 @@ $HousesXML = simplexml_load_file($cfg['dirdata'].$cfg['house_file']);
 $MySQL = new MySQL();
 $result = $MySQL->myQuery('SELECT `players`.`name`, `houses`.`id` FROM `players`, `houses` WHERE `houses`.`owner` = `players`.`id`;');
 $error = $MySQL->getError();
-while ($row = @mysql_fetch_array($result)){
+while ($row = $MySQL->fetch_array($result)){
 	$houses[(int)$row['id']] = $row['name'];
 }
 foreach ($HousesXML->house as $house){

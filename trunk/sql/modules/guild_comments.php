@@ -10,8 +10,8 @@ if ($form->exists()){
 	//get guild owner acc
 	$SQL = new MySQL();
 	$query = 'SELECT players.account_id, guilds.name FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.id = '.mysql_escape_string($gid);
-	$result = $SQL->myQuery($query);
-	$result = mysql_fetch_array($result);
+	$SQL->myQuery($query);
+	$result = $SQL->fetch_array();
 	$owner = (int) $result['account_id'];
 	//check if user is guild owner
 	if ($owner == $_SESSION['account'] && !empty($_SESSION['account']))

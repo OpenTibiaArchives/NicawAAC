@@ -31,7 +31,7 @@ $bans = $MySQL->myQuery('SELECT name, time FROM bans, players WHERE bans.type = 
 if ($bans === false) $error = $MySQL->getError();
 echo '<table style="width:100%">'."\n";
 echo '<tr class="color0"><td style="width:25%"><b>Name</b></td><td style="width:50%"><b>Ban Ends</b></td><td style="width:25%"><b>Time Left</b></td></tr>'."\n";
-while ($ban = @mysql_fetch_array($bans)){
+while ($ban = $MySQL->fetch_array()){
 	$time = date("jS F Y H:i:s",(int) $ban['time']);
 	$d = floor(($ban['time'] - time())/(24*3600));
 	$h = floor(($ban['time'] - time() - $d * 24*3600)/3600);

@@ -57,6 +57,16 @@ public function fetch_array($resource = null)
      else
       return null;
   }
+  
+public function num_rows($resource = null)
+  {
+    if ($resource === null)
+      $resource = $this->last_query;
+    if ($resource !== false && $resource !== null)
+      return mysql_num_rows($resource);
+     else
+      return null;
+  }
 /*
 Functions to replace SQL syntax
 Input data structure

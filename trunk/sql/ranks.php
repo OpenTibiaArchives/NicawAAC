@@ -59,7 +59,7 @@ if (isset($query)){
 		$error = $MySQL->getError();
 	}else{
 		$i = $cfg['ranks_per_page']*$p;
-		while($a=mysql_fetch_array($sql))
+		while($a=$MySQL->fetch_array($sql))
 		if ($a['access'] < $cfg['ranks_access'])
 			{
 				$i++;

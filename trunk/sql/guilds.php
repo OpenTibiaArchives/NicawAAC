@@ -46,8 +46,8 @@ while ($a = @mysql_fetch_array($sql)){
 $gid = (int) $_GET['id'];
 $SQL = new MySQL();
 $query = 'SELECT players.account_id, guilds.name FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.id = '.mysql_escape_string($gid);
-$result = $SQL->myQuery($query);
-$result = mysql_fetch_array($result);
+$SQL->myQuery($query);
+$result = $SQL->fetch_array();
 $owner = (int) $result['account_id'];
 $name = $result['name'];
 ?>
@@ -75,11 +75,11 @@ if ($owner == $_SESSION['account'] && !empty($_SESSION['account'])){?>
 <?
 $ranks = $SQL->myQuery('SELECT id, name FROM guild_ranks WHERE guild_id = \''.mysql_escape_string($gid).'\' ORDER BY level DESC');
 		if ($ranks === false) $error = $SQL->getError();
-		while ($rank = mysql_fetch_array($ranks)){
+		while ($rank = $SQL->fetch_array()){
 			$members = $SQL->myQuery('SELECT players.name, players.guildnick  FROM guild_ranks, players WHERE guild_ranks.id = players.rank_id AND guild_ranks.id = '.$rank['id'].' ORDER BY players.level DESC');
 			if ($members === false) $error = $SQL->getError();
 			$i++;
-			while ($member = mysql_fetch_array($members)){
+			while ($member = $SQL->fetch_array()){
 				$rank = $rank['name'];
 				if (!empty($member['guildnick'])) $nick = ' (<i>'.$member['guildnick'].'</i>)';
 				else $nick = '';
