@@ -41,7 +41,9 @@ legend {
 	color: #ceea70
 }
 fieldset{
-	padding: 5px;
+	border-color: #ceea70;
+	padding: 10px;
+	margin-bottom: 10px;
 }
 blockquote {
 	padding: 0 3em;
@@ -161,10 +163,10 @@ a:hover, a:active {
 }
 #iobox {
 	position: fixed;
-	/*ie position: absolute;*/
+	/*IE position: absolute;*/
 	top: 200px;
 	left: 200px;
-	/*ie width: 300px;*/
+	/*IE width: 300px;*/
 	background-color: #303322;
 	border: 1px solid #000;
 	padding-top: 30px;
