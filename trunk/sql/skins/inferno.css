@@ -149,13 +149,14 @@ a:hover, a:active {
 	background: url(/*$skindir*/img08.gif) repeat-x left bottom;
 }
 #content .mid {
-	padding: 5px 20px; 0 5px;
+	padding: 10px 20px 0 20px;
 }
 #error {
 	position: absolute;
-	color: red;
+	color: white;
 	font-weight: bold;
-	margin-left: 200px;
+	margin-left: 20px;
+	margin-top: -20px;
 	cursor: pointer;
 }
 #captcha-image {
