@@ -18,6 +18,7 @@
 */
 class MySQL{
 protected $err;
+private $last_query;
 
 //Establish persistent connection to MySQL server and select database
 protected function myConnect()
@@ -38,15 +39,24 @@ protected function myConnect()
 public function myQuery($q)
 	{
 		if (!$this->myConnect()) return false;
-		$sql = @mysql_query($q);
-		if ($sql === false){
+		$this->last_query = @mysql_query($q);
+		if ($this->last_query === false){
 			errorLog('#'.mysql_errno()."\r\n".$q."\r\n" . mysql_error() . "\r\n");
 			$this->err = 'Query failed. Refer to errors.inc for details.';
 			return false;
 		}
-		return $sql;
+		return $this->last_query;
 	}
-
+	
+public function fetch_array($resource = null)
+  {
+    if ($resource === null)
+      $resource = $this->last_query;
+    if ($resource !== false && $resource !== null)
+      return mysql_fetch_array($resource);
+     else
+      return null;
+  }
 /*
 Functions to replace SQL syntax
 Input data structure

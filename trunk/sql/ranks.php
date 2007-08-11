@@ -45,7 +45,7 @@ if (empty($p) || $p < 0) $p = 0;
 <tr class="color0"><td>#</td><td><b>Name</b></td><td><b><?=htmlspecialchars(ucfirst($_GET['sort']))?></b></td></tr>
 <?
 if ($_GET['sort'] == 'level' || $_GET['sort'] == 'maglevel'){
-	$query = 'SELECT groups.access, groups.id, players.name, players.level, players.maglevel, players.experience FROM players LEFT OUTER JOIN groups ON players.group_id = groups.id ORDER BY '.mysql_escape_string($_GET['sort']).' DESC LIMIT '.$cfg['ranks_per_page']*$p.', '.$cfg['ranks_per_page'].';';
+	$query = 'SELECT groups.access, groups.id, players.name, players.level, players.maglevel, players.experience FROM players LEFT OUTER JOIN groups ON players.group_id = groups.id ORDER BY `'.mysql_escape_string($_GET['sort']).'` DESC LIMIT '.$cfg['ranks_per_page']*$p.', '.$cfg['ranks_per_page'].';';
 	$key = $_GET['sort'];
 }elseif (in_array($_GET['sort'],$cfg['skill_names'])){
 	$query = 'SELECT groups.access, a1.* FROM (SELECT players.group_id, players.name, player_skills.value FROM players, player_skills WHERE players.id = player_skills.player_id AND player_skills.skillid = '.array_search($_GET['sort'], $cfg['skill_names']) .') AS a1 LEFT OUTER JOIN groups ON a1.group_id = groups.id ORDER BY `value` DESC LIMIT '.$cfg['ranks_per_page']*$p.', '.$cfg['ranks_per_page'].';';

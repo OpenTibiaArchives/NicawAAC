@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation>
 <category name="Navigation">
-<!--<item href="news.php">News</item>-->
 <item href="notes.php">Home</item>
+<item href="news.php">News</item>
 <item href="login.php?redirect=account.php">Account</item>
 <item href="ranks.php?sort=level">Highscores</item>
 <item href="characters.php">Characters</item>
