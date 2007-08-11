@@ -23,7 +23,7 @@ include ("header.inc.php");
 <div id="content">
 <div class="top">Houses</div>
 <div class="mid">
-<div style="height: 500px; overflow-y: auto; margin: 10px;">
+<div style="height: 500px; overflow: auto; margin: 10px;">
 <table>
 <tr class="color0"><td width="40%"><b>House</b></td><td width="30%"><b>Location</b></td><td width="30%"><b>Owner</b></td></tr>
 <?
