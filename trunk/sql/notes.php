@@ -21,7 +21,7 @@ $ptitle="Home - $cfg[server_name]";
 include ("header.inc.php");
 ?>
 <div id="content">
-<div class="top">.:Home:.</div>
+<div class="top">Home</div>
 <div class="mid">
 <pre>
 <?

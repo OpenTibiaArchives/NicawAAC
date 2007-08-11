@@ -28,9 +28,8 @@ $ptitle="Account - $cfg[server_name]";
 include ("header.inc.php");
 ?>
 <div id="content">
-<div class="top">.:Account:.</div>
+<div class="top">Account</div>
 <div class="mid">
-Welcome to your account!
 <table style="width: 100%">
 <tr style="vertical-align: top"><td>
 <h3>Pick a Task</h3>

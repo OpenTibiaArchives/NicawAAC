@@ -15,7 +15,7 @@ $cfg['house_file'] = 'world/SadTeamMapper-house.xml';
 # MySQL settings
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
-$cfg['SQL_Password'] = '';
+$cfg['SQL_Password'] = 'pass';
 $cfg['SQL_Database'] = 'otserv';
 
 # MD5 is hashing algorithm that makes passwords safer. 
@@ -24,7 +24,7 @@ $cfg['md5passwords'] = false;
 
 # Skin files can be found in skins folder.
 # Each css file represents a skin
-$cfg['skin'] = 'essense';
+$cfg['skin'] = 'inferno';
 
 # In case you want to upload skins somewhere else
 $cfg['skin_url'] = 'skins/';

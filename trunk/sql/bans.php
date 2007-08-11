@@ -23,7 +23,7 @@ include ("header.inc.php");
 $cfg['max_ban_time'] = 2*30*24*60*60; //2 months
 ?>
 <div id="content">
-<div class="top">.:Banned Players:.</div>
+<div class="top">Banned Players</div>
 <div class="mid">
 <?
 $MySQL = new MySQL();

@@ -52,7 +52,7 @@ $ptitle="Account - $cfg[server_name]";
 include ("header.inc.php");
 ?>
 <div id="content">
-<div class="top">.:Account:.</div>
+<div class="top">Account</div>
 <div class="mid">
 <fieldset>
 <legend><b>Account Login</b></legend>

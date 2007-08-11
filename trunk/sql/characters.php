@@ -21,7 +21,7 @@ $ptitle="Characters - $cfg[server_name]";
 include("header.inc.php");
 ?>
 <div id="content">
-<div class="top">.:Character Lookup:.</div>
+<div class="top">Character Lookup</div>
 <div class="mid">
 <form method="get" action="characters.php"> 
 <input type="text" name="char"/> 

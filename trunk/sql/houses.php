@@ -21,7 +21,7 @@ $ptitle="Houses - $cfg[server_name]";
 include ("header.inc.php");
 ?>
 <div id="content">
-<div class="top">.:Houses:.</div>
+<div class="top">Houses</div>
 <div class="mid">
 <div style="height: 500px; overflow-y: auto; margin: 10px;">
 <table>

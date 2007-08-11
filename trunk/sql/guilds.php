@@ -21,7 +21,7 @@ $ptitle="Guilds - $cfg[server_name]";
 include ("header.inc.php");
 ?>
 <div id="content">
-<div class="top">.:Guilds:.</div>
+<div class="top">Guilds</div>
 <div class="mid">
 <?
 $mysql = new MySQL();
@@ -60,7 +60,7 @@ $name = $result['name'];
 <ul class="task-menu" style="width: 200px;">
 <?
 if ($owner == $_SESSION['account'] && !empty($_SESSION['account'])){?>
-<li style="background-image: url(ico/image_add.png);" onclick="ajax('form','modules/uploadimg.php','gid=<?=$gid?>',true)">Upload Image</li>
+<li style="background-image: url(ico/image_add.png);" onclick="ajax('form','modules/guild_image.php','gid=<?=$gid?>',true)">Upload Image</li>
 <li style="background-image: url(ico/page_edit.png);" onclick="ajax('form','modules/guild_comments.php','gid=<?=$gid?>',true)">Edit Description</li>
 <li style="background-image: url(ico/book_previous.png);" onclick="self.window.location.href='guilds.php'">Back</li>
 <li style="background-image: url(ico/resultset_previous.png);" onclick="window.location.href='login.php?logout&amp;redirect=account.php'">Logout</li>

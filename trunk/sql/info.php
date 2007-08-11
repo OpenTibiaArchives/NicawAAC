@@ -21,7 +21,7 @@ $ptitle="Server Info - $cfg[server_name]";
 include ("header.inc.php");
 ?>
 <div id="content">
-<div class="top">.:Server Info:.</div>
+<div class="top">Server Info</div>
 <div class="mid">
 <?
 if (!empty($info)){

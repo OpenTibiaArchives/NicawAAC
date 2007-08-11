@@ -22,7 +22,7 @@ include ("header.inc.php");
 
 ?>
 <div id="content">
-<div class="top">.:Highscores:.</div>
+<div class="top">Highscores</div>
 <div class="mid">
 <div style="margin-bottom: 20px;">
 <a href="ranks.php?sort=level">Level</a>&nbsp;

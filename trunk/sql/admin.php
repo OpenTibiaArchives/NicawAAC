@@ -24,7 +24,7 @@ $ptitle="Admin Panel - $cfg[server_name]";
 include ("header.inc.php");
 ?>
 <div id="content">
-<div class="top">.:Admin Panel:.</div>
+<div class="top">Admin Panel</div>
 <div class="mid">
 <ul class="task-menu" style="margin: 10px">
 <li onclick="ajax('form','tools/character_search.php','script=tools/character_delete.php',true)" style="display: inline; background-image: url(ico/key.png);">Delete</li>
