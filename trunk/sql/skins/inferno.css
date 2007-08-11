@@ -67,10 +67,6 @@ a:hover, a:active {
 }
 .clearer {
 	clear: both; 
-	width: 710px;
-	height: 45px;
-	margin: auto;
-	background: #34160c url(/*$skindir*/img12.gif) no-repeat center top;
 }
 .top {
 	font-family: georgia, "times new roman", times, serif;
@@ -174,4 +170,19 @@ a:hover, a:active {
 	padding-left: 10px;
 	padding-bottom: 10px;
 	padding-right: 10px;
+}
+#footer {
+	width: 680px;
+	height: 35px;
+	margin: auto;
+	background: #34160c url(/*$skindir*/img12.gif) no-repeat center top;
+	padding: 15px 0 0 30px;
+}
+#footer span{
+	display: inline;
+	font-size: 8pt;
+}
+
+#footer span a{
+	text-decoration: none;
 }

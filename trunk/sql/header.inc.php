@@ -4,6 +4,7 @@
 <meta name="Author" content="nicaw" />
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <title><?=$ptitle?></title>
+<link rel="stylesheet" href="default.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="screen.php" type="text/css" media="screen" />
 <link rel="stylesheet" href="print.css" type="text/css" media="print" />
 <link rel="alternate" type="application/rss+xml" title="News" href="rss.xml" />
