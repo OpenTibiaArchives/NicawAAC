@@ -43,7 +43,7 @@ legend {
 fieldset{
 	border-color: #ceea70;
 	padding: 10px;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
 blockquote {
 	padding: 0 3em;
@@ -75,6 +75,7 @@ a:hover, a:active {
 }
 .task-menu{
 	cursor: pointer;
+	margin: 5px;
 }
 .task-menu li{
 	list-style-type: none;
