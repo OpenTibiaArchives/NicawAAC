@@ -46,9 +46,13 @@ CREATE TABLE `nicaw_recovery` (
   `key` char(32) NOT NULL,
   KEY `accno` (`accno`)
 );
+
 CREATE TABLE `nicaw_news` (
-  `name` varchar(25) collate latin1_general_ci NOT NULL,
+  `id` int(11) NOT NULL,
+  `title` varchar(64) collate latin1_general_ci NOT NULL,
+  `creator` varchar(25) collate latin1_general_ci NOT NULL,
   `date` int(11) NOT NULL,
   `text` text collate latin1_general_ci NOT NULL,
-  `html` tinyint(1) NOT NULL default '0'
+  `html` tinyint(1) NOT NULL default '0',
+  KEY `id` (`id`)
 );
