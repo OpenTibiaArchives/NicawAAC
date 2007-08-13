@@ -51,7 +51,12 @@ public function addCaptcha(){
 public function addInput($name, $type = 'text', $value = '', $length = 100){
 	$this->elements[]= '<label for="'.$this->name.'__'.$name.'" style="position: absolute; width:100px; text-align:right;">'.ucfirst($name).':&nbsp;</label><input style="margin-left: 100px;" id="'.$this->name.'__'.$name.'" name="'.$this->name.'__'.$name.'" type="'.$type.'" maxlength="'.$length.'" value="'.$value.'"/>';
 }
-public function addTextbox($name,$value,$cols = 40,$rows = 10){
+public function addCheckBox($name, $checked = false){
+  if ($checked)
+    $check = ' checked="checked"';
+	$this->elements[]= '<input type="checkbox" id="'.$this->name.'__'.$name.'" name="'.$this->name.'__'.$name.'"'.$check.'>&nbsp;<label for="'.$this->name.'__'.$name.'">'.ucfirst($name).'</label>';
+}
+public function addTextbox($name,$value = '',$cols = 40,$rows = 10){
 	$this->elements[]= '<textarea name="'.$this->name.'__'.$name.'" cols="'.$cols.'" rows="'.$rows.'">'.$value.'</textarea>';
 }
 public function addSubmit($text){

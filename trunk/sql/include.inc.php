@@ -64,5 +64,5 @@ if (!extension_loaded('simplexml'))
 	$error = "SimpleXML is not enabled in php.ini";
 	
 //Set AAC version
-$cfg['aac_version'] = 'sql_2.7';
+$cfg['aac_version'] = 'sql_3.1';
 ?>

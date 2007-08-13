@@ -48,7 +48,7 @@ CREATE TABLE `nicaw_recovery` (
 );
 
 CREATE TABLE `nicaw_news` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `title` varchar(64) collate latin1_general_ci NOT NULL,
   `creator` varchar(25) collate latin1_general_ci NOT NULL,
   `date` int(11) NOT NULL,

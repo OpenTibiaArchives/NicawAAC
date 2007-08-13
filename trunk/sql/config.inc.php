@@ -13,6 +13,7 @@ $cfg['dirdata'] = 'c:/otserv/devland2/data/';
 $cfg['house_file'] = 'world/SadTeamMapper-house.xml';
 
 # You can choose between 'mysql' and 'sqlite'
+# SQLite will be available in next versions
 $cfg['DB_Type'] = 'mysql';
 
 # SQLite explained

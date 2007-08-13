@@ -9,8 +9,8 @@
 <item href="houses.php">Houses</item>
 <item href="guilds.php">Guilds</item>
 <item href="bans.php">Bans</item>
+<item href="admin.php">Admin Panel</item>
 <!--<item href="info.php">Server Info</item>-->
-<!--<item href="admin.php">Admin Panel</item>-->
 </category>
 
 </navigation>

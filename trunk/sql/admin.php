@@ -27,11 +27,9 @@ include ("header.inc.php");
 <div class="top">Admin Panel</div>
 <div class="mid">
 <ul class="task-menu" style="margin: 10px">
-<li onclick="ajax('form','tools/character_search.php','script=tools/character_delete.php',true)" style="display: inline; background-image: url(ico/key.png);">Delete</li>
-<li onclick="ajax('form','modules/account_email.php','',true)" style="display: inline; background-image: url(ico/email.png);">Test</li>
-<li onclick="ajax('form','modules/account_comments.php','',true)" style="display: inline; background-image: url(ico/page_edit.png);">Test</li>
-<li onclick="ajax('ajax','modules/account_logs.php','',true)" style="display: inline; background-image: url(ico/book_open.png);">View Logs</li>
-<li onclick="window.location.href='login.php?logout&amp;redirect=account.php'" style="display: inline; background-image: url(ico/resultset_previous.png);">Logout</li>
+<li onclick="ajax('form','tools/news_create.php','',true)" style=" background-image: url(ico/rss_add.png);">Create News</li>
+<li onclick="ajax('form','tools/character_search.php','script=tools/character_delete.php',true)" style=" background-image: url(ico/book_open.png);">Find Charcter</li>
+<li onclick="window.location.href='login.php?logout&amp;redirect=account.php'" style=" background-image: url(ico/resultset_previous.png);">Logout</li>
 </ul>
 <div id="ajax"></div>
 <script language="javascript" type="text/javascript">
