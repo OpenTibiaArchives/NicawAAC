@@ -31,7 +31,7 @@ include ("header.inc.php");
 if (file_exists($cfg['dirdata'].$cfg['house_file'])){
 
 $HousesXML = simplexml_load_file($cfg['dirdata'].$cfg['house_file']);
-$MySQL = new MySQL();
+$MySQL = new SQL();
 $result = $MySQL->myQuery('SELECT `players`.`name`, `houses`.`id` FROM `players`, `houses` WHERE `houses`.`owner` = `players`.`id`;');
 $error = $MySQL->getError();
 while ($row = $MySQL->fetch_array($result)){

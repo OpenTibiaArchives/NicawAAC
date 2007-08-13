@@ -17,7 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-class Polls extends MySQL
+class Polls extends SQL
 {
 private $list;
 

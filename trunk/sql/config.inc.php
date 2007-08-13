@@ -12,6 +12,17 @@ $cfg['dirdata'] = 'c:/otserv/devland2/data/';
 
 $cfg['house_file'] = 'world/SadTeamMapper-house.xml';
 
+# You can choose between 'mysql' and 'sqlite'
+$cfg['DB_Type'] = 'mysql';
+
+# SQLite explained
+# ================
+# It is an PHP extension and does not require any SQL server.
+# Database will be saved in a single file in data directory.
+# You will need OTserv with SQLite support and SQLite database 
+# browser to access it.
+# http://en.wikipedia.org/wiki/SQLite_Database_Browser
+
 # MySQL settings
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';

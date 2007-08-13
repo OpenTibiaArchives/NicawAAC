@@ -16,77 +16,23 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-class MySQL{
-protected $err;
-private $last_query;
 
-//Establish persistent connection to MySQL server and select database
-protected function myConnect()
-	{global $cfg;
-		$con = @mysql_pconnect($cfg['SQL_Server'],$cfg['SQL_User'],$cfg['SQL_Password']);
-		if ($con === false){
-			$this->err = 'Unable to connect to MySQL server';
-			return false;
-		}
-		if (!@mysql_select_db($cfg['SQL_Database'])){
-			$this->err = 'Unable to select database';
-			return false;
-		}
-		return true;
-	}
-
-//Perform SQL query
-public function myQuery($q)
-	{
-		if (!$this->myConnect()) return false;
-		$this->last_query = @mysql_query($q);
-		if ($this->last_query === false){
-			errorLog('#'.mysql_errno()."\r\n".$q."\r\n" . mysql_error() . "\r\n");
-			$this->err = 'Query failed. Refer to errors.inc for details.';
-			return false;
-		}
-		return $this->last_query;
-	}
-	
-public function fetch_array($resource = null)
-  {
-    if ($resource === null)
-      $resource = $this->last_query;
-    if ($resource !== false && $resource !== null)
-      return mysql_fetch_array($resource);
-     else
-      return null;
-  }
-  
-public function num_rows($resource = null)
-  {
-    if ($resource === null)
-      $resource = $this->last_query;
-    if ($resource !== false && $resource !== null)
-      return mysql_num_rows($resource);
-     else
-      return null;
-  }
-/*
-Functions to replace SQL syntax
-Input data structure
-array('col1' => 'value1', 'col2' => 'value2')
-*/
+class SQL extends SQL_engine{
 //Insert data
 public function myInsert($table,$data)
 	{global $cfg;
 		$fields = array_keys($data);
 		$values = array_values($data);
-		$query = 'INSERT INTO `'.mysql_escape_string($table).'` (';
+		$query = 'INSERT INTO `'.$this->escape_string($table).'` (';
 		foreach ($fields as $field)
-			$query.= '`'.mysql_escape_string($field).'`,';
+			$query.= '`'.$this->escape_string($field).'`,';
 		$query = substr($query, 0, strlen($query)-1);
 		$query.= ') VALUES (';
 		foreach ($values as $value)
 			if ($value === null)
 				$query.= 'NULL,';
 			else
-				$query.= '\''.mysql_escape_string($value).'\',';
+				$query.= '\''.$this->escape_string($value).'\',';
 		$query = substr($query, 0, strlen($query)-1);
 		$query.= ');';
 		if ($this->myQuery($query) === false) 
@@ -101,9 +47,9 @@ public function myRetrieve($table,$data)
 	{
 		$fields = array_keys($data); 
 		$values = array_values($data);
-		$query = 'SELECT * FROM `'.mysql_escape_string($table).'` WHERE (';
+		$query = 'SELECT * FROM `'.$this->escape_string($table).'` WHERE (';
 		for ($i = 0; $i < count($fields); $i++)
-			$query.= '`'.mysql_escape_string($fields[$i]).'` = \''.mysql_escape_string($values[$i]).'\' AND ';
+			$query.= '`'.$this->escape_string($fields[$i]).'` = \''.$this->escape_string($values[$i]).'\' AND ';
 		$query = substr($query, 0, strlen($query)-4);
 		$query.=');';
 		$sql = $this->myQuery($query);
@@ -117,15 +63,15 @@ public function myUpdate($table,$data,$where,$limit=1)
 	{
 		$fields = array_keys($data); 
 		$values = array_values($data);
-		$query = 'UPDATE `'.mysql_escape_string($table).'` SET ';
+		$query = 'UPDATE `'.$this->escape_string($table).'` SET ';
 		for ($i = 0; $i < count($fields); $i++)
-			$query.= '`'.mysql_escape_string($fields[$i]).'` = \''.mysql_escape_string($values[$i]).'\', ';
+			$query.= '`'.$this->escape_string($fields[$i]).'` = \''.$this->escape_string($values[$i]).'\', ';
 		$query = substr($query, 0, strlen($query)-2);
 		$query.=' WHERE (';
 		$fields = array_keys($where); 
 		$values = array_values($where);
 		for ($i = 0; $i < count($fields); $i++)
-			$query.= '`'.mysql_escape_string($fields[$i]).'` = \''.mysql_escape_string($values[$i]).'\' AND ';
+			$query.= '`'.$this->escape_string($fields[$i]).'` = \''.$this->escape_string($values[$i]).'\' AND ';
 		$query = substr($query, 0, strlen($query)-4);
 		$query.=') LIMIT '.$limit.';';
 		$sql = $this->myQuery($query);
@@ -138,9 +84,9 @@ public function myDelete($table,$data,$limit = 1)
 	{
 		$fields = array_keys($data); 
 		$values = array_values($data);
-		$query = 'DELETE FROM `'.mysql_escape_string($table).'` WHERE (';
+		$query = 'DELETE FROM `'.$this->escape_string($table).'` WHERE (';
 		for ($i = 0; $i < count($fields); $i++)
-			$query.= '`'.mysql_escape_string($fields[$i]).'` = \''.mysql_escape_string($values[$i]).'\' AND ';
+			$query.= '`'.$this->escape_string($fields[$i]).'` = \''.$this->escape_string($values[$i]).'\' AND ';
 		$query = substr($query, 0, strlen($query)-4);
 		if ($limit > 0)
 			$query.=') LIMIT '.$limit.';';

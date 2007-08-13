@@ -26,7 +26,7 @@ $cfg['max_ban_time'] = 2*30*24*60*60; //2 months
 <div class="top">Banned Players</div>
 <div class="mid">
 <?
-$MySQL = new MySQL();
+$MySQL = new SQL();
 $bans = $MySQL->myQuery('SELECT name, time FROM bans, players WHERE bans.type = 2 AND players.id = bans.player ORDER BY time ASC');
 if ($bans === false) $error = $MySQL->getError();
 echo '<table style="width:100%">'."\n";

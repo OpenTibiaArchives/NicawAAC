@@ -53,7 +53,7 @@ if ($_GET['sort'] == 'level' || $_GET['sort'] == 'maglevel'){
 }else{$error = "Invalid sort argument";}
 
 if (isset($query)){
-	$MySQL = new MySQL();
+	$MySQL = new SQL();
 	$sql = $MySQL->myQuery($query);
 	if ($sql === false){
 		$error = $MySQL->getError();

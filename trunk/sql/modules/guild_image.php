@@ -21,7 +21,7 @@ include ("../include.inc.php");
 if (isset($_POST['image_submit'])){
 	$gid = (int) $_GET['gid'];
 	//get guild owner acc
-	$SQL = new MySQL();
+	$SQL = new SQL();
 	$query = 'SELECT players.account_id, guilds.name FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.id = '.mysql_escape_string($gid);
 	$SQL->myQuery($query);
 	$result = $SQL->fetch_array();

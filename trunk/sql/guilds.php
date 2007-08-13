@@ -24,7 +24,7 @@ include ("header.inc.php");
 <div class="top">Guilds</div>
 <div class="mid">
 <?
-$mysql = new MySQL();
+$mysql = new SQL();
 // Show guild list
 if (!isset($_GET['id'])){
 $query = 'SELECT guilds.id, guilds.name, COUNT(guilds.id) FROM guilds, guild_ranks, players WHERE guilds.id = guild_ranks.guild_id AND guild_ranks.id = players.rank_id AND players.level >= '.$cfg['guild_level'].' GROUP BY guilds.id ORDER BY COUNT(guilds.id) DESC';
@@ -44,7 +44,7 @@ while ($a = @mysql_fetch_array($sql)){
 }else{
 #Member List
 $gid = (int) $_GET['id'];
-$SQL = new MySQL();
+$SQL = new SQL();
 $query = 'SELECT players.account_id, guilds.name FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.id = '.mysql_escape_string($gid);
 $SQL->myQuery($query);
 $result = $SQL->fetch_array();

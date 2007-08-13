@@ -9,6 +9,10 @@ error_reporting(E_ALL ^ E_NOTICE);
 session_start();
 
 require ('config.inc.php');
+if ($cfg['DB_Type'] == 'sqlite')
+  require ('class/sqlite.php');
+else
+  require ('class/mysql.php');
 require ('class/sql.php');
 require ('class/account.php');
 require ('class/player.php');
