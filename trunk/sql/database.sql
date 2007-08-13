@@ -54,5 +54,5 @@ CREATE TABLE `nicaw_news` (
   `date` int(11) NOT NULL,
   `text` text collate latin1_general_ci NOT NULL,
   `html` tinyint(1) NOT NULL default '0',
-  KEY `id` (`id`)
+  UNIQUE KEY `id` (`id`)
 );
