@@ -20,7 +20,6 @@ class Player extends SQL
 {
 private $attrs;
 private $skills;
-private $deaths;
 
 public function __construct($n)
 	{
@@ -38,6 +37,7 @@ public function load()
 		if ($group === false)
 			$this->attrs['access'] = 0;
 		else{
+      $this->attrs['group'] = (int) $player['group_id'];
 			$this->attrs['access'] = (int) $group['access'];
 			$this->attrs['position'] = (string) $group['name'];
 		}
@@ -75,9 +75,18 @@ public function load()
 
 public function save()
 	{
-		/*I'm not sure if this function will be used at all, 
-		since there's make() to create character. Basicly all
-		we need is to retrieve data for stats, not to save it, because it can't be saved when player online*/
+    $d['group_id'] = $this->attrs['group'];
+		$d['name'] = $this->attrs['name'];
+		$d['account_id'] = $this->attrs['account'];
+		$d['level'] = $this->attrs['level'];
+		$d['vocation'] = $this->attrs['vocation'];
+		$d['experience'] = $this->attrs['experience'];
+		$d['maglevel'] = $this->attrs['maglevel'];
+		$d['town_id'] = $this->attrs['city'];
+		$d['sex'] = $this->attrs['sex'];
+		$d['redskulltime'] = (int) $player['redskulltime'];
+		
+		return $this->myUpdate('players', $d, array('id' => $this->attrs['id']));
 	}
 
 public function isValidName()

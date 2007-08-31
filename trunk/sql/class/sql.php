@@ -36,6 +36,8 @@ private function _init(){
         $this->PDO = new PDO('sqlite2:'.$cfg['dirdata'].$cfg['SQL_filename']);
       elseif ($cfg['DB_Type'] == 'sqlite')
         $this->PDO = new PDO('sqlite:'.$cfg['dirdata'].$cfg['SQL_filename']);
+      else
+        $this->PDO = new PDO('uri:file://'.$cfg['dirdata'].$cfg['SQL_dnsfile'], $cfg['SQL_User'], $cfg['SQL_Password']);
     } catch (PDOException $e) {
       die ('Connection failed: ' . $e->getMessage().'<br/>Please check your SQL settings');
     }

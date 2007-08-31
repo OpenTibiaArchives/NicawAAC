@@ -12,7 +12,7 @@ $cfg['dirdata'] = 'c:/otserv/devland2/data/';
 
 $cfg['house_file'] = 'world/SadTeamMapper-house.xml';
 
-# You can choose between 'mysql' and 'sqlite'
+# You can choose between 'mysql', 'sqlite'. Others will trigger custom driver.
 $cfg['DB_Type'] = 'mysql';
 
 # MySQL server settings
@@ -21,9 +21,13 @@ $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'pass';
 $cfg['SQL_Database'] = 'otserv';
 
-# SQLite settings
-# Database file must be in data directory
+# [Skip if using MySQL]
+# SQLite file should be in data directory
 $cfg['SQL_filename'] = 'test.sq2';
+
+# [Skip if using MySQL]
+# Custom database driver connection file in data dir
+$cfg['SQL_dnsfile'] = 'dbconnect.txt';
 
 # MD5 is hashing algorithm that makes passwords safer. 
 # It must correspond to your OTServ configuration!

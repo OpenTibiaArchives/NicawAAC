@@ -19,43 +19,38 @@
 include ("../include.inc.php");
 include ('check.php');
 $_SESSION['last_activity']=time();
+$SQL = new SQL();
 
 //retrieve post data
 $form = new Form('admin');
+$group = new Form('group');
 
-//name send by GET param and character deleted
-if (isset($_GET['name'])){
-	//load player
-	$player = new Player($_GET['name']);
-	if ($player->load()){
-			//delete the player
-			if ($player->delete()){
-				//create new message
-				$msg = new IOBox('message');
-				$msg->addMsg('Character was deleted.');
-				$msg->addClose('Finish');
-				$msg->show();
-			}else $error = $player->getError();
+if (isset($_GET['name']) && $group->exists()){
+  $player = new Player($_GET['name']);
+  if ($player->load()){
+		$player->setAttr('group',$group->attrs['group']);
+		if ($player->save()){
+			//create new message
+			$msg = new IOBox('message');
+			$msg->addMsg('Player group changed');
+			$msg->addClose('Finish');
+			$msg->show();
+		}else $error ='Unable to save player';
 	}else $error ='Unable to load player';
-//check if any data was submited
+//check if data from character search was submited
 }elseif ($form->exists()){
-         //create new message
-        $msg = new IOBox('delete');
-        $msg->target = $_SERVER['PHP_SELF'].'?name='.$form->attrs['list'];
-        $msg->addMsg('Are you sure you want to delete: '.$form->attrs['list']);
-        $msg->addSubmit('Yes');
-        $msg->addClose('No');
-        $msg->show();
-
-}else{
-         //create new message
-        $msg = new IOBox('admin');
-        $msg->target = $_SERVER['PHP_SELF'];
-        $msg->addMsg('Enter character name to delete');
-        $msg->addInput('confirm','text');
-        $msg->addSubmit('Delete');
-        $msg->addClose('Cancel');
-        $msg->show();
+  $SQL->myQuery('SELECT * FROM `groups`');
+  while ($a = $SQL->fetch_array())
+    $list[$a['id']] = $a['name'];
+  if (empty($list)) die('No groups found'); 
+   //create new message
+  $msg = new IOBox('group');
+  $msg->target = $_SERVER['PHP_SELF'].'?name='.$form->attrs['list'];
+  $msg->addMsg('Please select the group you want to assign to player.');
+  $msg->addSelect('group',$list);
+  $msg->addClose('Cancel');
+  $msg->addSubmit('Next>>');
+  $msg->show();
 }
 if (!empty($error)){
 	//create new message
