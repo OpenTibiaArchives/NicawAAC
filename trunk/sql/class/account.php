@@ -52,10 +52,10 @@ public function load()
 		$this->attrs['email'] = (string) $nicaw_acc['email'];
 		$this->attrs['comment'] = (string) $nicaw_acc['comment'];
 		//get characters of this account
-		$query = 'SELECT * FROM `players` WHERE (`account_id`=\''.mysql_escape_string($this->attrs['accno']).'\')';
+		$query = 'SELECT * FROM `players` WHERE (`account_id`=\''.$this->escape_string($this->attrs['accno']).'\')';
 		$sql = $this->myQuery($query);
 		if ($sql === false) return false;
-		while ($a = mysql_fetch_array($sql)){
+		while ($a = $this->fetch_array($sql)){
 			$this->player[$a['name']] = new Player($a['name']);
 		}
 		//good, we have all attributes stored in class
@@ -148,9 +148,9 @@ public function addCharacter($name)
 
 public function exists()
 	{
-		$sql = $this->myQuery('SELECT * FROM `accounts` WHERE `id` = '.mysql_escape_string($this->attrs['accno']));
+		$sql = $this->myQuery('SELECT * FROM `accounts` WHERE `id` = '.$this->escape_string($this->attrs['accno']));
 		if ($sql === false) return false;
-		if (mysql_num_rows($sql) == 0) return false;
+		if ($this->num_rows($sql) == 0) return false;
 		else return true;
 	}
 
@@ -166,9 +166,9 @@ public function logAction($action)
 
 public function getLogs($limit)
 	{
-		$result = $this->myQuery('SELECT * FROM `nicaw_logs` WHERE `account` = '.mysql_escape_string($this->attrs['accno']).' ORDER BY `date` DESC LIMIT '.mysql_escape_string($limit));
+		$result = $this->myQuery('SELECT * FROM `nicaw_logs` WHERE `account` = '.$this->escape_string($this->attrs['accno']).' ORDER BY `date` DESC LIMIT '.$this->escape_string($limit));
 		if ($result !== false){
-			while ($row = mysql_fetch_array($result)) $logs[] = $row;
+			while ($row = $this->fetch_array($result)) $logs[] = $row;
 			return $logs;
 		}
 		return false;
@@ -176,16 +176,16 @@ public function getLogs($limit)
 
 public function highestLevel()
 	{
-		$sql = $this->myQuery('SELECT MAX(level) FROM `players` WHERE `account_id` = '.mysql_escape_string($this->attrs['accno']));
-		$row = mysql_fetch_array($sql);
+		$sql = $this->myQuery('SELECT MAX(level) FROM `players` WHERE `account_id` = '.$this->escape_string($this->attrs['accno']));
+		$row = $this->fetch_array($sql);
 		return $row['MAX(level)'];
 	}
 
 public function canVote($id)
 	{
-		$query = 'SELECT * FROM nicaw_votes WHERE `id` = '.$id.' AND (`accno`=\''.mysql_escape_string($this->attrs['accno']).'\' OR `ip` =\''.$_SERVER['REMOTE_ADDR'].'\')';
+		$query = 'SELECT * FROM nicaw_votes WHERE `id` = '.$id.' AND (`accno`=\''.$this->escape_string($this->attrs['accno']).'\' OR `ip` =\''.$_SERVER['REMOTE_ADDR'].'\')';
 		$sql = $this->myQuery($query);
-		if (mysql_num_rows($sql) >= 1)
+		if ($this->num_rows($sql) >= 1)
 			return false;
 		$poll = $this->myRetrieve('nicaw_polls', array('id' => $id));
 		if ($poll === false) return false;

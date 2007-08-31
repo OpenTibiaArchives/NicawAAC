@@ -56,22 +56,20 @@ public function load()
 		//get skills
 		$skills = $this->myQuery('SELECT * FROM `player_skills` WHERE `player_id` = '.$this->attrs['id']);
 		if ($skills === false) return false;
-		while($a = mysql_fetch_array($skills)){
+		while($a = $this->fetch_array($skills)){
 			$this->skills[$a['skillid']]['skill'] = $a['value'];
 			$this->skills[$a['skillid']]['tries'] = $a['count'];
 		}
-		mysql_free_result($skills);
 		//get guild stuff
 		$guild = $this->myQuery("SELECT players.guildnick, guild_ranks.level, guild_ranks.name, guilds.id, guilds.name FROM guild_ranks, players, guilds WHERE guilds.id = guild_ranks.guild_id AND players.rank_id = guild_ranks.id AND players.id = ".$this->attrs['id']);
-		if (mysql_num_rows($guild) == 1){
-			$a = mysql_fetch_array($guild);
+		if ($this->num_rows($guild) == 1){
+			$a = $this->fetch_array($guild);
 			$this->attrs['guild_nick'] = $a[0];
 			$this->attrs['guild_level'] = $a[1];
 			$this->attrs['guild_rank'] = $a[2];
 			$this->attrs['guild_id'] = $a[3];
 			$this->attrs['guild_name'] = $a[4];
 		}
-		mysql_free_result($guild);
 		return true;
 	}
 
@@ -120,11 +118,11 @@ public function setAttr($attr,$value)
 
 public function getDeaths()
 	{
-		$query = "SELECT * FROM `deathlist` WHERE (`player` = '".mysql_escape_string($this->attrs['id'])."') ORDER BY date DESC LIMIT 10";
+		$query = "SELECT * FROM `deathlist` WHERE (`player` = '".$this->escape_string($this->attrs['id'])."') ORDER BY date DESC LIMIT 10";
 		$sql = $this->myQuery($query);
 		if ($sql === false) return false;
 		$i = 0;
-		while($a = mysql_fetch_array($sql)){
+		while($a = $this->fetch_array($sql)){
 			$list[$i]['killer'] = $a['killer'];
 			$list[$i]['level'] = $a['level'];
 			$list[$i]['date'] = $a['date'];
@@ -137,8 +135,8 @@ public function getInvites()
 	{
 		$sql = $this->myQuery('SELECT guilds.name, guilds.id FROM guilds, nicaw_invites WHERE nicaw_invites.gid = guilds.id AND nicaw_invites.pid = '.$this->attrs['id']);
 		if ($sql === false) return false;
-		if (mysql_num_rows($sql) == 0) return false;
-		while($a = mysql_fetch_array($sql)){
+		if ($this->num_rows($sql) == 0) return false;
+		while($a = $this->fetch_array($sql)){
 			$return[$a['id']]['name'] = $a['name'];
 			$return[$a['id']]['id'] = $a['id'];
 		}
@@ -189,7 +187,7 @@ public function make()
 		$d['posz']			= $cfg['temple'][$this->attrs['city']]['z'];
 		
 		if (!$this->myInsert('players',$d)) return false;
-		$this->attrs['id'] = mysql_insert_id();
+		$this->attrs['id'] = $this->PDO->lastInsertId();
 
 		unset($d);
 

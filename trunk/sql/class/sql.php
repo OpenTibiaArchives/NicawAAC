@@ -16,8 +16,78 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
+class SQL{
+private $last_query;
+protected $err;
+public $PDO;
 
-class SQL extends SQL_engine{
+public function __construct(){
+  $this->_init();
+}
+
+//creates new PDO object for database access
+private function _init(){
+  global $cfg;
+  if (!isset($this->PDO))
+    try {
+      $this->PDO = new PDO($cfg['DB_Type'].':dbname='.$cfg['SQL_Database'].';host='.$cfg['SQL_Server'], $cfg['SQL_User'], $cfg['SQL_Password']);
+    } catch (PDOException $e) {
+      die ('Connection failed: ' . $e->getMessage().'<br/>Please check your SQL settings');
+    }
+}
+
+//Perform SQL query
+public function myQuery($q){
+  $this->_init();
+	$this->last_query = $this->PDO->query($q);
+	if ($this->last_query === false){
+    $error = $this->PDO->errorInfo();
+    errorLog(print_r($error,true));
+    die($error[2]);
+	}
+	return $this->last_query;
+}
+
+//Returns current array with data values
+public function fetch_array($resource = null)
+  {
+    if ($resource === null)
+      $resource = $this->last_query;
+    if ($resource !== false && $resource !== null){
+        return $resource->fetch();
+      }
+     else
+      return null;
+  }
+
+//Returns the number of rows affected
+public function num_rows($resource = null)
+  {
+    if ($resource === null)
+      $resource = $this->last_query;
+    if ($resource !== false && $resource !== null)
+      return $resource->rowCount();
+     else
+      return null;
+  }
+
+//Quotes a string so it's safe to use in SQL statement
+public function escape_string($string)
+  {
+    $this->_init();
+    return mysql_escape_string($string);
+  }
+
+//Return last error
+public function getError()
+	{
+		return $this->err;
+	}
+
+######################################
+# Methods for simple(?) data access  #
+######################################
+
 //Insert data
 public function myInsert($table,$data)
 	{global $cfg;
@@ -54,8 +124,8 @@ public function myRetrieve($table,$data)
 		$query.=');';
 		$sql = $this->myQuery($query);
 		if ($sql === false) return false;
-		if (mysql_num_rows($sql) != 1) return false;
-		return mysql_fetch_array($sql);
+		if ($this->num_rows($sql) != 1) return false;
+		return $this->fetch_array($sql);
 	}
 
 //Update data
@@ -95,11 +165,6 @@ public function myDelete($table,$data,$limit = 1)
 		$sql = $this->myQuery($query);
 		if ($sql === false) return false;
 		return true;
-	}
-
-public function getError()
-	{
-		return $this->err;
 	}
 }
 ?>

@@ -17,7 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 include ("include.inc.php");
-$ptitle="Houses - $cfg[server_name]";
+$ptitle="Highscores - $cfg[server_name]";
 include ("header.inc.php");
 
 ?>

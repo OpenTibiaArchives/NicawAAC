@@ -8,9 +8,25 @@
 <link rel="stylesheet" href="screen.php" type="text/css" media="screen" />
 <link rel="stylesheet" href="print.css" type="text/css" media="print" />
 <link rel="alternate" type="application/rss+xml" title="News" href="news.php?RSS2" />
-<script language="javascript" type="text/javascript" src="js.php"></script>
+<script language="javascript" type="text/javascript" src="js.js"></script>
 <script language="javascript" type="text/javascript" src="<?=$cfg['skin_url'].$cfg['skin']?>.js"></script>
 <link rel="shortcut icon" href="favicon.ico" />
+<?if ($cfg['secure_session'] && !empty($_SESSION['account'])){?>
+<script language="javascript" type="text/javascript">
+//<![CDATA[
+	function tick()
+	{
+		logout_time--;
+		if (logout_time < 0){
+			self.window.location.href = 'login.php?logout&redirect=account.php';
+		}else{
+			setTimeout ("tick()",1000);
+		}
+	}
+	tick();
+//]]>
+</script>
+<?}?>
 </head>
 <body>
 <div id="form"></div>

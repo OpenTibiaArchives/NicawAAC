@@ -1,24 +1,3 @@
-<? 
-/*
-    Copyright (C) 2007  Nicaw
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License along
-    with this program; if not, write to the Free Software Foundation, Inc.,
-    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
-include('include.inc.php');
-?>
-
 //default adsense values $.$
 google_ad_client = "pub-8407977271374637";
 google_ad_width = 125;
@@ -219,16 +198,3 @@ function server_state()
 	setTimeout ("server_state()",60000);
 }
 setTimeout ("server_state()",60000);
-
-<?if ($cfg['secure_session'] && !empty($_SESSION['account'])){?>
-	function tick()
-	{
-		logout_time--;
-		if (logout_time < 0){
-			self.window.location.href = 'login.php?logout&redirect=account.php';
-		}else{
-			setTimeout ("tick()",1000);
-		}
-	}
-	tick();
-<?}?>

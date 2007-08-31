@@ -9,10 +9,6 @@ error_reporting(E_ALL ^ E_NOTICE);
 session_start();
 
 require ('config.inc.php');
-if ($cfg['DB_Type'] == 'sqlite')
-  require ('class/sqlite.php');
-else
-  require ('class/mysql.php');
 require ('class/sql.php');
 require ('class/account.php');
 require ('class/player.php');
@@ -59,10 +55,12 @@ if ($cfg['secure_session'] && !empty($_SESSION['account']) && ($_SERVER['REMOTE_
 if (!version_compare(phpversion(), "5.1.4", ">=") )
 	$error = "You need at least PHP 5.1.4 to run this AAC";
 
-//Check if simpleXML loaded
+//Check if extensions loaded
 if (!extension_loaded('simplexml'))
 	$error = "SimpleXML is not enabled in php.ini";
-	
+if (!extension_loaded('pdo'))
+	$error = "PDO is not enabled in php.ini";
+
 //Set AAC version
 $cfg['aac_version'] = 'sql_3.1';
 ?>

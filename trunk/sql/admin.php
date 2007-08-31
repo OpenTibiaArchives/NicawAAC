@@ -32,12 +32,28 @@ include ("header.inc.php");
 <li onclick="window.location.href='login.php?logout&amp;redirect=account.php'" style=" background-image: url(ico/resultset_previous.png);">Logout</li>
 </ul>
 <div id="ajax"></div>
-<script language="javascript" type="text/javascript">
-</script>
 <?
-$params = '?url='.$cfg['server_url'].'&version='.$cfg['aac_version'].'&remote_ip='.$_SERVER['REMOTE_ADDR'].'&server_ip='.$_SERVER['SERVER_ADDR'].'&port='.$_SERVER['SERVER_PORT'];
+$params = htmlspecialchars('?url='.$cfg['server_url'].'&version='.$cfg['aac_version'].'&remote_ip='.$_SERVER['REMOTE_ADDR'].'&server_ip='.$_SERVER['SERVER_ADDR'].'&port='.$_SERVER['SERVER_PORT'])
+;
 ?>
-<iframe width="100%" height="400px" src="http://aac.nicaw.net/<?=$params?>" ></iframe>
+<script language="javascript" type="text/javascript">
+//<![CDATA[
+if (Cookies.get('allow_iframe') == null){
+	if (confirm('AAC will now contact external server and send your server details.\r\nNo personal information submited.\r\nIs that OK?')){
+		document.write('<iframe width="100%" height="400px" src="http://aac.nicaw.net/<?=$params?>" ></iframe>');
+		Cookies.create('allow_iframe','yes',31);
+	}else{
+    Cookies.create('allow_iframe','no',31);
+	}
+}
+if (Cookies.get('allow_iframe') == 'yes'){
+	document.write('<iframe width="100%" height="400px" src="http://aac.nicaw.net/<?=$params?>" ></iframe>');
+}
+if (Cookies.get('allow_iframe') == 'no'){
+  document.write('<span onclick="Cookies.erase(\'allow_iframe\'); location.reload(false);" style="cursor: pointer">Click here to enable iframe</span>');
+}
+//]]>
+</script>
 </div>
 <div class="bot"></div>
 </div>
