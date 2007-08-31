@@ -41,7 +41,7 @@ if ($form->exists()){
 				$characters[] = $a['name'];
 			//create new message
 			$msg = new IOBox('admin');
-			$msg->target = $form->attrs['script'];
+			$msg->target = $_GET['script'];
 			$msg->addMsg($mysql->num_rows().' character(s) found!');
 			$msg->addSelect('list',array_combine($characters,$characters));
 			$msg->addReload('<< Back');
@@ -60,10 +60,9 @@ if ($form->exists()){
 }else{
 	//create new form
 	$form = new IOBox('search');
-	$form->target = $_SERVER['PHP_SELF'];
+	$form->target = $_SERVER['PHP_SELF'].'?script='.$_POST['script'];
 	$form->addLabel('Find Character');
 	$form->addInput('name');
-	$form->addInput('script',$_POST['script']);
 	$form->addClose('Cancel');
 	$form->addSubmit('Next >>');
 	$form->show();

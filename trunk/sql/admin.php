@@ -28,7 +28,7 @@ include ("header.inc.php");
 <div class="mid">
 <ul class="task-menu" style="margin: 10px">
 <li onclick="ajax('form','tools/news_create.php','',true)" style=" background-image: url(ico/rss_add.png);">Create News</li>
-<li onclick="ajax('form','tools/character_search.php','script=tools/character_delete.php',true)" style=" background-image: url(ico/book_open.png);">Find Charcter</li>
+<li onclick="ajax('form','tools/character_search.php','script=tools/character_delete.php',true)" style=" background-image: url(ico/user_delete.png);">Delete player</li>
 <li onclick="window.location.href='login.php?logout&amp;redirect=account.php'" style=" background-image: url(ico/resultset_previous.png);">Logout</li>
 </ul>
 <div id="ajax"></div>
@@ -39,8 +39,7 @@ $params = htmlspecialchars('?url='.$cfg['server_url'].'&version='.$cfg['aac_vers
 <script language="javascript" type="text/javascript">
 //<![CDATA[
 if (Cookies.get('allow_iframe') == null){
-	if (confirm('AAC will now contact external server and send your server details.\r\nNo personal information submited.\r\nIs that OK?')){
-		document.write('<iframe width="100%" height="400px" src="http://aac.nicaw.net/<?=$params?>" ></iframe>');
+	if (confirm('AAC will now contact external site and send your server details.\r\nNo personal information submited.\r\nIs that OK?')){
 		Cookies.create('allow_iframe','yes',31);
 	}else{
     Cookies.create('allow_iframe','no',31);

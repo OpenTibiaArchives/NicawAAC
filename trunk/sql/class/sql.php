@@ -30,7 +30,12 @@ private function _init(){
   global $cfg;
   if (!isset($this->PDO))
     try {
-      $this->PDO = new PDO($cfg['DB_Type'].':dbname='.$cfg['SQL_Database'].';host='.$cfg['SQL_Server'], $cfg['SQL_User'], $cfg['SQL_Password']);
+      if ($cfg['DB_Type'] == 'mysql')
+        $this->PDO = new PDO('mysql:dbname='.$cfg['SQL_Database'].';host='.$cfg['SQL_Server'], $cfg['SQL_User'], $cfg['SQL_Password']);
+      elseif ($cfg['DB_Type'] == 'sqlite2')
+        $this->PDO = new PDO('sqlite2:'.$cfg['dirdata'].$cfg['SQL_filename']);
+      elseif ($cfg['DB_Type'] == 'sqlite')
+        $this->PDO = new PDO('sqlite:'.$cfg['dirdata'].$cfg['SQL_filename']);
     } catch (PDOException $e) {
       die ('Connection failed: ' . $e->getMessage().'<br/>Please check your SQL settings');
     }
