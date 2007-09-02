@@ -21,11 +21,9 @@ $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'pass';
 $cfg['SQL_Database'] = 'otserv';
 
-# [Skip if using MySQL]
-# SQLite file should be in data directory
+# If using SQLite. Database file should be in data directory.
 $cfg['SQL_filename'] = 'test.sq2';
 
-# [Skip if using MySQL]
 # Custom database driver connection file in data dir
 $cfg['SQL_dnsfile'] = 'dbconnect.txt';
 

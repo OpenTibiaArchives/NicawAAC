@@ -62,5 +62,5 @@ if (!extension_loaded('pdo'))
 	$error = "PDO is not enabled in php.ini";
 
 //Set AAC version
-$cfg['aac_version'] = 'sql_3.1';
+$cfg['aac_version'] = 'sql_3.2';
 ?>

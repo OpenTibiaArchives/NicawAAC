@@ -17,7 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 include ("../include.inc.php");
-include ('check.php');
+require ('check.php');
 $_SESSION['last_activity']=time();
 
 //retrieve post data

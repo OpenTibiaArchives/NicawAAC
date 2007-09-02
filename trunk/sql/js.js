@@ -192,6 +192,17 @@ function getParams(obj) {
   return getstr;
 }
 
+function calcFlags(){
+	var flags = 0;
+	var flagNode = document.getElementById('groups');
+	for (var i = 0; i < flagNode.elements.length; i++){
+		if(flagNode.elements[i].checked){
+			flags = flags*1 + flagNode.elements[i].value*1;
+		}
+	}
+	document.getElementById('groups__flags').value = flags;
+}
+
 function server_state()
 {
 	ajax('server_state','status.php','',false);

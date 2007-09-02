@@ -17,7 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 include ("include.inc.php");
-include ('tools/check.php');
+require ('tools/check.php');
 $_SESSION['last_activity']=time();
 
 $ptitle="Admin Panel - $cfg[server_name]";
@@ -30,6 +30,7 @@ include ("header.inc.php");
 <li onclick="ajax('form','tools/news_create.php','',true)" style=" background-image: url(ico/rss_add.png);">Create News</li>
 <li onclick="ajax('form','tools/character_search.php','script=tools/character_delete.php',true)" style=" background-image: url(ico/user_delete.png);">Delete Player</li>
 <li onclick="ajax('form','tools/character_search.php','script=tools/character_group.php',true)" style=" background-image: url(ico/user_gray.png);">Create GM</li>
+<li onclick="ajax('form','tools/group_create.php','',true)" style=" background-image: url(ico/group_add.png);">Create Group</li>
 <li onclick="window.location.href='login.php?logout&amp;redirect=account.php'" style=" background-image: url(ico/resultset_previous.png);">Logout</li>
 </ul>
 <div id="ajax"></div>
