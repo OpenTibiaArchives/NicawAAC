@@ -19,18 +19,18 @@
 include ("include.inc.php");
 $ptitle="Guilds - $cfg[server_name]";
 include ("header.inc.php");
+$SQL = new SQL();
 ?>
 <div id="content">
 <div class="top">Guilds</div>
 <div class="mid">
 <?
-$mysql = new SQL();
 // Show guild list
 if (!isset($_GET['id'])){
 $query = 'SELECT guilds.id, guilds.name, COUNT(guilds.id) FROM guilds, guild_ranks, players WHERE guilds.id = guild_ranks.guild_id AND guild_ranks.id = players.rank_id AND players.level >= '.$cfg['guild_level'].' GROUP BY guilds.id ORDER BY COUNT(guilds.id) DESC';
-$sql = $mysql->myQuery($query);
-$error = $mysql->getError();
-while ($a = @mysql_fetch_array($sql)){
+$SQL->myQuery($query);
+$error = $SQL->getError();
+while ($a = $SQL->fetch_array()){
 ?>
 <table border="1" onclick="window.location.href='guilds.php?id=<?=$a['id']?>'" style="cursor: pointer; width: 100%;">
 <tr><td style="width: 64px; height: 64px; padding: 10px;"><img src="guilds/<?=$a['id']?>.gif" alt="NO IMG" height="64" width="64"/></td>
@@ -44,8 +44,7 @@ while ($a = @mysql_fetch_array($sql)){
 }else{
 #Member List
 $gid = (int) $_GET['id'];
-$SQL = new SQL();
-$query = 'SELECT players.account_id, guilds.name FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.id = '.mysql_escape_string($gid);
+$query = 'SELECT players.account_id, guilds.name FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.id = '.$SQL->escape_string($gid);
 $SQL->myQuery($query);
 $result = $SQL->fetch_array();
 $owner = (int) $result['account_id'];
@@ -73,7 +72,7 @@ if ($owner == $_SESSION['account'] && !empty($_SESSION['account'])){?>
 <table style="width: 100%">
 <tr class="color0"><td style="width: 30%"><b>Rank</b></td><td style="width: 70%"><b>Name and Title</b></td></tr>
 <?
-$ranks = $SQL->myQuery('SELECT id, name FROM guild_ranks WHERE guild_id = \''.mysql_escape_string($gid).'\' ORDER BY level DESC');
+$ranks = $SQL->myQuery('SELECT id, name FROM guild_ranks WHERE guild_id = \''.$SQL->escape_string($gid).'\' ORDER BY level DESC');
 		if ($ranks === false) $error = $SQL->getError();
 		while ($rank = $SQL->fetch_array()){
 			$members = $SQL->myQuery('SELECT players.name, players.guildnick  FROM guild_ranks, players WHERE guild_ranks.id = players.rank_id AND guild_ranks.id = '.$rank['id'].' ORDER BY players.level DESC');
