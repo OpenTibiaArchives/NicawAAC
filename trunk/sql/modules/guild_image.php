@@ -44,7 +44,7 @@ $gid = (int) $_POST['gid'];
 ?>
 <div id="iobox" class="draggable">
 <fieldset><legend>Upload Image</legend>
-<form method="post" action="modules/uploadimg.php?gid=<?=$gid?>" enctype="multipart/form-data">
+<form method="post" action="modules/guild_image.php?gid=<?=$gid?>" enctype="multipart/form-data">
 <input type="file" name="image">
 <input type="Submit" name="image_submit" value="Upload"><br/>
 Supported type *.GIF 64x64 100KB
