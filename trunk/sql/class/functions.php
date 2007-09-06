@@ -47,7 +47,7 @@ public function getMax()
 ################################################################################
 function errorLog($err){
 	$f = fopen('errors.inc','a');
-	fwrite($f,date("Y.m.d H:i",time()).' '.$err);
+	fwrite($f,date("Y.m.d H:i",time()).' '.$err."\r\n");
 	fclose($f);
 }
 

@@ -50,7 +50,7 @@ public function myQuery($q){
 	if ($this->last_query === false){
     $error = $this->PDO->errorInfo();
     errorLog(print_r($error,true));
-    die($error[2]);
+    $this->err = $error[2];
 	}
 	return $this->last_query;
 }

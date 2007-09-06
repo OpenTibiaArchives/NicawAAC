@@ -8,9 +8,9 @@
 
 # Set data directory of your OT server
 # Please use / to separate folders and put / in the end
-$cfg['dirdata'] = 'c:/otserv/devland2/data/';
+$cfg['dirdata'] = 'c:/otserv/evolutions/data/';
 
-$cfg['house_file'] = 'world/SadTeamMapper-house.xml';
+$cfg['house_file'] = 'world/Evolutions-house.xml';
 
 # You can choose between 'mysql', 'sqlite'. Others will trigger custom driver.
 $cfg['DB_Type'] = 'mysql';
@@ -106,9 +106,9 @@ $cfg['guild_level'] = 20;
 #                 Town Config                    #
 ##################################################
 $id = 11;
-$cfg['temple'][$id]['name'] = 'Devland';
-$cfg['temple'][$id]['x'] = 438;
-$cfg['temple'][$id]['y'] = 503;
+$cfg['temple'][$id]['name'] = 'Evolutions';
+$cfg['temple'][$id]['x'] = 1000;
+$cfg['temple'][$id]['y'] = 1000;
 $cfg['temple'][$id]['z'] = 7;
 $cfg['temple'][$id]['enabled'] = true;
 
