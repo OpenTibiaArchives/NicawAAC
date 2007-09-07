@@ -28,6 +28,7 @@ include ("header.inc.php");
 <div class="mid">
 <ul class="task-menu" style="margin: 10px">
 <li onclick="ajax('form','tools/news_create.php','',true)" style=" background-image: url(ico/rss_add.png);">Create News</li>
+<li onclick="ajax('form','tools/poll_create.php','',true)" style=" background-image: url(ico/chart_bar_add.png);">Create Poll</li>
 <li onclick="ajax('form','tools/character_search.php','script=tools/character_delete.php',true)" style=" background-image: url(ico/user_delete.png);">Delete Player</li>
 <li onclick="ajax('form','tools/character_search.php','script=tools/character_group.php',true)" style=" background-image: url(ico/user_gray.png);">Create GM</li>
 <li onclick="ajax('form','tools/group_create.php','',true)" style=" background-image: url(ico/group_add.png);">Create Group</li>

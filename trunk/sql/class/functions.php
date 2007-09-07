@@ -63,6 +63,11 @@ function strToPos($str){
 	return array('x' => $pos[0], 'y' => $pos[1], 'z' => $pos[2]);
 }
 
+function strToDate($str){
+  $pieces = explode('-',$str);
+  return mktime(0,0,0,(int)$pieces[1],(int)$pieces[2],(int)$pieces[0]);
+}
+
 function getVocLvl($voc){
 	global $cfg;
 	return floor($cfg['vocations'][$voc]['level']);
