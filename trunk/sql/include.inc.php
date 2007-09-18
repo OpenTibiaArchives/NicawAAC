@@ -9,11 +9,11 @@ error_reporting(E_ALL ^ E_NOTICE);
 session_start();
 
 require ('config.inc.php');
+require ('class/globals.php');
 require ('class/sql.php');
 require ('class/account.php');
 require ('class/player.php');
 require ('class/iobox.php');
-require ('class/functions.php');
 
 /*Checking if IP not banned.
 In fact, this can be done with .htaccess,
@@ -62,5 +62,5 @@ if (!extension_loaded('pdo'))
 	$error = "PDO is not enabled in php.ini";
 
 //Set AAC version
-$cfg['aac_version'] = 'sql_3.2';
+$cfg['aac_version'] = 'sql_3.4';
 ?>

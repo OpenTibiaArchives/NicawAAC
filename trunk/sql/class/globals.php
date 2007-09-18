@@ -17,7 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-class Polls extends SQL
+/*class Polls extends SQL
 {
 private $list;
 
@@ -43,7 +43,7 @@ public function getMax()
 	{
 		return count($this->list)-1;
 	}
-}
+}*/
 ################################################################################
 function errorLog($err){
 	$f = fopen('errors.inc','a');
@@ -77,31 +77,6 @@ function getVocExp($voc){
 	global $cfg;
 	$x = $cfg['vocations'][$voc]['level'];
 	return round(50*($x-1)*(pow($x,2)-5*$x+12)/3);
-}
-
-function getinfo($host='localhost',$port=7171){
-		// connects to server
-        $socket = @fsockopen($host, $port, $errorCode, $errorString, 1);
-
-        // if connected then checking statistics
-        if($socket)
-        {
-            // sets 1 second timeout for reading and writing
-            stream_set_timeout($socket, 1);
-
-            // sends packet with request
-            // 06 - length of packet, 255, 255 is the comamnd identifier, 'info' is a request
-            fwrite($socket, chr(6).chr(0).chr(255).chr(255).'info');
-
-            // reads respond
-			while (!feof($socket)){
-				$data .= fread($socket, 128);
-			}
-
-			// closing connection to current server
-			fclose($socket);
-		}
-	return $data;
 }
 
 function getStyle($seed)
