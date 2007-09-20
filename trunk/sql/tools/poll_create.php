@@ -24,13 +24,24 @@ $_SESSION['last_activity']=time();
 $form = new Form('poll');
 //check if any data was submited
 if ($form->exists()){
-    $options = str_replace(array(';', "\r", "\n"), array(' ','',';'), $form->attrs['options']);
+    $options = str_replace(array(';', "\r", "\n"), array(' ','',';'), trim($form->attrs['options']));
     if ($form->attrs['hidden'] == 'on') $hidden = true;
 		else $hidden = false;
 		//insert news
 		$sql = new SQL();
     $sql->myInsert('nicaw_polls',array('id' => null, 'minlevel' => (int)$form->attrs['level'], 'question' => $form->attrs['question'], 'options' => $options, 'startdate' => strToDate($form->attrs['startdate']), 'enddate' => strToDate($form->attrs['enddate']), 'hidden' => $hidden));
-    echo $sql->getError();
+    $pollMsg = '<b>'.$form->attrs['question']."</b><br/>\n";
+	$pieces = explode(";", $options);
+	$i = 0;
+	foreach ($pieces as $piece){
+		$i++;
+		$pollMsg.= $i.'. '.$piece."<br/>\n";
+	}
+	$link = $cfg['server_href'].'voting.php?id='.$sql->PDO->lastInsertId();
+	$pollMsg.= "<br/>\n".'Voting ends on: '.date("jS F Y", strToDate($form->attrs['enddate'])).
+	           "<br/>\n".'Characters of level '.(int)$form->attrs['level'].' or above may vote by clinking this link:'."<br/>\n".'<a href="'.$link.'>'.$link.'</a>';
+	$sql->myInsert('nicaw_news',array('id' => null, 'title' => 'New Poll', 'creator' => 'PollMan', 'date' => strToDate($form->attrs['startdate']), 'text' => $pollMsg, 'html' => true));
+	echo $sql->getError();
 }else{
 	//create new form
 	$form = new IOBox('poll');

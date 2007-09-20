@@ -140,7 +140,7 @@ public function getDeaths()
 		return $list;
 	}
 
-public function getInvites()
+/*public function getInvites()
 	{
 		$sql = $this->myQuery('SELECT guilds.name, guilds.id FROM guilds, nicaw_invites WHERE nicaw_invites.gid = guilds.id AND nicaw_invites.pid = '.$this->attrs['id']);
 		if ($sql === false) return false;
@@ -151,7 +151,7 @@ public function getInvites()
 		}
 		return $return;
 	}
-	
+*/	
 public function getSkill($n)
 	{
 		return $this->skills[$n]['skill'];

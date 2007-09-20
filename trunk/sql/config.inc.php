@@ -19,7 +19,7 @@ $cfg['DB_Type'] = 'mysql';
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'pass';
-$cfg['SQL_Database'] = 'otserv';
+$cfg['SQL_Database'] = 'devland';
 
 # If using SQLite. Database file should be in data directory.
 $cfg['SQL_filename'] = 'test.sq2';
@@ -61,7 +61,7 @@ $cfg['server_name'] = 'Nicaw SQL';
 
 # Server ip and port for getting status. 
 # In most cases localhost should be used
-$cfg['server_ip'] = 'localhost';
+$cfg['server_ip'] = '127.0.0.1';
 $cfg['server_port'] = 7171;
 
 # Allow teleportation to temple
@@ -105,23 +105,34 @@ $cfg['guild_level'] = 20;
 ##################################################
 #                 Town Config                    #
 ##################################################
-$id = 11;
-$cfg['temple'][$id]['name'] = 'Evolutions';
-$cfg['temple'][$id]['x'] = 1000;
-$cfg['temple'][$id]['y'] = 1000;
-$cfg['temple'][$id]['z'] = 7;
-$cfg['temple'][$id]['enabled'] = true;
 
-$cfg['temple'][1]['name'] = 'Venore';
-$cfg['temple'][2]['name'] = 'Edron';
-$cfg['temple'][3]['name'] = 'Carlin';
+# Town names
+$cfg['temple'][1]['name'] = 'Devland';
+$cfg['temple'][2]['name'] = 'Forgotten';
+$cfg['temple'][3]['name'] = 'Evolutions';
 $cfg['temple'][4]['name'] = 'Thais';
 $cfg['temple'][5]['name'] = 'Ab\'Dendriel';
 $cfg['temple'][6]['name'] = 'Kazordoon';
-$cfg['temple'][7]['name'] = '';
+$cfg['temple'][7]['name'] = 'Something else?';
 $cfg['temple'][8]['name'] = 'Darashia';
 $cfg['temple'][9]['name'] = 'Port Hope';
 $cfg['temple'][10]['name'] = 'Liberty Bay';
+
+# Now set which town(s) you want to use in character making
+$cfg['temple'][1]['x'] = 410;
+$cfg['temple'][1]['y'] = 573;
+$cfg['temple'][1]['z'] = 7;
+$cfg['temple'][1]['enabled'] = true;
+
+$cfg['temple'][2]['x'] = 50;
+$cfg['temple'][2]['y'] = 50;
+$cfg['temple'][2]['z'] = 7;
+$cfg['temple'][2]['enabled'] = false;
+
+$cfg['temple'][3]['x'] = 1000;
+$cfg['temple'][3]['y'] = 1000;
+$cfg['temple'][3]['z'] = 7;
+$cfg['temple'][3]['enabled'] = true;
 
 ##################################################
 #                 Vocation Config                #

@@ -36,6 +36,7 @@ if ($_SERVER['SERVER_PORT'] == 80 || $_SERVER['SERVER_PORT'] == 443)
 	$cfg['server_url'] = $_SERVER['SERVER_NAME'];
 else
 	$cfg['server_url'] = $_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'];
+$cfg['server_href'] = 'http://'.$cfg['server_url'].dirname(htmlspecialchars($_SERVER['PHP_SELF'])).'/';
 
 /*disable magic_quotes_gpc. ty wrzasq
 Oh I hope I did escape user input :D */

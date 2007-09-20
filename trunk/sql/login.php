@@ -35,15 +35,10 @@ if (isset($_POST['login_submit'])){
 }
 
 ########################## LOGOUT ###########################
-elseif (isset($_GET['logout']) || 
-(time()-$_SESSION['last_activity'])>$cfg['session_timeout'] && $cfg['session_security'] > 0 || 
-$_SERVER['REMOTE_ADDR'] != $_SESSION['remote_ip'] && $cfg['session_security'] > 1){
+elseif (isset($_GET['logout'])){
 	session_unset();
-	if (isset($_POST['ajax']))
-		die('Session has expired. Please <a href="account.php">login</a> again.');
 }
-
-elseif (!empty($_GET['redirect']) && !empty($_SESSION['account'])){
+elseif (!empty($_SESSION['account']) && !empty($_GET['redirect'])){
 	header('location: '.$_GET['redirect']);
 	die('Redirecting to <a href="'.$_GET['redirect'].'>'.$_GET['redirect'].'</a>');
 }
