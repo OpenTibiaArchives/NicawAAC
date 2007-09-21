@@ -23,6 +23,8 @@ public $player;
 
 public function __construct($n)
 	{
+		//initialize SQl object
+		$this->_init();
 		if (is_numeric($n) && $n != 0){
 			$this->attrs['accno'] = (int) $n;
 			return true;
@@ -52,7 +54,7 @@ public function load()
 		$this->attrs['email'] = (string) $nicaw_acc['email'];
 		$this->attrs['comment'] = (string) $nicaw_acc['comment'];
 		//get characters of this account
-		$query = 'SELECT * FROM `players` WHERE (`account_id`=\''.$this->escape_string($this->attrs['accno']).'\')';
+		$query = 'SELECT players.name FROM players WHERE (`account_id`=\''.$this->escape_string($this->attrs['accno']).'\')';
 		$sql = $this->myQuery($query);
 		if ($sql === false) return false;
 		while ($a = $this->fetch_array($sql)){

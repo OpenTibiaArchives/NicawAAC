@@ -23,8 +23,10 @@ private $skills;
 
 public function __construct($n)
 	{
-			$this->attrs['name'] = $n;
-			return true;
+		//initialize SQl object
+		$this->_init();
+		$this->attrs['name'] = $n;
+		return true;
 	}
 
 public function load()

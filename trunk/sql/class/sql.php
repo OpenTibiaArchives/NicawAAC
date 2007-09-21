@@ -26,7 +26,7 @@ public function __construct(){
 }
 
 //creates new PDO object for database access
-private function _init(){
+protected function _init(){
   global $cfg;
   if (!isset($this->PDO))
     try {
@@ -43,14 +43,13 @@ private function _init(){
     }
 }
 
-//Perform SQL query
+//Perform simpple SQL query
 public function myQuery($q){
-  $this->_init();
 	$this->last_query = $this->PDO->query($q);
 	if ($this->last_query === false){
-    $error = $this->PDO->errorInfo();
-    errorLog(print_r($error,true));
-    $this->err = $error[2];
+	  $error = $this->PDO->errorInfo();
+	  errorLog(print_r($error,true));
+	  $this->err = $error[2];
 	}
 	return $this->last_query;
 }
@@ -81,7 +80,6 @@ public function num_rows($resource = null)
 //Quotes a string so it's safe to use in SQL statement
 public function escape_string($string)
   {
-    $this->_init();
     return mysql_escape_string($string);
   }
 
@@ -92,7 +90,7 @@ public function getError()
 	}
 
 ######################################
-# Methods for simple(?) data access  #
+# Methods for simple  data access    #
 ######################################
 
 //Insert data
@@ -131,7 +129,7 @@ public function myRetrieve($table,$data)
 		$query.=');';
 		$sql = $this->myQuery($query);
 		if ($sql === false) return false;
-		if ($this->num_rows($sql) != 1) return false;
+		if ($this->num_rows($sql) == 0) return false;
 		return $this->fetch_array($sql);
 	}
 
