@@ -1,4 +1,5 @@
 <?
+include ('config.inc.php');
 function getinfo($host='localhost',$port=7171){
 		// connects to server
         $socket = @fsockopen($host, $port, $errorCode, $errorString, 1);
@@ -27,7 +28,7 @@ function getinfo($host='localhost',$port=7171){
 $modtime = filemtime('status.xml');
 if (time() - $modtime > 1*60 || $modtime > time()){
 	touch('status.xml');
-	$info = getinfo();
+	$info = getinfo($cfg['server_ip'], $cfg['server_port']);
 	file_put_contents('status.xml',$info);
 }else $info = file_get_contents('status.xml');
 if (!empty($info)) {
