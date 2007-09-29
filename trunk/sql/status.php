@@ -27,9 +27,8 @@ function getinfo($host='localhost',$port=7171){
 
 $modtime = filemtime('status.xml');
 if (time() - $modtime > 1*60 || $modtime > time()){
-	touch('status.xml');
 	$info = getinfo($cfg['server_ip'], $cfg['server_port']);
-	file_put_contents('status.xml',$info);
+	if (!empty($info)) file_put_contents('status.xml',$info);
 }else $info = file_get_contents('status.xml');
 if (!empty($info)) {
 $infoXML = simplexml_load_string($info);
