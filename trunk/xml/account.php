@@ -1,5 +1,5 @@
 <?
-@session_start();
+session_start();
 include ("config.php");
 include ("functions.php");
 /* Session security */
@@ -95,7 +95,7 @@ if ($cfg['CVSplayers']){
 
 //IF CHANGING PASSWORD
 }elseif (!empty($_POST['old'])){
-if (ereg('^[A-Za-z0-9@#$%^+=]{5,60}$',$_POST['new'])&&ereg("^.{5,60}$",$_POST['old'])){
+if (ereg('^[A-Za-z0-9@#$%^+=]{5,60}$',$_POST['new'])){
 if ($_POST['new']==$_POST['new2']){
 if ($_POST['new']!==$_SESSION['account']){
 if ($account->correctPass($_POST['old'])){

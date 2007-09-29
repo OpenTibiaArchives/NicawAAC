@@ -19,7 +19,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 /*Set location of data directory
 IMPORTANT! Use / to separate folders, put / in the end     */
-$cfg['dirdata'] = 'C:/OTServ/CzepOTS/data/';
+$cfg['dirdata'] = 'C:/Project-XML/data/';
 
 //----------------------------- Website Configuration --------------------------
 
@@ -81,7 +81,7 @@ $cfg['delete_level'] = 20;
 $cfg['account_number'] = 0;
 
 //Vocation names
-$cfg['voc_normal'] = array('None','Sorcerer','Druid','Paladin','Knight');
+$cfg['voc_normal'] = array('None','Sorcerer','Druid','Paladin','Knight','Master Sorcerer','Elder Druid','Royal Paladin','Elite Knight');
 
 //Promoted names
 $cfg['voc_promoted'] = array('None','Master Sorcerer','Elder Druid','Royal Paladin','Elite Knight');
@@ -122,9 +122,9 @@ $cfg['vocation_choose'] = True;
 // SPAWN PLACE(S)
 // Looks complicated? Just replace the numbers :)
 
-$cfg['temple']['sample']['x'] = 123;
-$cfg['temple']['sample']['y'] = 123;
-$cfg['temple']['sample']['z'] = 132;
+$cfg['temple']['sample']['x'] = 438;
+$cfg['temple']['sample']['y'] = 503;
+$cfg['temple']['sample']['z'] = 7;
 
 
 
@@ -322,7 +322,7 @@ if( get_magic_quotes_gpc() )
 
 //Check for correct PHP version
 if (!version_compare(phpversion(), "5.1.4", ">=") )
-	$error = "You need PHP 5.1.4 or later to run this AAC";
+	$error = "You need PHP 5.1.4 or later to run this AAC. Try the latest XAMPP.";
 
 //Check if extensions loaded
 if (!extension_loaded('simplexml'))

@@ -1,5 +1,5 @@
                                                        ,
-  NICAW Acc v2.7                                      / \
+  NICAW Acc v2.8                                      / \
                                                      {   }
                                                      p   !
  ~SHORT TUTORIAL~                                    ; : ;
@@ -22,7 +22,7 @@
  #Bug reports and suggestions are              "~~~*;!8@8!;*~~~"
   welcome to gmnicaw@gmail.com                       ;888;
                                                      ;888;
- #Navigation menu can be edited in header.php        ;888;
+ #Navigation menu can be edited in navigation.xml    ;888;
                                                      ;888;
  #This is Carlin sword on the right :)               d8@8b
                                                      O8@8O
