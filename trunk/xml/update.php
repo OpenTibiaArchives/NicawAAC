@@ -14,6 +14,8 @@ if (file_exists('statistics.php')){
   }
 }
 touch('statistics.php');
+//make a backup
+copy('statistics.php','statistics.bak');
 
 $f_rank = fopen("statistics.php","w");
 
@@ -37,13 +39,7 @@ while($file = readdir($dir_rank) ){
 					$delete_log .= "Deleted: ".$file."\r\n";
 				}
 				
-				switch ($player->data['voc']){
-					case 0: $none++; break;
-					case 1: $sorcerer++; break;
-					case 2: $druid++; break;
-					case 3: $paladin++; break;
-					case 4: $knight++; break;
-				}
+				$vocations[(int)$player->data['voc']]++;
 
 				switch ($player->data['sex']){
 					case 0: $female++; break;
@@ -78,16 +74,11 @@ closedir($dir_rank);
 
 fwrite($f_rank,'
 $statistics[\'census\'][\'male\'] = \''.$male.'\';
-$statistics[\'census\'][\'female\'] = \''.$female.'\';
+$statistics[\'census\'][\'female\'] = \''.$female.'\';');
 
-$statistics[\'census\'][\'none\'] = \''.$none.'\';
-$statistics[\'census\'][\'sorcerer\'] = \''.$sorcerer.'\';
-$statistics[\'census\'][\'druid\'] = \''.$druid.'\';
-$statistics[\'census\'][\'paladin\'] = \''.$paladin.'\';
-$statistics[\'census\'][\'knight\'] = \''.$knight.'\';
-');
-
-
+foreach (array_keys($vocations) as $id)
+fwrite($f_rank,'
+$statistics[\'census\']['.$id.'] = \''.$vocations[$id].'\';');
 
 fwrite($f_rank,'?>');
 fclose($f_rank);

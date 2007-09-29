@@ -59,7 +59,7 @@ if (!$cfg['vocation_choose']){
 }
 
 $newplayer = new Player($_POST['name']);
-if (isset($cfg['temple'][$_POST['city']][x]) && ereg("^[0-4]$",$_POST['vocation']) && ereg("^[01]$",$_POST['sex'])){
+if (isset($cfg['temple'][$_POST['city']][x]) && isset($cfg['health'][(int)$_POST['vocation']]) && ereg("^[01]$",$_POST['sex'])){
 if ($account->getCharCount() < $cfg['maxchars']){
 if ($newplayer->isValidName() === true){
 if (!$newplayer->exist()){

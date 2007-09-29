@@ -17,8 +17,12 @@ include 'header.php';
     fwrite($socket, "\r\n");
 	fclose($socket);
 	}
-require 'statistics.php';
+include 'statistics.php';
 $total = $statistics['census']['male'] + $statistics['census']['female'];
+if ($total == 0 || empty($total)){
+	@include 'statistics.bak';
+	$total = $statistics['census']['male'] + $statistics['census']['female'];
+}
 if ($total == 0 || empty($total)){
 	$error = 'No players found. Highscores are being updated.';
 	include('footer.php');
@@ -125,31 +129,16 @@ foreach($scores as $position => $score):
 	
     <table>
 	<tr><td><b><u><i> Vocations </i></u></b></td><td> </td><td> </td></tr>
+<?
+//edit by nicaw, can handle many vocations now
+//damn, this whole script sucks
+foreach(array_keys($cfg['voc_normal']) as $id){?>
 	<tr>
-	<td>None: </td><td><?= percent($statistics['census']['none'], $total); ?>% </td>
-	<td>(<?= $statistics['census']['none']; ?>)
+	<td><?=$cfg['voc_normal'][$id]?> </td><td><?= percent($statistics['census'][$id], $total); ?>% </td>
+	<td>(<?= $statistics['census'][$id]; ?>)
 	</td>
 	</tr>
-	<tr>
-	<td>Sorcerer: </td><td><?= percent($statistics['census']['sorcerer'], $total); ?>% </td>
-	<td>(<?= $statistics['census']['sorcerer']; ?>)
-	</td>
-	</tr>
-	<tr>
-	<td>Druid: </td><td><?= percent($statistics['census']['druid'], $total); ?>% </td>
-	<td>(<?= $statistics['census']['druid']; ?>)
-	</td>
-	</tr>
-	<tr>
-	<td>Paladin: </td><td><?= percent($statistics['census']['paladin'], $total); ?>% </td>
-	<td>(<?= $statistics['census']['paladin']; ?>)
-	</td>
-	</tr>
-	<tr>
-	<td>Knight: </td><td><?= percent($statistics['census']['knight'], $total); ?>% </td>
-	<td>(<?= $statistics['census']['knight']; ?>)
-	</td>
-	</tr>
+<?}?>
 </table>
 </div>
 	<? endif; ?>

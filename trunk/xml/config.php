@@ -19,7 +19,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 /*Set location of data directory
 IMPORTANT! Use / to separate folders, put / in the end     */
-$cfg['dirdata'] = 'C:/Project-XML/data/';
+$cfg['dirdata'] = 'D:/OTServ/YurOTS/data/';
 
 //----------------------------- Website Configuration --------------------------
 
