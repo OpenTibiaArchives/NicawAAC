@@ -24,28 +24,38 @@ $SQL = new SQL();
 //retrieve post data
 $form = new Form('groups');
 if ($form->exists()){
-  $d['id'] = NULL;
+  $d['id'] = $form->attrs['id'];
   $d['name'] = $form->attrs['name'];
   $d['access'] = $form->attrs['access'];
   $d['flags'] = $form->attrs['flags'];
   $d['maxdepotitems'] = $form->attrs['depot_size'];
   $d['maxviplist'] = $form->attrs['vip_size'];
   if ($SQL->myInsert('groups',$d)){
-    $msg = new IOBox('message');
+		$msg = new IOBox('message');
 		$msg->addMsg('Group created!');
 		$msg->addClose('Finish');
 		$msg->show();
 	}else{
-    $msg = new IOBox('message');
-		$msg->addMsg('Cannot save group.');
-		$msg->addClose('OK');
-		$msg->show();
+		if ($SQL->myUpdate('groups',$d,array('id' => $form->attrs['id']))){
+			$msg = new IOBox('message');
+			$msg->addMsg('Group ID: '.$form->attrs['id'].' was <b>updated</b>');
+			$msg->addClose('OK');
+			$msg->show();
+		}else{
+			$msg = new IOBox('message');
+			$msg->addMsg('Cannot save group.');
+			$msg->addClose('OK');
+			$msg->show();
+		}
 	}
 }else{
+$SQL->myQuery('SELECT id, name FROM groups');
+while ($a = $SQL->fetch_array())
+	$group_list.= $a['id'].':'.$a['name'].'&nbsp;';
 $msg = new IOBox('groups');
 $msg->target = $_SERVER['PHP_SELF'];
 $msg->addLabel('Create Group');
-$msg->addCode('<table id="flagtable" border="1px" cellspacing="0">
+$msg->addCode('<table id="flagtable" border="1px" cellspacing="0" width="600px">
   <tr>
     <td colspan="2"><b>Privileges</b></td>
 
@@ -103,7 +113,8 @@ $msg->addCode('<table id="flagtable" border="1px" cellspacing="0">
 		<input type="checkbox" value="2147483648" onclick="calcFlags()"> Can not gain loot<br/>
     </td>
   </tr>
-</table>');
+<tr><td colspan="3"><b>Group List</b><br/>'.$group_list.'</td></tr></table>');
+$msg->addInput('id','text','0');
 $msg->addInput('name','text');
 $msg->addInput('flags','text','0');
 $msg->addInput('access','text','0');

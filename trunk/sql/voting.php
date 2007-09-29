@@ -27,12 +27,12 @@ include ("header.inc.php");
 //receives all polls, options and vote count =)
 $query = 'SELECT a1.poll_id, a1.option_id, a1.question, a1.option, COUNT( nicaw_poll_votes.option_id ) AS votes
 FROM (
-SELECT nicaw_poll_questions.id AS poll_id, nicaw_poll_options.id AS option_id, nicaw_poll_questions.startdate, nicaw_poll_questions.question, nicaw_poll_options.option
-FROM nicaw_poll_questions, nicaw_poll_options
-WHERE nicaw_poll_options.poll_id = nicaw_poll_questions.id
-AND nicaw_poll_questions.startdate < '.time().'
-AND nicaw_poll_questions.enddate > '.time().'
-ORDER BY nicaw_poll_questions.startdate DESC
+SELECT nicaw_polls.id AS poll_id, nicaw_poll_options.id AS option_id, nicaw_polls.startdate, nicaw_polls.question, nicaw_poll_options.option
+FROM nicaw_polls, nicaw_poll_options
+WHERE nicaw_poll_options.poll_id = nicaw_polls.id
+AND nicaw_polls.startdate < '.time().'
+AND nicaw_polls.enddate > '.time().'
+ORDER BY nicaw_polls.startdate DESC
 ) AS a1
 LEFT OUTER JOIN nicaw_poll_votes ON a1.option_id = nicaw_poll_votes.option_id
 GROUP BY nicaw_poll_votes.option_id';

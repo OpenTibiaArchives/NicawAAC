@@ -8,7 +8,7 @@
 
 # Set data directory of your OT server
 # Please use / to separate folders and put / in the end
-$cfg['dirdata'] = 'c:/otserv/evolutions/data/';
+$cfg['dirdata'] = 'C:/OTServ/storm/data/';
 
 $cfg['house_file'] = 'world/Evolutions-house.xml';
 
@@ -19,7 +19,7 @@ $cfg['DB_Type'] = 'mysql';
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'pass';
-$cfg['SQL_Database'] = 'devland';
+$cfg['SQL_Database'] = 'otserv';
 
 # If using SQLite. Database file should be in data directory.
 $cfg['SQL_filename'] = 'test.sq2';
@@ -61,7 +61,7 @@ $cfg['server_name'] = 'Nicaw SQL';
 
 # Server ip and port for getting status. 
 # In most cases localhost should be used
-$cfg['server_ip'] = '127.0.0.1';
+$cfg['server_ip'] = 'localhost';
 $cfg['server_port'] = 7171;
 
 # Allow teleportation to temple
@@ -72,15 +72,15 @@ $cfg['char_repair'] = false;
 $cfg['Email_Validate'] = false;
 
 # Allow email based account recovery?
-$cfg['Email_Recovery'] = false;
+$cfg['Email_Recovery'] = true;
 
 # Enable extension=php_openssl.dll in php.ini in order to use gmail
 $cfg['SMTP_Host'] = 'ssl://smtp.gmail.com';
 $cfg['SMTP_Port'] = 465;
 $cfg['SMTP_Auth'] = true;
-$cfg['SMTP_User'] = 'storm.ots@gmail.com';
+$cfg['SMTP_User'] = 'user@gmail.com';
 $cfg['SMTP_Password'] = 'pass';
-$cfg['SMTP_From'] = 'storm.ots@gmail.com';
+$cfg['SMTP_From'] = 'user@gmail.com';
 
 # Whether to show skills in character search
 $cfg['show_skills'] = true;

@@ -39,7 +39,7 @@ if ($form->exists()){
 					if (strtolower($account->getAttr('email')) == strtolower($form->attrs['email']) && !empty($form->attrs['email'])){
 						//assign recovery key to account
 						$key = $account->addRecoveryKey();
-						if ($key !== false){
+						if ($account->save()){
 							$body = 'Dear player,
 
 this email is a response for your request to recover your account on http://'.$cfg['server_url'].'/
@@ -71,7 +71,7 @@ If you don\'t want to recover your account, simply ignore this letter.';
 								$msg->addMsg('An email with recovery details was sent to your inbox.');
 								$msg->addClose('Finish');
 								$msg->show();
-							}else{ $error = "Failed to send email";}
+							}else{ $error = "Mailer Error: " . $mail->ErrorInfo;}
 						}else{ $error = $account->getError();}
 					}else{ $error = "Incorrect email address";}
 				}else{ $error = "Failed to load account";}
@@ -102,7 +102,8 @@ If you don\'t want to recover your account, simply ignore this letter.';
 			$msg->addClose('Finish');
 			$msg->show();
 			//save password, remove recovery key
-			if (!$account->save() || !$account->removeRecoveryKey()) {$error = 'Error saving account';}
+			$account->removeRecoveryKey();
+			if (!$account->save()) {$error = 'Error saving account';}
 		}else{ $error = "The link is invalid";}
 	}else{ $error = "Failed to load account";}
 }else{

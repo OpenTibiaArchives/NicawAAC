@@ -54,6 +54,13 @@ public function myQuery($q){
 	return $this->last_query;
 }
 
+//True is last query failed
+public function failed($resource = null)
+  {
+    if ($this->last_query === false) return true;
+	return false;
+  }
+
 //Returns current array with data values
 public function fetch_array($resource = null)
   {
@@ -81,6 +88,12 @@ public function num_rows($resource = null)
 public function escape_string($string)
   {
     return mysql_escape_string($string);
+  }
+
+//Quotes a string and adds apostrofes
+public function quote($string)
+  {
+    return $this->PDO->quote($string);
   }
 
 //Return last error

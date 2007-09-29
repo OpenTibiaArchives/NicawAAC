@@ -19,18 +19,14 @@
 class Account extends SQL
 {
 private $attrs;
-public $player;
+public $players;
 
 public function __construct($n)
 	{
-		//initialize SQl object
+		//initialize SQl class
 		$this->_init();
-		if (is_numeric($n) && $n != 0){
+		if (is_numeric($n) && $n > 0){
 			$this->attrs['accno'] = (int) $n;
-			return true;
-		}else{
-			$this->err = 'Invalid account number';
-			return false;
 		}
 	}
 
@@ -42,67 +38,52 @@ public function load()
 		}
 		//load attributes from database
 		$acc = $this->myRetrieve('accounts', array('id' => $this->attrs['accno']));
-		$nicaw_acc = $this->myRetrieve('nicaw_accounts', array('accno' => $this->attrs['accno']));
+		$nicaw_acc = $this->myRetrieve('accounts', array('id' => $this->attrs['accno']));
 		if ($acc === false) return false;
 		//arranging attributes, ones on the left will be used all over the aac
 		$this->attrs['accno'] = (int) $acc['id'];
 		$this->attrs['password'] = (string) $acc['password'];
-		$this->attrs['rlname'] = (string) $nicaw_acc['rlname'];
-		$this->attrs['location'] = (string) $nicaw_acc['location'];
-		$this->attrs['blocked'] = (bool) $nicaw_acc['blocked'];
-		$this->attrs['ip'] = (string) $nicaw_acc['ip'];
-		$this->attrs['email'] = (string) $nicaw_acc['email'];
-		$this->attrs['comment'] = (string) $nicaw_acc['comment'];
+		$this->attrs['email'] = (string) $acc['email'];
+		$this->attrs['rlname'] = $nicaw_acc['rlname'];
+		$this->attrs['location'] = $nicaw_acc['location'];
+		$this->attrs['comment'] = $nicaw_acc['comment'];
+		$this->attrs['recovery_key'] = $nicaw_acc['recovery_key'];
 		//get characters of this account
-		$query = 'SELECT players.name FROM players WHERE (`account_id`=\''.$this->escape_string($this->attrs['accno']).'\')';
-		$sql = $this->myQuery($query);
-		if ($sql === false) return false;
-		while ($a = $this->fetch_array($sql)){
-			$this->player[$a['name']] = new Player($a['name']);
+		$this->myQuery('SELECT players.name FROM players WHERE (`account_id`='.$this->quote($this->attrs['accno']).')');
+		if ($this->failed()) return false;
+		while ($a = $this->fetch_array()){
+			$this->players[] = new Player($a['name']);
 		}
-		//good, we have all attributes stored in class
+		//good, now we have all attributes stored in object
 		return true;
 	}
 
 public function save()
 	{
-		$acc['id'] = $this->attrs['accno'];
-		$acc['password'] = $this->attrs['password'];
-		$nicaw_acc['accno'] = $this->attrs['accno'];
-		$nicaw_acc['rlname'] = $this->attrs['rlname'];
-		$nicaw_acc['location'] = $this->attrs['location'];
-		$nicaw_acc['blocked'] = $this->attrs['blocked'];
-		$nicaw_acc['ip'] = $this->attrs['ip'];
-		$nicaw_acc['email'] = $this->attrs['email'];
-		$nicaw_acc['comment'] = $this->attrs['comment'];
-		//insert into accounts table
-		if ($this->myUpdate('accounts',$acc,array('id' => $this->attrs['accno']))){
-			//insert into nicaw_accounts table
-			if ($this->myUpdate('nicaw_accounts',$nicaw_acc,array('accno' => $this->attrs['accno']))) return true;
-		}
-		return false;		
-	}
-
-public function make()
-	{global $cfg;
-		
-		if ($this->exists()){
-			$this->err = 'Account cannot be created because it already exists';
+		if (empty($this->attrs['accno']) || $this->attrs['accno'] == 0){
+			$this->err = 'Invalid account number';
 			return false;
 		}
-		
 		$acc['id'] = $this->attrs['accno'];
 		$acc['password'] = $this->attrs['password'];
-		$nicaw_acc['accno'] = $this->attrs['accno'];
-		$nicaw_acc['email'] = $this->attrs['email'];
+		$acc['email'] = $this->attrs['email'];
+		$nicaw_acc['account_id'] = $this->attrs['accno'];
 		$nicaw_acc['rlname'] = $this->attrs['rlname'];
 		$nicaw_acc['location'] = $this->attrs['location'];
-		$nicaw_acc['ip'] = $_SERVER['REMOTE_ADDR'];
-
-		if (!$this->myInsert('accounts',$acc)) return false;
-		if (!$this->myInsert('nicaw_accounts',$nicaw_acc)) return false;
-
-		return $this->load();
+		$nicaw_acc['comment'] = $this->attrs['comment'];
+		$nicaw_acc['recovery_key'] = $this->attrs['recovery_key'];
+		//Update? Insert?
+		if ($this->exists()){
+			$success = $this->myUpdate('accounts',$acc,array('id' => $this->attrs['accno']));
+			$exists  = $this->myUpdate('nicaw_accounts',$nicaw_acc,array('id' => $this->attrs['accno']));
+		}else
+			$success = $this->myInsert('accounts',$acc)
+			        && $this->myInsert('nicaw_accounts',$nicaw_acc);
+		//Create nicaw_accounts row if doesn't exist.
+		if ($exists === false)
+			$this->myInsert('nicaw_accounts',$nicaw_acc);
+		if ($success === false) return false;
+		return true;		
 	}
 
 public function getAttr($attr)
@@ -131,29 +112,12 @@ public function checkPassword($p)
 		return $this->attrs['password'] == $p;
 	}
 
-public function getCharCount()
-	{
-		return count($this->player);
-	}
-
-public function getCharList()
-	{
-	if (isset($this->player))
-		return array_keys($this->player);
-	else return null;
-	}
-
-public function addCharacter($name)
-	{
-		$this->player[$name] = new Player($name);
-	}
-
 public function exists()
 	{
 		$sql = $this->myQuery('SELECT * FROM `accounts` WHERE `id` = '.$this->escape_string($this->attrs['accno']));
 		if ($sql === false) return false;
 		if ($this->num_rows($sql) == 0) return false;
-		else return true;
+		return true;
 	}
 
 public function isValidNumber()
@@ -163,10 +127,32 @@ public function isValidNumber()
 
 public function logAction($action)
 	{
-		return $this->myInsert('nicaw_logs',array('id' => NULL, 'ip' => $_SERVER['REMOTE_ADDR'], 'account' => $this->attrs['accno'], 'date' => time(), 'action' => $action));
+		return $this->myInsert('nicaw_account_logs',array('id' => NULL, 'ip' => ip2long($_SERVER['REMOTE_ADDR']), 'account_id' => $this->attrs['accno'], 'date' => time(), 'action' => $action));
+	}
+	
+public function removeRecoveryKey()
+	{
+		$this->attrs['recovery_key'] = NULL;
 	}
 
-public function getLogs($limit)
+public function addRecoveryKey()
+	{
+		$this->attrs['recovery_key'] = substr(str_shuffle(md5(mt_rand()).md5(time())), 0, 32);
+		$this->logActions('Recovery key added');
+		return $this->attrs['recovery_key'];
+	}
+
+public function checkRecoveryKey($key)
+	{
+		return $this->attrs['recovery_key'] === $key && !empty($key);
+	}
+
+public function vote($option)
+	{
+		return $this->myInsert('nicaw_poll_votes',array('option_id' => $option, 'ip' => ip2long($_SERVER['REMOTE_ADDR']), 'account_id' => $this->attrs['accno']));
+	}
+
+/*public function getLogs($limit)
 	{
 		$result = $this->myQuery('SELECT * FROM `nicaw_logs` WHERE `account` = '.$this->escape_string($this->attrs['accno']).' ORDER BY `date` DESC LIMIT '.$this->escape_string($limit));
 		if ($result !== false){
@@ -206,38 +192,6 @@ public function doVote($id,$option)
 		$success = $this->myInsert('nicaw_votes', array('id' => $id, 'accno' => $this->attrs['accno'], 'ip' => $_SERVER['REMOTE_ADDR']));
 		if (!$success) return false;
 		return true;
-	}
-
-public function removeRecoveryKey()
-	{
-		if ($this->myDelete('nicaw_recovery',array('accno' => $this->attrs['accno']),100))  
-			return true;
-		else 
-			return false;
-	}
-
-public function addRecoveryKey()
-	{
-		$key = substr(str_shuffle(md5(mt_rand()).md5(mt_rand())), 0, 32);
-		$d['accno'] = $this->attrs['accno'];
-		$d['email'] = $this->attrs['email'];
-		$d['date'] = time();
-		$d['ip'] = $_SERVER['REMOTE_ADDR'];
-		$d['key'] = $key;
-
-		$this->removeRecoveryKey();
-		if (!$this->myInsert('nicaw_recovery',$d)) return false;
-		return $key;
-	}
-
-public function checkRecoveryKey($key)
-	{
-		if (empty($key)) return false;
-		$sql = $this->myRetrieve('nicaw_recovery',array('accno' => $this->attrs['accno'], 'key' => $key));
-		if ($sql === false) 
-			return false;
-		else
-			return true;
-	}
+	}*/
 }
 ?>

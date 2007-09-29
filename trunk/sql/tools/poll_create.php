@@ -30,7 +30,7 @@ if ($form->exists()){
 		else $hidden = false;
 	$sql = new SQL();
 	//store poll question
-    $sql->myInsert('nicaw_poll_questions',array('id' => null, 'minlevel' => (int)$form->attrs['level'], 'question' => $form->attrs['question'], 'startdate' => strToDate($form->attrs['startdate']), 'enddate' => strToDate($form->attrs['enddate']), 'hidden' => $hidden));
+    $sql->myInsert('nicaw_polls',array('id' => null, 'minlevel' => (int)$form->attrs['level'], 'question' => $form->attrs['question'], 'startdate' => strToDate($form->attrs['startdate']), 'enddate' => strToDate($form->attrs['enddate']), 'hidden' => $hidden));
     $poll_id = $sql->PDO->lastInsertId();
 	//store all poll options
 	foreach($options as $option)

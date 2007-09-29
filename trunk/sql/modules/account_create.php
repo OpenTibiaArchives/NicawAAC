@@ -32,13 +32,14 @@ if ($form->exists()){
 				$account = new Account(rand(100000,999999));
 			//set account atrributes
 			$accno = $account->getAttr('accno');
-			$password = substr(str_shuffle('qwertyuipasdfhjklzxcvbnm123456789'), 0, 6);
+			if ($form->attrs['password'] == $form->attrs['confirm'] && strlen($form->attrs['password']) > 5)
+				$password = $form->attrs['password'];
+			else
+				$password = substr(str_shuffle('qwertyuipasdfhjklzxcvbnm123456789'), 0, 6);
 			$account->setPassword($password);
 			$account->setAttr('email',$form->attrs['email']);
-			$account->setAttr('rlname',$form->attrs['name']);
-			$account->setAttr('location',$form->attrs['country']);
 			//create the account
-			if ($account->make()){
+			if ($account->save()){
 
 				if ($cfg['Email_Validate']){
 				$body = "Here is your login information for <a href=\"http://$cfg[server_url]/\">$cfg[server_name]</a><br/>
@@ -67,14 +68,15 @@ Powered by <a href=\"http://nicaw.net/\">Nicaw AAC</a>";
 				if ($mail->Send())
 						$success = 'Your login details were emailed to '.$form->attrs['email'];
 					else
-						$error = 'Failed to send email to '.$form->attrs['email'];
+						$error = "Mailer Error: " . $mail->ErrorInfo;
 						
-				}else
-				$success ='Please write down your login information:<br/>
+				}else{
+					$success ='Please write down your login information:<br/>
 Account number: <b>'.$accno.'</b><br/>
 Password: <b>'.$password.'</b><br/>
 You can now login into your account and start creating characters.<br/>';
-
+					$account->logAction('Created');
+				}
 			}else{ $error = $account->getError();}
 		}else{ $error = "Bad email address";}
 	}else{ $error = "Image verification failed";}
@@ -98,8 +100,8 @@ You can now login into your account and start creating characters.<br/>';
 	$form->target = $_SERVER['PHP_SELF'];
 	$form->addLabel('Create Account');
 	$form->addInput('email');
-	$form->addInput('name');
-	$form->addInput('country');
+	$form->addInput('password','password');
+	$form->addInput('confirm','password');
 	$form->addCaptcha();
 	$form->addClose('Cancel');
 	$form->addSubmit('Next >>');

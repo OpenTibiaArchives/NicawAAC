@@ -47,15 +47,14 @@ include ("header.inc.php");
 </ul>
 </td><td>
 <?
-$chars = $account->getCharList();
-	if (isset($chars)){
-		echo '<h3>Characters</h3>'."\n";
-		echo '<ul class="task-menu">';
-		foreach ($chars as $player){
-			echo '<li style="background-image: url(ico/user.png);" onclick="window.location.href=\'characters.php?char='.$player.'\'">'.htmlspecialchars($player).'</li>';
-		}
-		echo '</ul>';
+if (isset($account->players)){
+	echo '<h3>Characters</h3>'."\n";
+	echo '<ul class="task-menu">';
+	foreach ($account->players as $player){
+		echo '<li style="background-image: url(ico/user.png);" onclick="window.location.href=\'characters.php?char='.$player->getAttr('name').'\'">'.htmlspecialchars($player->getAttr('name')).'</li>';
 	}
+	echo '</ul>';
+}
 ?>
 </td></tr>
 </table>
