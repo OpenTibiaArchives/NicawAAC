@@ -52,7 +52,8 @@ if ($form->exists()){
 		$msg->show();
 	}
 }else{
-	$list = $account->getCharList();
+	foreach ($account->players as $player)
+		$list[] = $player->getAttr('name');
 	//create new form
 	$form = new IOBox('delete');
 	$form->target = $_SERVER['PHP_SELF'];

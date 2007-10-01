@@ -216,17 +216,21 @@ public function make()
 				next($cfg['vocations'][$this->attrs['vocation']]['equipment']);
 		}
 
-		//make skills
-		$i = 0;
-		while ($skill = current($cfg['vocations'][$this->attrs['vocation']]['skills'])){
-			$d['player_id']	= $this->attrs['id'];
-			$d['skillid']	= key($cfg['vocations'][$this->attrs['vocation']]['skills']);
-			$d['value']		= $skill;
-			$d['count']		= '0';
+		//make skills only if not created by trigger
+		$this->myQuery('SELECT COUNT(player_skills.skillid) as count FROM player_skills WHERE player_id = '.$this->quote($this->attrs['id']));
+		$a = $this->fetch_array();
+		if ($a['count'] = 0){
+			$i = 0;
+			while ($skill = current($cfg['vocations'][$this->attrs['vocation']]['skills'])){
+				$d['player_id']	= $this->attrs['id'];
+				$d['skillid']	= key($cfg['vocations'][$this->attrs['vocation']]['skills']);
+				$d['value']		= $skill;
+				$d['count']		= '0';
 
-			if (!$this->myInsert('player_skills',$d)) return false;
-			unset($d);
-			next($cfg['vocations'][$this->attrs['vocation']]['skills']);
+				if (!$this->myInsert('player_skills',$d)) return false;
+				unset($d);
+				next($cfg['vocations'][$this->attrs['vocation']]['skills']);
+			}
 		}
 	return $this->load();
 	}

@@ -38,7 +38,7 @@ public function load()
 		}
 		//load attributes from database
 		$acc = $this->myRetrieve('accounts', array('id' => $this->attrs['accno']));
-		$nicaw_acc = $this->myRetrieve('accounts', array('id' => $this->attrs['accno']));
+		$nicaw_acc = $this->myRetrieve('nicaw_accounts', array('account_id' => $this->attrs['accno']));
 		if ($acc === false) return false;
 		//arranging attributes, ones on the left will be used all over the aac
 		$this->attrs['accno'] = (int) $acc['id'];
@@ -72,18 +72,9 @@ public function save()
 		$nicaw_acc['location'] = $this->attrs['location'];
 		$nicaw_acc['comment'] = $this->attrs['comment'];
 		$nicaw_acc['recovery_key'] = $this->attrs['recovery_key'];
-		//Update? Insert?
-		if ($this->exists()){
-			$success = $this->myUpdate('accounts',$acc,array('id' => $this->attrs['accno']));
-			$exists  = $this->myUpdate('nicaw_accounts',$nicaw_acc,array('id' => $this->attrs['accno']));
-		}else
-			$success = $this->myInsert('accounts',$acc)
-			        && $this->myInsert('nicaw_accounts',$nicaw_acc);
-		//Create nicaw_accounts row if doesn't exist.
-		if ($exists === false)
-			$this->myInsert('nicaw_accounts',$nicaw_acc);
-		if ($success === false) return false;
-		return true;		
+
+		$this->myReplace('nicaw_accounts',$nicaw_acc);
+		return $this->myReplace('accounts',$acc);		
 	}
 
 public function getAttr($attr)

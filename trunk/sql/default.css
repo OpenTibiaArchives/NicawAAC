@@ -1,3 +1,11 @@
 #footer span{
 	display: none;
 }
+.percent_bar{
+	background-color: black;
+	height: 26px;
+	color: white;
+	font-weight: bold;
+	padding-top: 8px;
+	text-align: center;
+}

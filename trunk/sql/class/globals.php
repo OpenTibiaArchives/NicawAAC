@@ -86,4 +86,12 @@ function getStyle($seed)
 	else
 		return 'class="color2"';
 }
+
+function percent_bar($part, $total)
+{
+	$percent = round($part/$total*100);
+	if ($percent >= 10)
+		$percent_text = $percent.'%';
+	return '<div class="percent_bar" style="width:'.($percent*2).'px">'.$percent_text.'</div>';
+}
 ?>

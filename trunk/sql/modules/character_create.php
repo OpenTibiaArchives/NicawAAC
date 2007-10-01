@@ -31,7 +31,7 @@ if ($form->exists()){
 	//check for correct parameters
 	if ($cfg['temple'][(int)$form->attrs['residence']]['enabled'] == 1 && $cfg['vocations'][(int)$form->attrs['vocation']]['enabled'] == 1 && ereg("^[01]$",$form->attrs['sex'])){
 		//check character number
-		if ($account->getCharCount() < $cfg['maxchars']){
+		if (count($account->players) < $cfg['maxchars']){
 			//check for valid name
 			if ($newplayer->isValidName()){
 				//player name must not exist
@@ -43,7 +43,6 @@ if ($form->exists()){
 					$newplayer->setAttr('city',(int)$form->attrs['residence']);
 					//create character and add it to account
 					if ($newplayer->make()){
-						$account->addCharacter($form->attrs['name']);
 						$account->logAction('Created character: '.$form->attrs['name']);
 						//create new message
 						$msg = new IOBox('message');

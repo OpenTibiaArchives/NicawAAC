@@ -129,7 +129,31 @@ public function myInsert($table,$data)
 			return true;
 
 	}
+	
+//Replace data
+public function myReplace($table,$data)
+	{global $cfg;
+		$fields = array_keys($data);
+		$values = array_values($data);
+		$query = 'REPLACE INTO `'.$this->escape_string($table).'` (';
+		foreach ($fields as $field)
+			$query.= '`'.$this->escape_string($field).'`,';
+		$query = substr($query, 0, strlen($query)-1);
+		$query.= ') VALUES (';
+		foreach ($values as $value)
+			if ($value === null)
+				$query.= 'NULL,';
+			else
+				$query.= '\''.$this->escape_string($value).'\',';
+		$query = substr($query, 0, strlen($query)-1);
+		$query.= ');';
+		if ($this->myQuery($query) === false) 
+			return false;
+		else
+			return true;
 
+	}
+	
 //Retrieve single row
 public function myRetrieve($table,$data)
 	{
