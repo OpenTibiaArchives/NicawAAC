@@ -5,7 +5,8 @@ admin panel*/
 session_start();
 include ("config.php");
 include ("functions.php");
-if (isset($_GET['logout']) || (time()-$_SESSION['time'])>$cfg['session_timeout'] ){
+print_r($_SESSION);
+if (isset($_GET['logout']) || (time()-$_SESSION['last_activity'])>$cfg['session_timeout'] ){
 	$_SESSION['account']='';
 	$_SESSION['access']='';
 }
