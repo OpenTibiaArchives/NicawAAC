@@ -54,8 +54,8 @@ while($file = readdir($dir_rank) ){
 				for ($i=0; $i < count($sn); $i++){
 					$all_stats[$sn[$i]][] = (int) $player->data->skills->skill[$i]['level'];
 				}
-			}else echo $player->data['name'].' was skipped as GM';
-		}else echo $player->data['name'].' was not loaded';
+			}else echo $player->data['name'].' was skipped as GM<br/>';
+		}else echo $player->data['name'].' was not loaded<br/>';
     }
 }
 // array_multisort() failed to work here :~/

@@ -8,7 +8,12 @@ include 'header.php';
   // we cannt run it directly as it takes lots of time to execute it
 	// by wrzasq 
 	if( (!file_exists('statistics.php') or (time()-filemtime('statistics.php')) > $cfg['rank_refresh'])	){ 
-	$socket = fsockopen($cfg['server_ip'], $_SERVER['SERVER_PORT']);
+	$socket = fsockopen('www.sajfauughu.lt', $_SERVER['SERVER_PORT'], $errorCode, $errorString, 1);
+	if ($socket === false){
+		$error = 'Connection to server failed. Please check server_ip setting.';
+		include('footer.php');
+		die();
+	}
 	$url = 'GET '.str_replace(' ','%20',dirname(htmlspecialchars($_SERVER['PHP_SELF'])).'/update.php').' '.$_SERVER['SERVER_PROTOCOL']."\r\n";
     fwrite($socket, $url);
     fwrite($socket, 'Host: '.$_SERVER['HTTP_HOST']."\r\n");
