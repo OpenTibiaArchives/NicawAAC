@@ -26,8 +26,8 @@ $dir_rank = opendir($cfg['dirplayer']);
 while($file = readdir($dir_rank) ){
     if ( eregi('\.xml$', $file)){
         $player = new Player (basename($file, '.xml'));
-		if ($player->load())
-			if ($player->data['access'] < $cfg['gm_access'] && isset($player->data['name'])){
+		if ($player->load()){
+			if ($player->data['access'] < $cfg['gm_access']){
 				if ($player->data['banned'] == '1' && $cfg['unban_allow'] && (time() - $player->data['lastlogin']) >= $cfg['unban_after']){
 					$player->data['banned'] = '0';
 					$player->save();
@@ -54,7 +54,8 @@ while($file = readdir($dir_rank) ){
 				for ($i=0; $i < count($sn); $i++){
 					$all_stats[$sn[$i]][] = (int) $player->data->skills->skill[$i]['level'];
 				}
-		}
+			}else echo $player->data['name'].' was skipped as GM';
+		}else echo $player->data['name'].' was not loaded';
     }
 }
 // array_multisort() failed to work here :~/
