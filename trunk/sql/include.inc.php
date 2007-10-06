@@ -15,6 +15,9 @@ require ('class/account.php');
 require ('class/player.php');
 require ('class/iobox.php');
 
+//set custom exception handler
+set_exception_handler('exception_handler');
+
 /*Checking if IP not banned.
 In fact, this can be done with .htaccess,
 but noobs just love this function =] */

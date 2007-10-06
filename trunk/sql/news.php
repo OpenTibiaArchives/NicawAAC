@@ -25,7 +25,8 @@ echo '<?xml version="1.0"?><rss version="2.0" xmlns:dc="http://purl.org/dc/eleme
 
 $mysql = new SQL();
 $sql = $mysql->myQuery('SELECT * FROM `nicaw_news` ORDER BY `date` DESC LIMIT 10');
-if ($sql === false) $error = $mysql->getError();
+if ($sql === false) 
+	throw new Exception('SQL query failed. Check errors.inc for details.');
 while ($a = $mysql->fetch_array()){
   echo '<item>';
   echo '<guid>http://'.htmlspecialchars($cfg['server_url'].$_SERVER['PHP_SELF'].'?id='.$a['id']).'</guid>';

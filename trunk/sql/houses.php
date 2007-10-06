@@ -19,6 +19,8 @@
 include ("include.inc.php");
 $ptitle="Houses - $cfg[server_name]";
 include ("header.inc.php");
+if (!is_file($cfg['dirdata'].$cfg['house_file']))
+	throw new Exception('House file not found');
 ?>
 <div id="content">
 <div class="top">Houses</div>
@@ -27,14 +29,12 @@ include ("header.inc.php");
 <table>
 <tr class="color0"><td width="40%"><b>House</b></td><td width="30%"><b>Location</b></td><td width="30%"><b>Owner</b></td></tr>
 <?
-
-if (file_exists($cfg['dirdata'].$cfg['house_file'])){
-
 $HousesXML = simplexml_load_file($cfg['dirdata'].$cfg['house_file']);
 $MySQL = new SQL();
-$result = $MySQL->myQuery('SELECT `players`.`name`, `houses`.`id` FROM `players`, `houses` WHERE `houses`.`owner` = `players`.`id`;');
-$error = $MySQL->getError();
-while ($row = $MySQL->fetch_array($result)){
+$MySQL->myQuery('SELECT `players`.`name`, `houses`.`id` FROM `players`, `houses` WHERE `houses`.`owner` = `players`.`id`;');
+if ($MySQL->failed())
+	throw new Exception('SQL query failed. Check errors.inc for details.');
+while ($row = $MySQL->fetch_array()){
 	$houses[(int)$row['id']] = $row['name'];
 }
 foreach ($HousesXML->house as $house){
@@ -42,7 +42,6 @@ foreach ($HousesXML->house as $house){
 	$list.= '<tr '.getStyle($i).'><td>'.htmlspecialchars($house['name']).'</td><td>'.htmlspecialchars($cfg['temple'][(int)$house['townid']]['name']).'</td><td>'.$houses[(int)$house['houseid']].'</td></tr>'."\r\n";
 }
 echo $list;
-}else $error = "House file not found";
 
 ?>
 </table>

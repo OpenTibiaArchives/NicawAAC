@@ -9,7 +9,7 @@ if ($form->exists()){
 	$gid = (int) $_GET['gid'];
 	//get guild owner acc
 	$SQL = new SQL();
-	$query = 'SELECT players.account_id, guilds.name FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.id = '.mysql_escape_string($gid);
+	$query = 'SELECT players.account_id, guilds.name FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.id = '.$SQL->quote($gid);
 	$SQL->myQuery($query);
 	$result = $SQL->fetch_array();
 	$owner = (int) $result['account_id'];

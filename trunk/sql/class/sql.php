@@ -39,12 +39,14 @@ protected function _init(){
       else
         $this->PDO = new PDO('uri:file://'.$cfg['dirdata'].$cfg['SQL_dnsfile'], $cfg['SQL_User'], $cfg['SQL_Password']);
     } catch (PDOException $e) {
-      die ('Connection failed: ' . $e->getMessage().'<br/>Please check your SQL settings');
+      throw new Exception('Connection failed: ' . $e->getMessage().'<br/>Please check your SQL settings');
     }
 }
 
 //Perform simpple SQL query
 public function myQuery($q){
+	if (is_object($this->last_query))
+		$this->last_query->closeCursor();
 	$this->last_query = $this->PDO->query($q);
 	if ($this->last_query === false){
 	  $error = $this->PDO->errorInfo();

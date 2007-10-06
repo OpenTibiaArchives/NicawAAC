@@ -32,10 +32,8 @@ public function __construct($n)
 
 public function load()
 	{
-		if (empty($this->attrs['accno']) || $this->attrs['accno'] == 0){
-			$this->err = 'Invalid account number';
-			return false;
-		}
+		if (empty($this->attrs['accno']) || $this->attrs['accno'] == 0)
+			throw new Exception('Account::load() - Invalid account number');
 		//load attributes from database
 		$acc = $this->myRetrieve('accounts', array('id' => $this->attrs['accno']));
 		$nicaw_acc = $this->myRetrieve('nicaw_accounts', array('account_id' => $this->attrs['accno']));
@@ -55,15 +53,14 @@ public function load()
 			$this->players[] = new Player($a['name']);
 		}
 		//good, now we have all attributes stored in object
+		$this->attrs['is_loaded'] = true;
 		return true;
 	}
 
 public function save()
 	{
-		if (empty($this->attrs['accno']) || $this->attrs['accno'] == 0){
-			$this->err = 'Invalid account number';
-			return false;
-		}
+		if (empty($this->attrs['accno']) || $this->attrs['accno'] == 0)
+			throw new Exception('Account::save() - Invalid account number');
 		$acc['id'] = $this->attrs['accno'];
 		$acc['password'] = $this->attrs['password'];
 		$acc['email'] = $this->attrs['email'];
@@ -79,6 +76,8 @@ public function save()
 
 public function getAttr($attr)
 	{
+		if (!isset($this->attrs['is_loaded']) || $this->attrs['is_loaded'] === false)
+			throw new Exception('Account::getAttr() - Attribute not loaded.');
 		return $this->attrs[$attr];
 	}
 

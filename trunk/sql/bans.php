@@ -28,7 +28,8 @@ $cfg['max_ban_time'] = 2*30*24*60*60; //2 months
 <?
 $MySQL = new SQL();
 $bans = $MySQL->myQuery('SELECT name, time FROM bans, players WHERE bans.type = 2 AND players.id = bans.player ORDER BY time ASC');
-if ($bans === false) $error = $MySQL->getError();
+if ($bans === false) 
+	throw new Exception('SQL query failed. Check errors.inc for details.');
 echo '<table style="width:100%">'."\n";
 echo '<tr class="color0"><td style="width:25%"><b>Name</b></td><td style="width:50%"><b>Ban Ends</b></td><td style="width:25%"><b>Time Left</b></td></tr>'."\n";
 while ($ban = $MySQL->fetch_array()){

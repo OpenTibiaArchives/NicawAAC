@@ -27,6 +27,7 @@ if ($form->exists()){
 	$account = new Account($_SESSION['account']);
 	($account->load()) or die('You need to login first. '.$account->getError());
 	//create new player object
+	$form->attrs['name'] = ucfirst($form->attrs['name']);
 	$newplayer = new Player($form->attrs['name']);
 	//check for correct parameters
 	if ($cfg['temple'][(int)$form->attrs['residence']]['enabled'] == 1 && $cfg['vocations'][(int)$form->attrs['vocation']]['enabled'] == 1 && ereg("^[01]$",$form->attrs['sex'])){
@@ -72,7 +73,7 @@ if ($form->exists()){
 	//make a list of valid spawn places
 	while ($spawn = current($cfg['temple'])) {
 		if ((int) $spawn['enabled'] == 1){
-			$spawns[key($cfg['temple'])] = ucfirst($spawn['name']);
+			$spawns[key($cfg['temple'])] = $spawn['name'];
 		}
 	    next($cfg['temple']);
 	}
