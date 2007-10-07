@@ -104,12 +104,10 @@ public function isValidName()
 
 public function exists()
 	{
-		$sql = $this->myRetrieve('players',array('name' => $this->attrs['name']));
-		if ($sql === false){
-			return false;
-		}else{
-			return true;
-		}
+		$this->myQuery('SELECT * FROM `players` WHERE `name` = '.$this->quote($this->attrs['name']));
+		if ($this->failed()) throw new Exception('Player::exists() cannot determine whether player exists');
+		if ($this->num_rows($sql) > 0) return true;
+		return false;
 	}
 
 public function getAttr($attr)

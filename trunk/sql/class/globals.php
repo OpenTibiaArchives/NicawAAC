@@ -46,9 +46,7 @@ public function getMax()
 }*/
 ################################################################################
 function exception_handler($exception) {
-	include_once ('header.inc.php');
 	echo '<b>'.$exception->getMessage(). '<br/>'.basename($exception->getFile()).' line '.$exception->getLine().'</b>';
-	include_once ('footer.inc.php');
 }
 
 function errorLog($err){

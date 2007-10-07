@@ -104,10 +104,10 @@ public function checkPassword($p)
 
 public function exists()
 	{
-		$sql = $this->myQuery('SELECT * FROM `accounts` WHERE `id` = '.$this->escape_string($this->attrs['accno']));
-		if ($sql === false) return false;
-		if ($this->num_rows($sql) == 0) return false;
-		return true;
+		$this->myQuery('SELECT * FROM `accounts` WHERE `id` = '.$this->quote($this->attrs['accno']));
+		if ($this->failed()) throw new Exception('Account::exists() cannot determine whether account exists');
+		if ($this->num_rows($sql) > 0) return true;
+		return false;
 	}
 
 public function isValidNumber()

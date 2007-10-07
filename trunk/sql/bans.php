@@ -26,13 +26,13 @@ $cfg['max_ban_time'] = 2*30*24*60*60; //2 months
 <div class="top">Banned Players</div>
 <div class="mid">
 <?
-$MySQL = new SQL();
-$bans = $MySQL->myQuery('SELECT name, time FROM bans, players WHERE bans.type = 2 AND players.id = bans.player ORDER BY time ASC');
-if ($bans === false) 
+$SQL = new SQL();
+$SQL->myQuery('SELECT name, time FROM bans, players WHERE bans.type = 2 AND players.id = bans.player ORDER BY time ASC');
+if ($SQL->failed()) 
 	throw new Exception('SQL query failed. Check errors.inc for details.');
 echo '<table style="width:100%">'."\n";
 echo '<tr class="color0"><td style="width:25%"><b>Name</b></td><td style="width:50%"><b>Ban Ends</b></td><td style="width:25%"><b>Time Left</b></td></tr>'."\n";
-while ($ban = $MySQL->fetch_array()){
+while ($ban = $SQL->fetch_array()){
 	$time = date("jS F Y H:i:s",(int) $ban['time']);
 	$d = floor(($ban['time'] - time())/(24*3600));
 	$h = floor(($ban['time'] - time() - $d * 24*3600)/3600);
