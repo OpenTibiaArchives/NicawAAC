@@ -33,7 +33,7 @@ public function __construct($n)
 public function load()
 	{
 		if (empty($this->attrs['accno']) || $this->attrs['accno'] == 0)
-			throw new Exception('Account::load() - Invalid account number');
+			return false;
 		//load attributes from database
 		$acc = $this->myRetrieve('accounts', array('id' => $this->attrs['accno']));
 		$nicaw_acc = $this->myRetrieve('nicaw_accounts', array('account_id' => $this->attrs['accno']));
@@ -141,7 +141,44 @@ public function vote($option)
 	{
 		return $this->myInsert('nicaw_poll_votes',array('option_id' => $option, 'ip' => ip2long($_SERVER['REMOTE_ADDR']), 'account_id' => $this->attrs['accno']));
 	}
+	
+public function getMaxLevel()
+	{
+		$sql = $this->myQuery('SELECT MAX(level) FROM `players` WHERE `account_id` = '.$this->escape_string($this->attrs['accno']));
+		$row = $this->fetch_array($sql);
+		return (int) $row['MAX(level)'];
+	}
 
+public function canVote($option)
+	{
+		$query = 'SELECT *
+FROM (
+SELECT MAX(level) AS maxlevel
+FROM players
+WHERE account_id = '.$this->quote($this->attrs['accno']).'
+) AS a1, nicaw_polls, nicaw_poll_options
+WHERE nicaw_polls.id = nicaw_poll_options.poll_id
+AND nicaw_poll_options.id = '.$this->quote($option).'
+AND maxlevel > minlevel
+AND nicaw_polls.startdate < '.time().'
+AND nicaw_polls.enddate > '.time().'
+AND NOT EXISTS (
+SELECT *
+FROM (
+SELECT nicaw_polls.id
+FROM nicaw_poll_options, nicaw_polls
+WHERE nicaw_poll_options.poll_id = nicaw_polls.id
+AND nicaw_poll_options.id = '.$this->quote($option).'
+) AS a1, nicaw_poll_options, nicaw_poll_votes
+WHERE a1.id = nicaw_poll_options.poll_id
+AND nicaw_poll_options.id = nicaw_poll_votes.option_id
+AND (account_id = '.$this->quote($this->attrs['accno']).' OR ip = '.ip2long($_SERVER['REMOTE_ADDR']).')
+)';
+		$this->myQuery($query);
+		if ($this->num_rows() == 0) return false;
+		elseif ($this->num_rows() == 1) return true;
+		else throw new Exception('Unexpected SQL answer.');
+	}
 /*public function getLogs($limit)
 	{
 		$result = $this->myQuery('SELECT * FROM `nicaw_logs` WHERE `account` = '.$this->escape_string($this->attrs['accno']).' ORDER BY `date` DESC LIMIT '.$this->escape_string($limit));
@@ -150,24 +187,6 @@ public function vote($option)
 			return $logs;
 		}
 		return false;
-	}
-
-public function highestLevel()
-	{
-		$sql = $this->myQuery('SELECT MAX(level) FROM `players` WHERE `account_id` = '.$this->escape_string($this->attrs['accno']));
-		$row = $this->fetch_array($sql);
-		return $row['MAX(level)'];
-	}
-
-public function canVote($id)
-	{
-		$query = 'SELECT * FROM nicaw_votes WHERE `id` = '.$id.' AND (`accno`=\''.$this->escape_string($this->attrs['accno']).'\' OR `ip` =\''.$_SERVER['REMOTE_ADDR'].'\')';
-		$sql = $this->myQuery($query);
-		if ($this->num_rows($sql) >= 1)
-			return false;
-		$poll = $this->myRetrieve('nicaw_polls', array('id' => $id));
-		if ($poll === false) return false;
-		return $poll['minlevel'] <= $this->highestLevel() && $poll['startdate'] < time() && $poll['enddate'] > time() && !isset($_COOKIE['poll'.$id]);
 	}
 
 public function doVote($id,$option)

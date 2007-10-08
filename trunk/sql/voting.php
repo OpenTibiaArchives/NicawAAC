@@ -25,37 +25,33 @@ include ("header.inc.php");
 <div class="mid">
 <?
 //receives all polls, options and vote count =)
-$query = 'SELECT a1.poll_id, a1.option_id, a1.question, a1.option, COUNT( nicaw_poll_votes.option_id ) AS votes
+$query = 'SELECT a1.poll_id, a1.option_id, a1.question, a1.option, a1.minlevel, COUNT( nicaw_poll_votes.option_id ) AS votes
 FROM (
-SELECT nicaw_polls.id AS poll_id, nicaw_poll_options.id AS option_id, nicaw_polls.startdate, nicaw_polls.question, nicaw_poll_options.option
+SELECT nicaw_polls.minlevel, nicaw_polls.id AS poll_id, nicaw_poll_options.id AS option_id, nicaw_polls.startdate, nicaw_polls.question, nicaw_poll_options.option
 FROM nicaw_polls, nicaw_poll_options
 WHERE nicaw_poll_options.poll_id = nicaw_polls.id
 AND nicaw_polls.startdate < '.time().'
-AND nicaw_polls.enddate > '.time().'
 ORDER BY nicaw_polls.startdate DESC
 ) AS a1
 LEFT OUTER JOIN nicaw_poll_votes ON a1.option_id = nicaw_poll_votes.option_id
-GROUP BY nicaw_poll_votes.option_id';
+GROUP BY a1.option_id';
 $sql = new SQL();
 $sql->myQuery($query);
 //sort the data by poll_id
 while ($a = $sql->fetch_array()){
 	$polls[$a['poll_id']]['question'] = $a['question'];
+	$polls[$a['poll_id']]['minlevel'] = $a['minlevel'];
 	$polls[$a['poll_id']]['votes_total'] += $a['votes'];
 	$polls[$a['poll_id']]['options'][$a['option_id']]['id'] = $a['option_id'];
 	$polls[$a['poll_id']]['options'][$a['option_id']]['option'] = $a['option'];
 	$polls[$a['poll_id']]['options'][$a['option_id']]['votes'] = $a['votes'];
 }
-print_r($polls);
 foreach ($polls as $poll){
 	echo '<h2>'.$poll['question'].'</h2><table style="width: 100%">';
 	foreach ($poll['options'] as $option){
-		$percent = round(($option['votes']/$poll['votes_total'])*100);
-		if ($percent <= 0) $width = 1;
-		else $width = $percent;
-		echo '<tr><td style="width: 50%">'.$option['option'].'</td><td style="width: 50%"><div style="width: '.$width.'px; height: 20px; background-color:red;"></div></td></tr>';
+		echo '<tr><td>'.$option['option'].'</td><td >'.percent_bar($option['votes'], $poll['votes_total']).'</td><td><input type="button" value="Vote" onclick="ajax(\'form\',\'modules/vote.php\',\'option='.$option['id'].'\',true)"/></td></tr>';
 	}
-	echo '</table>';
+	echo '</table><br/>';
 }
 ?>
 </div>

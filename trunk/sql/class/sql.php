@@ -168,7 +168,7 @@ public function myRetrieve($table,$data)
 		$query.=');';
 		$sql = $this->myQuery($query);
 		if ($sql === false) return false;
-		if ($this->num_rows($sql) != 0) return null;
+		if ($this->num_rows($sql) != 1) return null;
 		return $this->fetch_array($sql);
 	}
 
