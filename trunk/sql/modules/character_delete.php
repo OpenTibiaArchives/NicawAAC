@@ -27,7 +27,7 @@ if ($form->exists()){
 	//check for correct password
 	if ($account->checkPassword($form->attrs['password'])){
 		//load player
-		$player = $account->player[$form->attrs['character']];
+		$player = new Player($form->attrs['character']);
 		if ($player->load()){
 			//check if player really belongs to account
 			if ($player->getAttr('account') === $account->getAttr('accno')){
