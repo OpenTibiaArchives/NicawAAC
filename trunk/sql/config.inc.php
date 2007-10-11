@@ -72,14 +72,14 @@ $cfg['char_repair'] = false;
 $cfg['Email_Validate'] = false;
 
 # Allow email based account recovery?
-$cfg['Email_Recovery'] = true;
+$cfg['Email_Recovery'] = false;
 
 # Enable extension=php_openssl.dll in php.ini in order to use gmail
 $cfg['SMTP_Host'] = 'ssl://smtp.gmail.com';
 $cfg['SMTP_Port'] = 465;
 $cfg['SMTP_Auth'] = true;
 $cfg['SMTP_User'] = 'user@gmail.com';
-$cfg['SMTP_Password'] = 'pass';
+$cfg['SMTP_Password'] = 'user';
 $cfg['SMTP_From'] = 'user@gmail.com';
 
 # Whether to show skills in character search

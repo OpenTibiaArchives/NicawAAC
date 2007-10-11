@@ -53,7 +53,6 @@ public function load()
 			$this->players[] = new Player($a['name']);
 		}
 		//good, now we have all attributes stored in object
-		$this->attrs['is_loaded'] = true;
 		return true;
 	}
 
@@ -76,7 +75,7 @@ public function save()
 
 public function getAttr($attr)
 	{
-		if (!isset($this->attrs['is_loaded']) || $this->attrs['is_loaded'] === false)
+		if (!isset($this->attrs[$attr]))
 			throw new Exception('Account::getAttr() - Attribute not loaded.');
 		return $this->attrs[$attr];
 	}
@@ -128,7 +127,7 @@ public function removeRecoveryKey()
 public function addRecoveryKey()
 	{
 		$this->attrs['recovery_key'] = substr(str_shuffle(md5(mt_rand()).md5(time())), 0, 32);
-		$this->logActions('Recovery key added');
+		$this->logAction('Recovery key added');
 		return $this->attrs['recovery_key'];
 	}
 
