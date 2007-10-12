@@ -41,8 +41,7 @@ else
 	$cfg['server_url'] = $_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'];
 $cfg['server_href'] = 'http://'.$cfg['server_url'].dirname(htmlspecialchars($_SERVER['PHP_SELF'])).'/';
 
-/*disable magic_quotes_gpc. ty wrzasq
-Oh I hope I did escape user input :D */
+//disable magic_quotes_gpc.
 if( get_magic_quotes_gpc() )
 {
   $_POST = array_map('stripslashes', $_POST);
@@ -53,18 +52,18 @@ if( get_magic_quotes_gpc() )
 
 //Anti session hijacking
 if ($cfg['secure_session'] && !empty($_SESSION['account']) && ($_SERVER['REMOTE_ADDR'] != $_SESSION['remote_ip'] || time() - $_SESSION['last_activity'] > 30*60))
-	session_unset();
+	unset($_SESSION['account']);
 
 //Check for correct PHP version
-if (!version_compare(phpversion(), "5.1.4", ">=") )
-	$error = "You need at least PHP 5.1.4 to run this AAC";
+if (!version_compare(phpversion(), "5.1.0", ">=") )
+	throw new Exception('You need PHP 5.1.x to run this AAC');
 
 //Check if extensions loaded
 if (!extension_loaded('simplexml'))
-	$error = "SimpleXML is not enabled in php.ini";
+	throw new Exception('SimpleXML extension is not installed in php.ini');
 if (!extension_loaded('pdo'))
-	$error = "PDO is not enabled in php.ini";
+	throw new Exception('<i>PDO</i> (PHP Data Objects) is not installed in php.ini');
 
 //Set AAC version
-$cfg['aac_version'] = 'sql_3.4';
+$cfg['aac_version'] = 'sql_3.5';
 ?>

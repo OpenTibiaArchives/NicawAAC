@@ -8,24 +8,21 @@
 
 # Set data directory of your OT server
 # Please use / to separate folders and put / in the end
-$cfg['dirdata'] = 'C:/OTServ/storm/data/';
+$cfg['dirdata'] = 'C:/OTServ/data/';
 
 $cfg['house_file'] = 'world/Evolutions-house.xml';
 
-# You can choose between 'mysql', 'sqlite'. Others will trigger custom driver.
+# You can choose between 'mysql', 'sqlite'
 $cfg['DB_Type'] = 'mysql';
 
 # MySQL server settings
-$cfg['SQL_Server'] = 'localhost';
+$cfg['SQL_Server'] = 'loclhost';
 $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'pass';
 $cfg['SQL_Database'] = 'otserv';
 
 # If using SQLite. Database file should be in data directory.
-$cfg['SQL_filename'] = 'test.sq2';
-
-# Custom database driver connection file in data dir
-$cfg['SQL_dnsfile'] = 'dbconnect.txt';
+$cfg['SQL_filename'] = 'forgottenserver.s3db';
 
 # MD5 is hashing algorithm that makes passwords safer. 
 # It must correspond to your OTServ configuration!

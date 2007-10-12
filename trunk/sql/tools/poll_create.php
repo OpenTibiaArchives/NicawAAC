@@ -42,7 +42,7 @@ if ($form->exists()){
 		$i++;
 		$pollMsg.= $i.'. '.$option."<br/>\n";
 	}
-	$link = $cfg['server_href'].'voting.php?id='.$poll_id;
+	$link = '/voting.php?id='.$poll_id;
 	$pollMsg.= "<br/>\n".'Voting ends on: '.date("jS F Y", strToDate($form->attrs['enddate'])).
 	           "<br/>\n".'Characters of level '.(int)$form->attrs['level'].' or above may vote by clinking this link:'."<br/>\n".'<a href="'.$link.'">'.$link.'</a>';
 	$sql->myInsert('nicaw_news',array('id' => null, 'title' => 'New Poll', 'creator' => 'PollMan', 'date' => strToDate($form->attrs['startdate']), 'text' => $pollMsg, 'html' => true));

@@ -17,36 +17,8 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-/*class Polls extends SQL
-{
-private $list;
-
-public function __construct()
-	{
-		$handle = $this->myQuery('SELECT * FROM `nicaw_polls`');
-		if ($handle === false) return false;
-		while ($a = mysql_fetch_array($handle)){
-			$this->list[] = $a;
-		}
-	}
-
-public function getPoll($n)
-	{	
-		if (isset($this->list[$n])){
-			$this->list[$n]['options'] = explode(';',$this->list[$n]['options']);
-			$this->list[$n]['results'] = explode(';',$this->list[$n]['results']);
-			return $this->list[$n];
-		}else
-			return false;
-	}
-public function getMax()
-	{
-		return count($this->list)-1;
-	}
-}*/
-################################################################################
 function exception_handler($exception) {
-	echo '<b>'.$exception->getMessage(). '<br/>'.basename($exception->getFile()).' line '.$exception->getLine().'</b>';
+	echo '<pre style="position: absolute; background-color: white; color: black; border: 3px solid red;"><b>'.$exception->getMessage(). '<br/>'.basename($exception->getFile()).' line '.$exception->getLine().'</b><br/>Script was terminated because something unexpected happened. You can report this, if you think it\'s a bug.';
 }
 
 function errorLog($err){
