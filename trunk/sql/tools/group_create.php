@@ -36,7 +36,7 @@ if ($form->exists()){
 		$msg->addClose('Finish');
 		$msg->show();
 	}else{
-		if ($SQL->myUpdate('groups',$d,array('id' => $form->attrs['id']))){
+		if ($SQL->myUpdate('groups',$d,array('id' => (int)$form->attrs['id']))){
 			$msg = new IOBox('message');
 			$msg->addMsg('Group ID: '.$form->attrs['id'].' was <b>updated</b>');
 			$msg->addClose('OK');

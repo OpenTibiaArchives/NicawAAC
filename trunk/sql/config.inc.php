@@ -8,7 +8,7 @@
 
 # Set data directory of your OT server
 # Please use / to separate folders and put / in the end
-$cfg['dirdata'] = 'C:/OTServ/data/';
+$cfg['dirdata'] = 'C:/OTServ/ftp/incomming/new_server/data/';
 
 $cfg['house_file'] = 'world/Evolutions-house.xml';
 
@@ -16,7 +16,7 @@ $cfg['house_file'] = 'world/Evolutions-house.xml';
 $cfg['DB_Type'] = 'mysql';
 
 # MySQL server settings
-$cfg['SQL_Server'] = 'loclhost';
+$cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'pass';
 $cfg['SQL_Database'] = 'otserv';

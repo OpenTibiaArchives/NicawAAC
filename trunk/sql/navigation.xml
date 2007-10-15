@@ -11,6 +11,7 @@
 <item href="bans.php">Bans</item>
 <item href="admin.php">Admin Panel</item>
 <!--<item href="info.php">Server Info</item>-->
+<!--<item href="voting.php">Voting</item>-->
 </category>
 
 </navigation>

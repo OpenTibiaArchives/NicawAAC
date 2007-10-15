@@ -26,7 +26,7 @@ $form = new Form('addrss');
 if ($form->exists()){
 		//insert news
 		$sql = new SQL();
-    $sql->myInsert('nicaw_news',array('id' => null, 'title' => $form->attrs['title'], 'creator' => $form->attrs['creator'], 'date' => time(), 'text' => $form->attrs['text'], 'html' => (bool)(int)$form->attrs['html']));
+    $sql->myInsert('nicaw_news',array('id' => null, 'title' => $form->attrs['title'], 'creator' => $form->attrs['creator'], 'date' => time(), 'text' => $form->attrs['text'], 'html' => $form->getBool('html')));
     echo $sql->getError();
 }else{
 	//create new form

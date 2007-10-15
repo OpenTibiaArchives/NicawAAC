@@ -106,6 +106,9 @@ public function __construct($name){
 			}
 		}
 }
+public function getBool($attr){
+	return $this->attrs[$attr] === 'on';
+}
 public function exists(){
 	if (isset($this->attrs)) return true;
 	else return false;

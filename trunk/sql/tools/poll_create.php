@@ -26,27 +26,26 @@ $form = new Form('poll');
 if ($form->exists()){
 	//make an array of options
     $options = explode("\n",trim($form->attrs['options']));
-    if ($form->attrs['hidden'] == 'on') $hidden = true;
-		else $hidden = false;
 	$sql = new SQL();
 	//store poll question
-    $sql->myInsert('nicaw_polls',array('id' => null, 'minlevel' => (int)$form->attrs['level'], 'question' => $form->attrs['question'], 'startdate' => strToDate($form->attrs['startdate']), 'enddate' => strToDate($form->attrs['enddate']), 'hidden' => $hidden));
+    $sql->myInsert('nicaw_polls',array('id' => null, 'minlevel' => (int)$form->attrs['level'], 'question' => $form->attrs['question'], 'startdate' => strToDate($form->attrs['startdate']), 'enddate' => strToDate($form->attrs['enddate']), 'hidden' => $form->getBool('hidden')));
     $poll_id = $sql->PDO->lastInsertId();
 	//store all poll options
 	foreach($options as $option)
 		$sql->myInsert('nicaw_poll_options',array('id' => null, 'poll_id' => $poll_id, 'option' => $option));
 	//create news message
-	$pollMsg = '<b>'.$form->attrs['question']."</b><br/>\n";
-	$i = 0;
-	foreach ($options as $option){
-		$i++;
-		$pollMsg.= $i.'. '.$option."<br/>\n";
+	if ($form->getBool('announce')){
+		$pollMsg = '<b>'.$form->attrs['question']."</b><br/>\n";
+		$i = 0;
+		foreach ($options as $option){
+			$i++;
+			$pollMsg.= $i.'. '.$option."<br/>\n";
+		}
+		$link = 'voting.php?id='.$poll_id;
+		$pollMsg.= "<br/>\n".'Voting ends on: '.date("jS F Y", strToDate($form->attrs['enddate'])).
+		           "<br/>\n".'Characters of level '.(int)$form->attrs['level'].' or above may vote by clinking this link:'."<br/>\n".'<a href="'.$link.'">'.$link.'</a>';
+		$sql->myInsert('nicaw_news',array('id' => null, 'title' => 'New Poll', 'creator' => 'PollMan', 'date' => strToDate($form->attrs['startdate']), 'text' => $pollMsg, 'html' => true));
 	}
-	$link = '/voting.php?id='.$poll_id;
-	$pollMsg.= "<br/>\n".'Voting ends on: '.date("jS F Y", strToDate($form->attrs['enddate'])).
-	           "<br/>\n".'Characters of level '.(int)$form->attrs['level'].' or above may vote by clinking this link:'."<br/>\n".'<a href="'.$link.'">'.$link.'</a>';
-	$sql->myInsert('nicaw_news',array('id' => null, 'title' => 'New Poll', 'creator' => 'PollMan', 'date' => strToDate($form->attrs['startdate']), 'text' => $pollMsg, 'html' => true));
-	echo $sql->getError();
 }else{
 	//create new form
 	$form = new IOBox('poll');
@@ -59,6 +58,7 @@ if ($form->exists()){
 	$form->addCode('One choise per line:');
 	$form->addTextBox('options');
 	$form->addCheckBox('hidden',false);
+	$form->addCheckBox('announce',true);
 	$form->addClose('Cancel');
 	$form->addSubmit('Save');
 	$form->show();

@@ -65,6 +65,7 @@ function getStyle($seed)
 
 function percent_bar($part, $total)
 {
+	if ($total <= 0) return 'unknown';
 	$percent = round($part/$total*100);
 	if ($percent >= 10)
 		$percent_text = $percent.'%';
