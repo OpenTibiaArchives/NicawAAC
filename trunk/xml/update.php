@@ -56,6 +56,7 @@ while($file = readdir($dir_rank) ){
 				}
 			}else echo $player->data['name'].' was skipped as GM<br/>';
 		}else echo $player->data['name'].' was not loaded<br/>';
+	unset($player);
     }
 }
 // array_multisort() failed to work here :~/
