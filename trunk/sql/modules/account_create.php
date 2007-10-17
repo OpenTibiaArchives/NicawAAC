@@ -39,45 +39,44 @@ if ($form->exists()){
 			$account->setPassword($password);
 			$account->setAttr('email',$form->attrs['email']);
 			//create the account
-			if ($account->save()){
+			$account->save();
 
-				if ($cfg['Email_Validate']){
-				$body = "Here is your login information for <a href=\"http://$cfg[server_url]/\">$cfg[server_name]</a><br/>
+			if ($cfg['Email_Validate']){
+			$body = "Here is your login information for <a href=\"http://$cfg[server_url]/\">$cfg[server_name]</a><br/>
 <b>Account number:</b> $accno<br/>
 <b>Password:</b> $password<br/>
 <br/>
 Powered by <a href=\"http://nicaw.net/\">Nicaw AAC</a>";
-				//send the email
-				require("../phpmailer/class.phpmailer.php");
+			//send the email
+			require("../phpmailer/class.phpmailer.php");
 
-				$mail = new PHPMailer();
-				$mail->IsSMTP();
-				$mail->IsHTML(true);				
-				$mail->Host = $cfg['SMTP_Host'];
-				$mail->Port = $cfg['SMTP_Port'];
-				$mail->SMTPAuth = $cfg['SMTP_Auth'];
-				$mail->Username = $cfg['SMTP_User'];
-				$mail->Password = $cfg['SMTP_Password'];
+			$mail = new PHPMailer();
+			$mail->IsSMTP();
+			$mail->IsHTML(true);				
+			$mail->Host = $cfg['SMTP_Host'];
+			$mail->Port = $cfg['SMTP_Port'];
+			$mail->SMTPAuth = $cfg['SMTP_Auth'];
+			$mail->Username = $cfg['SMTP_User'];
+			$mail->Password = $cfg['SMTP_Password'];
 
-				$mail->From = $cfg['SMTP_From'];
-				$mail->AddAddress($form->attrs['email']);
+			$mail->From = $cfg['SMTP_From'];
+			$mail->AddAddress($form->attrs['email']);
 
-				$mail->Subject = $cfg['server_name'].' - Login Details';
-				$mail->Body    = $body;
+			$mail->Subject = $cfg['server_name'].' - Login Details';
+			$mail->Body    = $body;
 
-				if ($mail->Send())
-						$success = 'Your login details were emailed to '.$form->attrs['email'];
-					else
-						$error = "Mailer Error: " . $mail->ErrorInfo;
-						
-				}else{
-					$success ='Please write down your login information:<br/>
+			if ($mail->Send())
+					$success = 'Your login details were emailed to '.$form->attrs['email'];
+				else
+					$error = "Mailer Error: " . $mail->ErrorInfo;
+					
+			}else{
+				$success ='Please write down your login information:<br/>
 Account number: <b>'.$accno.'</b><br/>
 Password: <b>'.$password.'</b><br/>
 You can now login into your account and start creating characters.<br/>';
 					$account->logAction('Created');
-				}
-			}else{ $error = $account->getError();}
+			}
 		}else{ $error = "Bad email address";}
 	}else{ $error = "Image verification failed";}
 	if (!empty($error)){

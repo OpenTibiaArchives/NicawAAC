@@ -30,7 +30,7 @@ if (!isset($_GET['id'])){
 $query = 'SELECT guilds.id, guilds.name, COUNT(guilds.id) FROM guilds, guild_ranks, players WHERE guilds.id = guild_ranks.guild_id AND guild_ranks.id = players.rank_id AND players.level >= '.$cfg['guild_level'].' GROUP BY guilds.id ORDER BY COUNT(guilds.id) DESC';
 $SQL->myQuery($query);
 if ($SQL->failed())
-	throw new Exception('SQL query failed. Check errors.inc for details.');
+	throw new Exception('SQL query failed:<br/>'.$SQL->getError());
 while ($a = $SQL->fetch_array()){
 ?>
 <table border="1" onclick="window.location.href='guilds.php?id=<?=$a['id']?>'" style="cursor: pointer; width: 100%;">

@@ -83,12 +83,12 @@ if (isset($query)){
 <table>
 <tr class="color0"><td style="width:30px">#</td><td style="width:150px"><b>Name</b></td><td style="width:60px"><b><?=htmlspecialchars(ucfirst($_GET['sort']))?></b></td></tr>
 <?
-	$sql = $SQL->myQuery($query);
-	if ($sql === false){
-		$error = $SQL->getError();
-	}else{
+	$SQL->myQuery($query);
+	if ($SQL->failed())
+		throw new Exception('SQL query failed:<br/>'.$mysql->getError());
+	else{
 		$i = $cfg['ranks_per_page']*$p;
-		while($a=$SQL->fetch_array($sql))
+		while($a = $SQL->fetch_array())
 		if ($a['access'] < $cfg['ranks_access'])
 			{
 				$i++;

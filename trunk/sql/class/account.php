@@ -37,7 +37,11 @@ public function load()
 		//load attributes from database
 		$acc = $this->myRetrieve('accounts', array('id' => $this->attrs['accno']));
 		$nicaw_acc = $this->myRetrieve('nicaw_accounts', array('account_id' => $this->attrs['accno']));
-		if ($acc === false) return false;
+		if ($acc === false){
+			if ($this->exists())
+				throw new Exception('Cannot load existing account:<br/>'.$this->getError());
+			return false;
+		}
 		//arranging attributes, ones on the left will be used all over the aac
 		$this->attrs['accno'] = (int) $acc['id'];
 		$this->attrs['password'] = (string) $acc['password'];
@@ -48,7 +52,7 @@ public function load()
 		$this->attrs['recovery_key'] = $nicaw_acc['recovery_key'];
 		//get characters of this account
 		$this->myQuery('SELECT players.name FROM players WHERE (`account_id`='.$this->quote($this->attrs['accno']).')');
-		if ($this->failed()) return false;
+		if ($this->failed()) throw new Exception($this->getError());
 		while ($a = $this->fetch_array()){
 			$this->players[] = new Player($a['name']);
 		}
@@ -69,14 +73,15 @@ public function save()
 		$nicaw_acc['comment'] = $this->attrs['comment'];
 		$nicaw_acc['recovery_key'] = $this->attrs['recovery_key'];
 
-		$this->myReplace('nicaw_accounts',$nicaw_acc);
-		return $this->myReplace('accounts',$acc);		
+		if (!$this->myReplace('nicaw_accounts',$nicaw_acc))
+			throw new Exception('It appears you didn\'t import database.sql for AAC');
+		if (!$this->myReplace('accounts',$acc))
+			throw new Exception('Cannot save account:<br/>'.$this->getError());
+		return true;
 	}
 
 public function getAttr($attr)
 	{
-		if (!isset($this->attrs[$attr]))
-			throw new Exception('Account::getAttr() - Attribute not loaded.');
 		return $this->attrs[$attr];
 	}
 
@@ -116,7 +121,8 @@ public function isValidNumber()
 
 public function logAction($action)
 	{
-		return $this->myInsert('nicaw_account_logs',array('id' => NULL, 'ip' => ip2long($_SERVER['REMOTE_ADDR']), 'account_id' => $this->attrs['accno'], 'date' => time(), 'action' => $action));
+		if (!$this->myInsert('nicaw_account_logs',array('id' => NULL, 'ip' => ip2long($_SERVER['REMOTE_ADDR']), 'account_id' => $this->attrs['accno'], 'date' => time(), 'action' => $action)))
+			throw new Exception('It appears you didn\'t import database.sql for AAC:<br/>'.$this->getError());
 	}
 	
 public function removeRecoveryKey()
@@ -138,12 +144,15 @@ public function checkRecoveryKey($key)
 
 public function vote($option)
 	{
-		return $this->myInsert('nicaw_poll_votes',array('option_id' => $option, 'ip' => ip2long($_SERVER['REMOTE_ADDR']), 'account_id' => $this->attrs['accno']));
+		if(!$this->myInsert('nicaw_poll_votes',array('option_id' => $option, 'ip' => ip2long($_SERVER['REMOTE_ADDR']), 'account_id' => $this->attrs['accno'])))
+			throw new Exception('It appears you didn\'t import database.sql for AAC:<br/>'.$this->getError());
 	}
 	
 public function getMaxLevel()
 	{
-		$sql = $this->myQuery('SELECT MAX(level) FROM `players` WHERE `account_id` = '.$this->escape_string($this->attrs['accno']));
+		$this->myQuery('SELECT MAX(level) FROM `players` WHERE `account_id` = '.$this->escape_string($this->attrs['accno']));
+		if ($this->failed())
+			throw new Exception($this->getError);
 		$row = $this->fetch_array($sql);
 		return (int) $row['MAX(level)'];
 	}
@@ -174,6 +183,8 @@ AND nicaw_poll_options.id = nicaw_poll_votes.option_id
 AND (account_id = '.$this->quote($this->attrs['accno']).' OR ip = '.ip2long($_SERVER['REMOTE_ADDR']).')
 )';
 		$this->myQuery($query);
+		if ($this->failed())
+			throw new Exception($this->getError);
 		if ($this->num_rows() == 0) return false;
 		elseif ($this->num_rows() == 1) return true;
 		else throw new Exception('Unexpected SQL answer.');

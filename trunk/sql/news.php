@@ -26,7 +26,7 @@ echo '<?xml version="1.0"?><rss version="2.0" xmlns:dc="http://purl.org/dc/eleme
 $mysql = new SQL();
 $sql = $mysql->myQuery('SELECT * FROM `nicaw_news` ORDER BY `date` DESC LIMIT 10');
 if ($sql === false) 
-	throw new Exception('SQL query failed. Check errors.inc for details.');
+	throw new Exception('SQL query failed:<br/>'.$SQL->getError());
 while ($a = $mysql->fetch_array()){
   echo '<item>';
   echo '<guid>http://'.htmlspecialchars($cfg['server_url'].$_SERVER['PHP_SELF'].'?id='.$a['id']).'</guid>';
@@ -52,10 +52,11 @@ include ("header.inc.php");
 <?
 $mysql = new SQL();
 if (isset($_GET['id']))
-	$sql = $mysql->myQuery('SELECT * FROM `nicaw_news` WHERE `id` = \''.mysql_escape_string((int)$_GET['id']).'\'');
+	$mysql->myQuery('SELECT * FROM `nicaw_news` WHERE `id` = \''.mysql_escape_string((int)$_GET['id']).'\'');
 else
-	$sql = $mysql->myQuery('SELECT * FROM `nicaw_news` ORDER BY `date` DESC LIMIT 10');
-if ($sql === false) $error = $mysql->getError();
+	$mysql->myQuery('SELECT * FROM `nicaw_news` ORDER BY `date` DESC LIMIT 10');
+if ($mysql->failed())
+	throw new Exception('SQL query failed:<br/>'.$mysql->getError());
 while ($a = $mysql->fetch_array()){
   echo '<i>'.date("jS F Y",$a['date']).'</i>';
   echo ' - <b>'.htmlspecialchars($a['creator']).'</b>';

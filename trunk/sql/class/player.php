@@ -77,7 +77,7 @@ public function load()
 
 public function save()
 	{
-    $d['group_id'] = $this->attrs['group'];
+		$d['group_id'] = $this->attrs['group'];
 		$d['name'] = $this->attrs['name'];
 		$d['account_id'] = $this->attrs['account'];
 		$d['level'] = $this->attrs['level'];
@@ -117,7 +117,7 @@ public function getAttr($attr)
 
 public function isAttr($attr)
 	{
-		return !empty($this->attrs[$attr]);
+		return isset($this->attrs[$attr]);
 	}
 
 public function setAttr($attr,$value)
@@ -128,8 +128,8 @@ public function setAttr($attr,$value)
 public function getDeaths()
 	{
 		$query = "SELECT * FROM `deathlist` WHERE (`player` = '".$this->escape_string($this->attrs['id'])."') ORDER BY date DESC LIMIT 10";
-		$sql = $this->myQuery($query);
-		if ($sql === false) return false;
+		$this->myQuery($query);
+		if ($this->failed()) return false;
 		$i = 0;
 		while($a = $this->fetch_array($sql)){
 			$list[$i]['killer'] = $a['killer'];
@@ -140,18 +140,6 @@ public function getDeaths()
 		return $list;
 	}
 
-/*public function getInvites()
-	{
-		$sql = $this->myQuery('SELECT guilds.name, guilds.id FROM guilds, nicaw_invites WHERE nicaw_invites.gid = guilds.id AND nicaw_invites.pid = '.$this->attrs['id']);
-		if ($sql === false) return false;
-		if ($this->num_rows($sql) == 0) return false;
-		while($a = $this->fetch_array($sql)){
-			$return[$a['id']]['name'] = $a['name'];
-			$return[$a['id']]['id'] = $a['id'];
-		}
-		return $return;
-	}
-*/	
 public function getSkill($n)
 	{
 		return $this->skills[$n]['skill'];
@@ -170,10 +158,8 @@ public function delete()
 public function make()
 	{global $cfg;
 
-		if ($this->exists()){
-			$this->err = 'Player already exists';
-			return false;
-		}
+		if ($this->exists())
+			throw new Exception('Player already exists');
 
 		//make player
 		$d['id']			= NULL;
@@ -195,7 +181,7 @@ public function make()
 		$d['posy']			= $cfg['temple'][$this->attrs['city']]['y'];
 		$d['posz']			= $cfg['temple'][$this->attrs['city']]['z'];
 		
-		if (!$this->myInsert('players',$d)) return false;
+		if (!$this->myInsert('players',$d)) throw new Exception('Player::make() Cannot insert attributes:<br/>'.$this->getError());
 		$this->attrs['id'] = $this->PDO->lastInsertId();
 
 		unset($d);
@@ -209,7 +195,7 @@ public function make()
 				$d['sid']		= $sid;
 				$d['itemtype']	= $item;
 				
-				if (!$this->myInsert('player_items',$d)) return false;
+				if (!$this->myInsert('player_items',$d)) throw new Exception('Player::make() Cannot insert items:<br/>'.$this->getError());
 				unset($d);
 				next($cfg['vocations'][$this->attrs['vocation']]['equipment']);
 		}
@@ -225,7 +211,7 @@ public function make()
 				$d['value']		= $skill;
 				$d['count']		= '0';
 
-				if (!$this->myInsert('player_skills',$d)) return false;
+				if (!$this->myInsert('player_skills',$d)) throw new Exception('Player::make() Cannot insert skills:<br/>'.$this->getError());;
 				unset($d);
 				next($cfg['vocations'][$this->attrs['vocation']]['skills']);
 			}
@@ -241,7 +227,7 @@ public function repair()
 			'posx' => $cfg['temple'][$this->attrs['city']]['x'],
 			'posy' => $cfg['temple'][$this->attrs['city']]['y'],
 			'posz' => $cfg['temple'][$this->attrs['city']]['z']
-			/*, 'experience' => $exp*/), array('id' => $this->attrs['id']))) return false;
+			/*, 'experience' => $exp*/), array('id' => $this->attrs['id']))) throw new Exception($this->getError());
 		return $this->load();
 	}
 }

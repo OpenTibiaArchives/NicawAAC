@@ -31,7 +31,7 @@ if (isset($_POST['login_submit'])){
 				die('Redirecting to <a href="'.$_GET['redirect'].'>'.$_GET['redirect'].'</a>');
 			}
 		}else{$error = 'Account and password don\'t match.';}
-	}else{$error = 'Account and password don\'t match. '.$account->getError();}
+	}else{$error = 'Account and password don\'t match. ';}
 }
 
 ########################## LOGOUT ###########################

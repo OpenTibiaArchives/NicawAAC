@@ -17,8 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 class SQL{
-private $last_query;
-protected $err;
+private $last_query, $last_error;
 public $PDO;
 
 public function __construct(){
@@ -39,7 +38,7 @@ protected function _init(){
       else
         $this->PDO = new PDO('uri:file://'.$cfg['dirdata'].$cfg['SQL_dnsfile'], $cfg['SQL_User'], $cfg['SQL_Password']);
     } catch (PDOException $e) {
-      throw new Exception('Connection failed: ' . $e->getMessage().'<br/>Please check your SQL settings');
+      throw new Exception('Connection failed: ' . $e->getMessage().'<br/>Please check your SQL settings!');
     }
 }
 
@@ -50,8 +49,7 @@ public function myQuery($q){
 	$this->last_query = $this->PDO->query($q);
 	if ($this->last_query === false){
 	  $error = $this->PDO->errorInfo();
-	  errorLog("\n".$q."\n".print_r($error,true));
-	  $this->err = $error[2];
+	  $this->last_error = $q."<br/>\n".$error[2];
 	}
 	return $this->last_query;
 }
@@ -101,7 +99,7 @@ public function quote($string)
 //Return last error
 public function getError()
 	{
-		return $this->err;
+		return $this->last_error;
 	}
 
 ######################################
@@ -168,7 +166,8 @@ public function myRetrieve($table,$data)
 		$query.=');';
 		$sql = $this->myQuery($query);
 		if ($sql === false) return false;
-		if ($this->num_rows($sql) != 1) return null;
+		if ($this->num_rows($sql) <= 0) return null;
+		if ($this->num_rows($sql) > 1) throw new Exception('Unexpected SQL answer. More than one row exists.');
 		return $this->fetch_array($sql);
 	}
 
