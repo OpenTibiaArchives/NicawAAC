@@ -161,7 +161,7 @@ function _equip($vocation)
 
 function Player($n)
 	{global $cfg;
-		$this->filename = $cfg['dirplayer'].lowercase($n).'.xml';
+		$this->filename = $cfg['dirplayer'].strtolower($n).'.xml';
 		$this->name = $n;
 	}
 
@@ -178,7 +178,7 @@ function save()
 
 function exist()
 	{
-		return file_exists(lowercase($this->filename));
+		return file_exists(strtolower($this->filename));
 	}
 
 function teleportToTemple()
