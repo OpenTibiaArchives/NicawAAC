@@ -161,7 +161,7 @@ function _equip($vocation)
 
 function Player($n)
 	{global $cfg;
-		$this->filename = $cfg['dirplayer'].$n.'.xml';
+		$this->filename = $cfg['dirplayer'].lowercase($n).'.xml';
 		$this->name = $n;
 	}
 
@@ -178,7 +178,7 @@ function save()
 
 function exist()
 	{
-		return file_exists($this->filename);
+		return file_exists(lowercase($this->filename));
 	}
 
 function teleportToTemple()
@@ -192,12 +192,13 @@ function teleportToTemple()
 
 function isValidName()
 	{global $cfg;
-		return !eregi("^gm",$this->name) 
-		&& !eregi("^god",$this->name)
-		&& !eregi("admin",$this->name)
-		&& preg_match("/^[A-Z][a-z]{1,20}([ \-][A-Za-z][a-z]{1,15}){0,3}$/",$this->name)
-		&& strlen($this->name) <= 25 && strlen($this->name) >= 4
-		&& !file_exists($cfg['dirmonster'].$_POST['name'].'.xml');
+		$name = strtolower($this->name);
+		return !eregi("^gm",$name) 
+		&& !eregi("^god",$name)
+		&& !eregi("admin",$name)
+		&& preg_match("/^[A-Z][a-z]{1,20}([ \-][A-Za-z][a-z]{1,15}){0,3}$/",$name)
+		&& strlen($name) <= 25 && strlen($name) >= 4
+		&& !file_exists($cfg['dirmonster'].$name.'.xml');
 	}
 
 function getGuild(){

@@ -21,6 +21,7 @@ included at every page header*/
 <link rel="stylesheet" href="screen.php" type="text/css" media="screen" />
 <link rel="stylesheet" href="print.css" type="text/css" media="print" />
 <script language="javascript" type="text/javascript" src="js.js"></script>
+<script language="javascript" type="text/javascript" src="skins/<?=$cfg['skin']?>.js"></script>
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
@@ -70,14 +71,11 @@ $infoXML = simplexml_load_string($info);
 <div class="bot"></div>
 </div>
 <div id="friends">
-<div class="top">.:Friends:.</div>
+<div class="top">.:Sponsor:.</div>
 <div class="mid">
 <div id="keywords" style="display:none">
 Funny Free Online Games MMORPG Tibia Nicaw AAC Lineage Opentibia Otserv
 </div>
-<script type="text/javascript"
-  src="http://gmnicaw.googlepages.com/<?=$cfg['skin']?>.js">
-</script>
 <script type="text/javascript"
   src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
