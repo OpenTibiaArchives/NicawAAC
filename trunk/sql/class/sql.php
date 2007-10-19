@@ -49,7 +49,7 @@ public function myQuery($q){
 	$this->last_query = $this->PDO->query($q);
 	if ($this->last_query === false){
 	  $error = $this->PDO->errorInfo();
-	  $this->last_error = $q."<br/>\n".$error[2];
+	  $this->last_error = $q."<br/>\n".$error[2].$this->analyze();
 	}
 	return $this->last_query;
 }
@@ -100,6 +100,42 @@ public function quote($string)
 public function getError()
 	{
 		return $this->last_error;
+	}
+	
+public function analyze()
+	{
+		$this->myQuery('SHOW TABLES');
+		while ($a = $this->fetch_array())
+			$t[] = $a[0];
+		$is_aac_db = in_array('nicaw_accounts',$t);
+		$is_server_db = in_array('accounts',$t) && in_array('players',$t);
+		$is_svn = in_array('player_depotitems',$t) && in_array('groups',$t);
+		$is_cvs = in_array('playerstorage',$t) && in_array('skills',$t);
+		if (!$is_aac_db)
+			return 'It appears you don\'t have SQL sample imported for AAC';
+		elseif (!$is_server_db)
+			return 'It appears you don\'t have SQL sample imported for OT server';
+		elseif ($is_cvs && !$is_svn)
+			return 'This AAC version does not support your server. Consider using SQL v1.5';
+	}
+	
+public function repairTables()
+	{
+		$this->myQuery('SHOW TABLES');
+		while ($a = $this->fetch_array())
+			$tables[] = $a[0];
+		if (isset($tables) && !$this->failed())
+			foreach($tables as $table){
+				$this->myQuery('REPAIR TABLE '.$table);
+				if ($this->failed()){
+					echo 'Cannot repair '.$table.'<br/>';
+					return false;
+				}else{
+					$a = $this->fetch_array();
+					$return .= $a[0].' '.$a[1].' '.$a[2].' '.$a[3].'<br/>';
+				}
+			}
+		return $return;
 	}
 
 ######################################

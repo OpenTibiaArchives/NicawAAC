@@ -49,13 +49,10 @@ if ($form->exists()){
 		}
 	}
 }else{
-$SQL->myQuery('SELECT id, name FROM groups');
-while ($a = $SQL->fetch_array())
-	$group_list.= $a['id'].':'.$a['name'].'&nbsp;';
 $msg = new IOBox('groups');
 $msg->target = $_SERVER['PHP_SELF'];
 $msg->addLabel('Create Group');
-$msg->addCode('<table id="flagtable" border="1px" cellspacing="0" width="600px">
+$msg->addMsg('<table id="flagtable" border="1px" cellspacing="0" width="600px">
   <tr>
     <td colspan="2"><b>Privileges</b></td>
 
@@ -77,14 +74,15 @@ $msg->addCode('<table id="flagtable" border="1px" cellspacing="0" width="600px">
 		<input type="checkbox" value="4096" onclick="calcFlags()"> Do no gain exhaustion<br/>
 		<input type="checkbox" value="32768" onclick="calcFlags()"> Can always login<br/>
 		<input type="checkbox" value="65536" onclick="calcFlags()"> Can broadcast<br/>
-
+		
 		<input type="checkbox" value="131072" onclick="calcFlags()"> Can edit all house rights<br/>
 		<input type="checkbox" value="262144" onclick="calcFlags()"> Can not be banned<br/>
+    </td>
+    <td valign="top" width="200">
 		<input type="checkbox" value="524288" onclick="calcFlags()"> Can not be pushed<br/>
 		<input type="checkbox" value="1048576" onclick="calcFlags()"> Has unlimited capacity<br/>
 		<input type="checkbox" value="2097152" onclick="calcFlags()"> Can push all creatures<br/>
-    </td>
-    <td valign="top" width="200">
+		
 		<input type="checkbox" value="4194304" onclick="calcFlags()"> Talk red in private<br/>
 		<input type="checkbox" value="8388608" onclick="calcFlags()"> Talk red in channel<br/>
 		<input type="checkbox" value="16777216" onclick="calcFlags()"> Talk orange in help-channel<br/>
@@ -113,7 +111,7 @@ $msg->addCode('<table id="flagtable" border="1px" cellspacing="0" width="600px">
 		<input type="checkbox" value="2147483648" onclick="calcFlags()"> Can not gain loot<br/>
     </td>
   </tr>
-<tr><td colspan="3"><b>Group List</b><br/>'.$group_list.'</td></tr></table>');
+</table>');
 $msg->addInput('id','text','0');
 $msg->addInput('name','text');
 $msg->addInput('flags','text','0');

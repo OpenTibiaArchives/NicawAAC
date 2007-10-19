@@ -55,8 +55,7 @@ if ($form->exists()){
 	$form->addInput('level');
 	$form->addInput('startdate','text',date('Y-m-d',time()));
 	$form->addInput('enddate','text',date('Y-m-d',time()+604800));
-	$form->addCode('One choise per line:');
-	$form->addTextBox('options');
+	$form->addTextBox('options','One choise per line');
 	$form->addCheckBox('hidden',false);
 	$form->addCheckBox('announce',true);
 	$form->addClose('Cancel');

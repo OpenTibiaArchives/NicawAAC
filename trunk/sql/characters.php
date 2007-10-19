@@ -69,16 +69,18 @@ if (!empty($_GET['char'])){
 				echo "<b>Comments</b><br/><div style=\"overflow:hidden\"><pre>".htmlspecialchars($account->getAttr('comment'))."</pre></div><br/>\n";
 			}	
 		echo '<hr/>';
-		$deaths = $player->getDeaths();
-		if ($deaths !== false && !empty($deaths)){
-		echo '<b>Deaths</b><br/>';
-			foreach ($deaths as $death){
-				$killer = new Player($death['killer']);
-				if ($killer->exists())
-					$name = '<a href="characters.php?char='.$death['killer'].'">'.$death['killer'].'</a>';
-				else
-					$name = $death['killer'];
-				echo '<i>'.date("jS F Y H:i:s",$player->getAttr('lastlogin')).'</i> Killed at level '.$death['level'].' by '.$name.'<br/>';
+		if ($cfg['show_deathlist']){
+			$deaths = $player->getDeaths();
+			if ($deaths !== false && !empty($deaths)){
+			echo '<b>Deaths</b><br/>';
+				foreach ($deaths as $death){
+					$killer = new Player($death['killer']);
+					if ($killer->exists())
+						$name = '<a href="characters.php?char='.$death['killer'].'">'.$death['killer'].'</a>';
+					else
+						$name = $death['killer'];
+					echo '<i>'.date("jS F Y H:i:s",$player->getAttr('lastlogin')).'</i> Killed at level '.$death['level'].' by '.$name.'<br/>';
+				}
 			}
 		}
 	}else{$error = "Unable to load player";}

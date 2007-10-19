@@ -82,6 +82,9 @@ $cfg['SMTP_From'] = 'user@gmail.com';
 # Whether to show skills in character search
 $cfg['show_skills'] = true;
 
+# Whether to show deathlist in character search
+$cfg['show_deathlist'] = false;
+
 $cfg['skill_names'] = array('fist', 'club', 'sword', 'axe', 'distance', 'shielding', 'fishing');
 
 # This is a perl regex. Do not change unless you know what you're doing!
@@ -93,8 +96,8 @@ $cfg['invalid_names'] = array('^gm','^god','admin','fuck','gamemaster');
 # Accounts that are allowed to access admin panel
 $cfg['admin_accounts'] = array();
 
-# Allow local connections to admin panel, even if account not listed ?
-$cfg['admin_local'] = true;
+# Listed IP always allowed to connect, no matter if it has account or not
+$cfg['admin_ip'] = array('127.0.0.1');
 
 # Count player as member only if level above
 $cfg['guild_level'] = 20;

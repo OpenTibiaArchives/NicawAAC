@@ -155,29 +155,37 @@ a:hover, a:active {
 #content .mid {
 	padding: 10px 20px 0 20px;
 }
-#error {
+#error{
 	position: absolute;
-	color: white;
+	/*IE position: absolute;*/
+	top: 0px;
+	left: 0px;
+	border-bottom: 3px solid black;
+	background-color: #ffffe1;
+	color: black;
 	font-weight: bold;
-	margin-left: 20px;
-	margin-top: -20px;
+	background-image: url(/*$skindir*/warning.png);
+	background-repeat: no-repeat;
+	height: 48px;
+	width: 100%;
 	cursor: pointer;
+}
+#error span
+{
+	margin-left: 55px;
 }
 #captcha-image {
 	margin-top: 5px;
 }
-#iobox {
+#iobox{
 	position: fixed;
 	/*IE position: absolute;*/
-	top: 200px;
-	left: 200px;
-	/*IE width: 300px;*/
 	background-color: #303322;
 	border: 1px solid #000;
-	padding-top: 30px;
-	padding-left: 10px;
-	padding-bottom: 10px;
-	padding-right: 10px;
+	cursor: move;
+}
+#iobox fieldset {
+	cursor: default;
 }
 #footer {
 	width: 680px;

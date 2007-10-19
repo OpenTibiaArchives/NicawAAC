@@ -154,6 +154,7 @@ a:hover{
 }
 #error {
 	position: absolute;
+	/*IE position: static;*/
 	color: red;
 	font-weight: bold;
 	margin-left: 200px;
@@ -162,16 +163,13 @@ a:hover{
 #captcha-image {
 	margin-top: 5px;
 }
-#iobox {
+#iobox{
 	position: fixed;
 	/*IE position: absolute;*/
-	top: 200px;
-	left: 200px;
-	/*IE width: 300px;*/
 	background-color: #e2e2e2;
 	border: 1px solid #000;
-	padding-top: 30px;
-	padding-left: 10px;
-	padding-bottom: 10px;
-	padding-right: 10px;
+	cursor: move;
+}
+#iobox fieldset {
+	cursor: default;
 }

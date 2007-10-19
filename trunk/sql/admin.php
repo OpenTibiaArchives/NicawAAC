@@ -33,6 +33,7 @@ include ("header.inc.php");
 <li onclick="ajax('form','tools/character_search.php','script=tools/character_group.php',true)" style=" background-image: url(ico/user_gray.png);">Create GM</li>
 <li onclick="ajax('form','tools/group_create.php','',true)" style=" background-image: url(ico/group_add.png);">Create Group</li>
 <li onclick="ajax('form','tools/ip_update.php','',true)" style=" background-image: url(ico/computer_link.png);">Update IP</li>
+<li onclick="ajax('form','tools/table_repair.php','',true)" style=" background-image: url(ico/database_error.png);">Repair Tables</li>
 <? if(!empty($_SESSION['account'])): ?>
 <li onclick="window.location.href='login.php?logout&amp;redirect=account.php'" style=" background-image: url(ico/resultset_previous.png);">Logout</li>
 <? endif; ?>

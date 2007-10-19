@@ -30,11 +30,11 @@ public function addMsg($msg){
 	$this->elements[]= '<p>'.$msg.'</p>';
 }
 public function addSelect($name,$options){
-	$code = '<label for="'.$this->name.'__'.$name.'" style="position: absolute; width:100px; text-align:right;">'.ucfirst($name).':&nbsp;</label><select style="margin-left: 100px;" id="'.$this->name.'__'.$name.'" name="'.$this->name.'__'.$name.'">';
+	$code = '<select id="'.$this->name.'__'.$name.'" name="'.$this->name.'__'.$name.'">';
 	foreach (array_keys($options) as $option){
 		$code.= '<option value="'.$option.'">'.$options[$option].'</option>';
 	}
-	$code.= '</select>';
+	$code.= '</select>&nbsp;<label for="'.$this->name.'__'.$name.'">- '.ucfirst($name).'</label>';
 	$this->elements[] = $code;
 }
 public function addCaptcha(){
@@ -46,10 +46,10 @@ public function addCaptcha(){
 		$img = '../doimg.php?'.time();
 	$_SESSION['RandomText'] = substr(str_shuffle(strtolower('qwertyuipasdfhjklzxcvnm12345789')), 0, 6);
 	$this->elements[]= '<img width="250px" height="40px" src="'.$img.'" alt="Verification Image"/>';
-	$this->elements[]= '<label for="captcha" style="position: absolute; width:100px; text-align:right;">Verification:&nbsp;</label><input id="captcha" style="text-transform: uppercase; margin-left: 100px;" name="'.$this->name.'__captcha" type="text" maxlength="10"/>';
+	$this->elements[]= '<input id="captcha" name="'.$this->name.'__captcha" type="text" maxlength="10"/>&nbsp;<label for="captcha">- Verification</label>';
 }
 public function addInput($name, $type = 'text', $value = '', $length = 100){
-	$this->elements[]= '<label for="'.$this->name.'__'.$name.'" style="position: absolute; width:100px; text-align:right;">'.ucfirst($name).':&nbsp;</label><input style="margin-left: 100px;" id="'.$this->name.'__'.$name.'" name="'.$this->name.'__'.$name.'" type="'.$type.'" maxlength="'.$length.'" value="'.$value.'"/>';
+	$this->elements[]= '<input id="'.$this->name.'__'.$name.'" name="'.$this->name.'__'.$name.'" type="'.$type.'" maxlength="'.$length.'" value="'.$value.'"/>&nbsp;<label for="'.$this->name.'__'.$name.'">- '.ucfirst($name).'</label>';
 }
 public function addCheckBox($name, $checked = false){
   if ($checked)
@@ -79,7 +79,7 @@ public function addLabel($code){
 }
 public function getCode(){
 	if (isset($_POST['ajax']))
-		$code = '<div onmouseup="Cookies.create(\'iobox_x\',document.getElementById(\'iobox\').style.left,1);Cookies.create(\'iobox_y\',document.getElementById(\'iobox\').style.top,1);" style="visibility:hidden" id="iobox" class="draggable"><fieldset style="">'.$this->label.'<form id="'.$this->name.'" action="javascript:ajax(\'form\',\''.htmlspecialchars($this->target).'\',getParams(document.getElementById(\''.$this->name.'\')),true)" method="post">';
+		$code = '<table cellspacing="10px" onmouseup="Cookies.create(\'iobox_x\',document.getElementById(\'iobox\').style.left,1);Cookies.create(\'iobox_y\',document.getElementById(\'iobox\').style.top,1);" style="visibility:hidden" id="iobox" class="draggable"><tr><td><fieldset>'.$this->label.'<form id="'.$this->name.'" action="javascript:ajax(\'form\',\''.htmlspecialchars($this->target).'\',getParams(document.getElementById(\''.$this->name.'\')),true)" method="post">';
 	else
 		$code = '<div id="iobox" class="iobox"><fieldset>'.$this->label.'<form id="'.$this->name.'" action="'.htmlspecialchars($this->target).'" method="post">';
 	foreach ($this->elements as $element)
@@ -87,7 +87,7 @@ public function getCode(){
 	$code.= '<hr style="margin: 10px 2px 2px 2px; padding: 0;"/> | ';
 	foreach ($this->buttons as $button)
 		$code.= $button." | \r\n";
-	$code.= '</form></fieldset></div>';
+	$code.= '</form></fieldset></td></tr></table>';
 	return $code;
 }
 public function show(){

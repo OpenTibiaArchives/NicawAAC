@@ -74,7 +74,7 @@ public function save()
 		$nicaw_acc['recovery_key'] = $this->attrs['recovery_key'];
 
 		if (!$this->myReplace('nicaw_accounts',$nicaw_acc))
-			throw new Exception('It appears you didn\'t import database.sql for AAC');
+			throw new Exception('Cannot save account:<br/>'.$this->getError());
 		if (!$this->myReplace('accounts',$acc))
 			throw new Exception('Cannot save account:<br/>'.$this->getError());
 		return true;
@@ -168,8 +168,8 @@ WHERE account_id = '.$this->quote($this->attrs['accno']).'
 WHERE nicaw_polls.id = nicaw_poll_options.poll_id
 AND nicaw_poll_options.id = '.$this->quote($option).'
 AND maxlevel > minlevel
-AND nicaw_polls.startdate < '.time().'
-AND nicaw_polls.enddate > '.time().'
+AND nicaw_polls.startdate < UNIX_TIMESTAMP(NOW())
+AND nicaw_polls.enddate > UNIX_TIMESTAMP(NOW())
 AND NOT EXISTS (
 SELECT *
 FROM (

@@ -222,16 +222,13 @@ a:hover{
 	z-index: 10;
 	position: fixed;
 	/*IE position: absolute;*/
-	top: 200px;
-	left: 200px;
-	/*IE width: 300px;*/
 	background-color: #e2e2e2;
 	background-image: url(/*$skindir*/big-mid.jpg);
 	background-position: -20px;
 	border: 1px solid #000;
-	padding-top: 30px;
-	padding-left: 10px;
-	padding-bottom: 10px;
-	padding-right: 10px;
 	color: black;
+	cursor: move;
+}
+#iobox fieldset {
+	cursor: default;
 }
