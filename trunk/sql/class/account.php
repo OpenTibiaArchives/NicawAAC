@@ -122,7 +122,7 @@ public function isValidNumber()
 public function logAction($action)
 	{
 		if (!$this->myInsert('nicaw_account_logs',array('id' => NULL, 'ip' => ip2long($_SERVER['REMOTE_ADDR']), 'account_id' => $this->attrs['accno'], 'date' => time(), 'action' => $action)))
-			throw new Exception('It appears you didn\'t import database.sql for AAC:<br/>'.$this->getError());
+			throw new Exception($this->getError());
 	}
 	
 public function removeRecoveryKey()

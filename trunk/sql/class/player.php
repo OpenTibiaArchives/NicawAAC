@@ -18,8 +18,7 @@
 */
 class Player extends SQL
 {
-private $attrs;
-private $skills;
+private $attrs, $skills, $storage;
 
 public function __construct($n)
 	{
@@ -39,7 +38,7 @@ public function load()
 		if ($group === false)
 			$this->attrs['access'] = 0;
 		else{
-      $this->attrs['group'] = (int) $player['group_id'];
+			$this->attrs['group'] = (int) $player['group_id'];
 			$this->attrs['access'] = (int) $group['access'];
 			$this->attrs['position'] = (string) $group['name'];
 		}
@@ -56,12 +55,17 @@ public function load()
 		$this->attrs['lastlogin'] = (int) $player['lastlogin'];
 		$this->attrs['redskulltime'] = (int) $player['redskulltime'];
 		//get skills
-		$skills = $this->myQuery('SELECT * FROM `player_skills` WHERE `player_id` = '.$this->attrs['id']);
-		if ($skills === false) return false;
-		while($a = $this->fetch_array($skills)){
-			$this->skills[$a['skillid']]['skill'] = $a['value'];
-			$this->skills[$a['skillid']]['tries'] = $a['count'];
+		$this->myQuery('SELECT * FROM `player_skills` WHERE `player_id` = '.$this->attrs['id']);
+		if ($this->failed()) throw new Exception('Cannot retrieve player skills<br/>'.$this->gerError());
+		while($a = $this->fetch_array()){
+			$this->skills[$a['skillid']]['skill'] = (int)$a['value'];
+			$this->skills[$a['skillid']]['tries'] = (int)$a['count'];
 		}
+		//get storage
+		$this->myQuery('SELECT * FROM `player_storage` WHERE `player_id` = '.$this->attrs['id']);
+		if ($this->failed()) throw new Exception('Cannot retrieve player storage<br/>'.$this->gerError());
+		while($a = $this->fetch_array())
+			$this->storage[$a['key']] = (int)$a['value'];
 		//get guild stuff
 		$guild = $this->myQuery("SELECT players.guildnick, guild_ranks.level, guild_ranks.name, guilds.id, guilds.name FROM guild_ranks, players, guilds WHERE guilds.id = guild_ranks.guild_id AND players.rank_id = guild_ranks.id AND players.id = ".$this->attrs['id']);
 		if ($this->num_rows($guild) == 1){
@@ -123,6 +127,11 @@ public function isAttr($attr)
 public function setAttr($attr,$value)
 	{
 		$this->attrs[$attr] = $value;
+	}
+	
+public function getStorage($id)
+	{
+		return $this->storage[$id];
 	}
 
 public function getDeaths()

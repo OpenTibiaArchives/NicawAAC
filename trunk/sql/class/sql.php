@@ -48,14 +48,14 @@ public function myQuery($q){
 		$this->last_query->closeCursor();
 	$this->last_query = $this->PDO->query($q);
 	if ($this->last_query === false){
-	  $error = $this->PDO->errorInfo();
-	  $this->last_error = $q."<br/>\n".$error[2].$this->analyze();
+		$error = $this->PDO->errorInfo();
+		$this->last_error = $q."<br/>\n".$error[2].'<br/>'.$this->analyze();
 	}
 	return $this->last_query;
 }
 
 //True is last query failed
-public function failed($resource = null)
+public function failed()
   {
     if ($this->last_query === false) return true;
 	return false;
@@ -104,8 +104,8 @@ public function getError()
 	
 public function analyze()
 	{
-		$this->myQuery('SHOW TABLES');
-		while ($a = $this->fetch_array())
+		$result = $this->PDO->query('SHOW TABLES');
+		while ($a = $result->fetch())
 			$t[] = $a[0];
 		$is_aac_db = in_array('nicaw_accounts',$t);
 		$is_server_db = in_array('accounts',$t) && in_array('players',$t);

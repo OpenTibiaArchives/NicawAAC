@@ -19,7 +19,7 @@ $cfg['DB_Type'] = 'mysql';
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'pass';
-$cfg['SQL_Database'] = 'otserv';
+$cfg['SQL_Database'] = 'new';
 
 # If using SQLite. Database file should be in data directory.
 $cfg['SQL_filename'] = 'forgottenserver.s3db';
