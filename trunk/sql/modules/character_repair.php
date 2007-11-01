@@ -26,13 +26,13 @@ $form = new Form('delete');
 //check if any data was submited
 if ($form->exists()){
 	//load player
-	$player = $account->player[$form->attrs['character']];
+	$player = new Player($form->attrs['character']);
 	if ($player->load()){
 		//check if player really belongs to account
 		if ($player->getAttr('account') === $account->getAttr('accno')){
-			//delete the player
+			$pos = $player->getAttr('spawn');
 			if ($player->repair()){
-				$account->logAction('Repaired character: '.$player->getAttr('name'));
+				$account->logAction('Repaired character: '.$player->getAttr('name').', '.$pos['x'].' '.$pos['y'].' '.$pos['z']);
 				//create new message
 				$msg = new IOBox('message');
 				$msg->addMsg($player->getAttr('name').' was repaired.');
@@ -50,7 +50,8 @@ if ($form->exists()){
 		$msg->show();
 	}
 }else{
-	$list = $account->getCharList();
+	foreach ($account->players as $player)
+		$list[] = $player->getAttr('name');
 	//create new form
 	$form = new IOBox('delete');
 	$form->target = $_SERVER['PHP_SELF'];

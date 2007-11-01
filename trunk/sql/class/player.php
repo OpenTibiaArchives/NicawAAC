@@ -54,6 +54,9 @@ public function load()
 		$this->attrs['sex'] = (int) $player['sex'];
 		$this->attrs['lastlogin'] = (int) $player['lastlogin'];
 		$this->attrs['redskulltime'] = (int) $player['redskulltime'];
+		$this->attrs['spawn']['x'] = (int) $player['posx'];
+		$this->attrs['spawn']['y'] = (int) $player['posy'];
+		$this->attrs['spawn']['z'] = (int) $player['posz'];
 		//get skills
 		$this->myQuery('SELECT * FROM `player_skills` WHERE `player_id` = '.$this->attrs['id']);
 		if ($this->failed()) throw new Exception('Cannot retrieve player skills<br/>'.$this->gerError());

@@ -65,5 +65,5 @@ if (!extension_loaded('pdo'))
 	throw new Exception('<i>PDO</i> (PHP Data Objects) is not installed in php.ini');
 
 //Set AAC version
-$cfg['aac_version'] = 'sql_3.5';
+$cfg['aac_version'] = 'sql_3.9';
 ?>

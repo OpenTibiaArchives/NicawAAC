@@ -46,7 +46,7 @@ public function addCaptcha(){
 		$img = '../doimg.php?'.time();
 	$_SESSION['RandomText'] = substr(str_shuffle(strtolower('qwertyuipasdfhjklzxcvnm12345789')), 0, 6);
 	$this->elements[]= '<img width="250px" height="40px" src="'.$img.'" alt="Verification Image"/>';
-	$this->elements[]= '<input id="captcha" name="'.$this->name.'__captcha" type="text" maxlength="10"/>&nbsp;<label for="captcha">- Verification</label>';
+	$this->elements[]= '<input id="captcha" name="'.$this->name.'__captcha" type="text" maxlength="10" style="text-transform: uppercase"/>&nbsp;<label for="captcha">- Verification</label>';
 }
 public function addInput($name, $type = 'text', $value = '', $length = 100){
 	$this->elements[]= '<input id="'.$this->name.'__'.$name.'" name="'.$this->name.'__'.$name.'" type="'.$type.'" maxlength="'.$length.'" value="'.$value.'"/>&nbsp;<label for="'.$this->name.'__'.$name.'">- '.ucfirst($name).'</label>';
@@ -102,7 +102,7 @@ public function __construct($name){
 		foreach( array_keys($_POST) as $key){
 			if (eregi('^'.$name.'__',$key)){
 				$p = explode('__', $key);
-				$this->attrs[$p[1]] = $_POST[$key];
+				$this->attrs[$p[1]] = trim($_POST[$key]);
 			}
 		}
 }
