@@ -27,9 +27,9 @@ if ($form->exists()){
 	if (strlen($form->attrs['name']) > 1){
 		//do mysql search
 		$query =  'SELECT name FROM players WHERE `name` LIKE \'%'.$form->attrs['name'].'%\'';
-		$mysql = new SQL();
-		$sql = $mysql->myQuery($query);
-		if ($sql === false || $mysql->num_rows() == 0){
+		$SQL = new SQL();
+		$SQL->myQuery($query);
+		if ($SQL->failed() || $SQL->num_rows() == 0){
 			//create new message
 			$msg = new IOBox('message');
 			$msg->addMsg('Nothing found.');
@@ -37,12 +37,12 @@ if ($form->exists()){
 			$msg->addClose('Close');
 			$msg->show();
 		}else{
-			while ($a = $mysql->fetch_array($sql))
+			while ($a = $SQL->fetch_array())
 				$characters[] = $a['name'];
 			//create new message
 			$msg = new IOBox('admin');
 			$msg->target = $_GET['script'];
-			$msg->addMsg($mysql->num_rows().' character(s) found!');
+			$msg->addMsg($SQL->num_rows().' character(s) found!');
 			$msg->addSelect('list',array_combine($characters,$characters));
 			$msg->addReload('<< Back');
 			$msg->addClose('Cancel');

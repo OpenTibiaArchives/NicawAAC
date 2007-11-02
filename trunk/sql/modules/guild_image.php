@@ -29,8 +29,8 @@ if (isset($_POST['image_submit'])){
 	//check if user is guild owner
 	if ($owner == $_SESSION['account'] && !empty($_SESSION['account'])){
 		if ($_FILES['image']['size'] <= 102400){
-			($_FILES['image']['error'] == 0) or throw new Exception('Unknown error');
-			is_uploaded_file($_FILES['image']['tmp_name']) or throw new Exception('File is not uploaded via HTTP POST');
+			if ($_FILES['image']['error'] != 0) throw new Exception('Unknown error');
+			if (!is_uploaded_file($_FILES['image']['tmp_name'])) throw new Exception('File is not uploaded via HTTP POST');
 			if ($_FILES['image']['type'] == 'image/gif'){
 				@unlink('guilds/'.$gid.'.gif');
 				copy($_FILES['image']['tmp_name'],'../guilds/'.$gid.'.gif');

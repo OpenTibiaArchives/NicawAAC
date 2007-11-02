@@ -62,26 +62,18 @@ public function failed()
   }
 
 //Returns current array with data values
-public function fetch_array($resource = null)
+public function fetch_array()
   {
-    if ($resource === null)
-      $resource = $this->last_query;
-    if ($resource !== false && $resource !== null){
-        return $resource->fetch();
-      }
-     else
-      return null;
+	if ($this->last_query !== false && $this->last_query !== null){
+        return $this->last_query->fetch();
+    }else
+		throw new Exception('No valid resource for SQL::fetch_array()');
   }
 
 //Returns the number of rows affected
-public function num_rows($resource = null)
+public function num_rows()
   {
-    if ($resource === null)
-      $resource = $this->last_query;
-    if ($resource !== false && $resource !== null)
-      return $resource->rowCount();
-     else
-      return null;
+      return $this->last_query->rowCount();
   }
 
 //Quotes a string so it's safe to use in SQL statement
@@ -200,11 +192,11 @@ public function myRetrieve($table,$data)
 			$query.= '`'.$this->escape_string($fields[$i]).'` = \''.$this->escape_string($values[$i]).'\' AND ';
 		$query = substr($query, 0, strlen($query)-4);
 		$query.=');';
-		$sql = $this->myQuery($query);
-		if ($sql === false) return false;
+		$this->myQuery($query);
+		if ($this->failed()) return false;
 		if ($this->num_rows($sql) <= 0) return null;
 		if ($this->num_rows($sql) > 1) throw new Exception('Unexpected SQL answer. More than one row exists.');
-		return $this->fetch_array($sql);
+		return $this->fetch_array();
 	}
 
 //Update data
@@ -223,8 +215,8 @@ public function myUpdate($table,$data,$where,$limit=1)
 			$query.= '`'.$this->escape_string($fields[$i]).'` = \''.$this->escape_string($values[$i]).'\' AND ';
 		$query = substr($query, 0, strlen($query)-4);
 		$query.=') LIMIT '.$limit.';';
-		$sql = $this->myQuery($query);
-		if ($sql === false) return false;
+		$this->myQuery($query);
+		if ($this->failed()) return false;
 		return true;
 	}
 
@@ -241,8 +233,8 @@ public function myDelete($table,$data,$limit = 1)
 			$query.=') LIMIT '.$limit.';';
 		else
 			$query.=');';
-		$sql = $this->myQuery($query);
-		if ($sql === false) return false;
+		$this->myQuery($query);
+		if ($this->failed()) return false;
 		return true;
 	}
 }

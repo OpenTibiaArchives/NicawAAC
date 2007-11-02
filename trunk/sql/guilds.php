@@ -73,20 +73,22 @@ if ($owner == $_SESSION['account'] && !empty($_SESSION['account'])){?>
 <table style="width: 100%">
 <tr class="color0"><td style="width: 30%"><b>Rank</b></td><td style="width: 70%"><b>Name and Title</b></td></tr>
 <?
-$ranks = $SQL->myQuery('SELECT id, name FROM guild_ranks WHERE guild_id = \''.$SQL->escape_string($gid).'\' ORDER BY level DESC');
-		if ($ranks === false) $error = $SQL->getError();
-		while ($rank = $SQL->fetch_array()){
-			$members = $SQL->myQuery('SELECT players.name, players.guildnick  FROM guild_ranks, players WHERE guild_ranks.id = players.rank_id AND guild_ranks.id = '.$rank['id'].' ORDER BY players.level DESC');
-			if ($members === false) $error = $SQL->getError();
-			$i++;
-			while ($member = $SQL->fetch_array()){
-				$rank = $rank['name'];
-				if (!empty($member['guildnick'])) $nick = ' (<i>'.$member['guildnick'].'</i>)';
-				else $nick = '';
-				echo '<tr '.getStyle($i).'><td>'.htmlentities($rank).'</td><td><a href="characters.php?char='.addslashes($member['name']).'">'.htmlentities($member['name']).'</a> '.$nick.'</td></tr>';
-				$rank = '';
-			}
-		}
+$SQL->myQuery('SELECT players.rank_id, players.id, players.name, guild_ranks.name AS rank_name, players.guildnick FROM guild_ranks , players WHERE guild_id = 1 AND players.rank_id = guild_ranks.id ORDER BY guild_ranks.level DESC');
+while ($a = $SQL->fetch_array()){
+	$members[$a['rank_id']]['name'] = $a['rank_name'];
+	$members[$a['rank_id']]['members'][$a['id']]['name'] = $a['name'];
+	$members[$a['rank_id']]['members'][$a['id']]['nick'] = $a['guildnick'];
+}
+foreach ($members as $rank){
+	$i++;
+	$rank_name = $rank['name'];
+	foreach ($rank['members'] as $member){
+		if (!empty($member['nick'])) $nick = ' (<i>'.$member['nick'].'</i>)';
+		else $nick = '';
+		echo '<tr '.getStyle($i).'><td>'.htmlspecialchars($rank_name).'</td><td><a href="characters.php?char='.addslashes(htmlspecialchars($member['name'])).'">'.htmlspecialchars($member['name']).'</a> '.htmlspecialchars($nick).'</td></tr>';
+		$rank_name = '';
+	}
+}
 ?>
 </table>
 <?}?>

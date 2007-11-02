@@ -153,7 +153,7 @@ public function getMaxLevel()
 		$this->myQuery('SELECT MAX(level) FROM `players` WHERE `account_id` = '.$this->escape_string($this->attrs['accno']));
 		if ($this->failed())
 			throw new Exception($this->getError);
-		$row = $this->fetch_array($sql);
+		$row = $this->fetch_array();
 		return (int) $row['MAX(level)'];
 	}
 

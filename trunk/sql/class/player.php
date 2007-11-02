@@ -70,9 +70,9 @@ public function load()
 		while($a = $this->fetch_array())
 			$this->storage[$a['key']] = (int)$a['value'];
 		//get guild stuff
-		$guild = $this->myQuery("SELECT players.guildnick, guild_ranks.level, guild_ranks.name, guilds.id, guilds.name FROM guild_ranks, players, guilds WHERE guilds.id = guild_ranks.guild_id AND players.rank_id = guild_ranks.id AND players.id = ".$this->attrs['id']);
+		$this->myQuery("SELECT players.guildnick, guild_ranks.level, guild_ranks.name, guilds.id, guilds.name FROM guild_ranks, players, guilds WHERE guilds.id = guild_ranks.guild_id AND players.rank_id = guild_ranks.id AND players.id = ".$this->attrs['id']);
 		if ($this->num_rows($guild) == 1){
-			$a = $this->fetch_array($guild);
+			$a = $this->fetch_array();
 			$this->attrs['guild_nick'] = $a[0];
 			$this->attrs['guild_level'] = $a[1];
 			$this->attrs['guild_rank'] = $a[2];
@@ -143,7 +143,7 @@ public function getDeaths()
 		$this->myQuery($query);
 		if ($this->failed()) return false;
 		$i = 0;
-		while($a = $this->fetch_array($sql)){
+		while($a = $this->fetch_array()){
 			$list[$i]['killer'] = $a['killer'];
 			$list[$i]['level'] = $a['level'];
 			$list[$i]['date'] = $a['date'];

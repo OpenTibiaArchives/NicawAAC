@@ -55,7 +55,7 @@ if ($_GET['sort'] == 'level' || $_GET['sort'] == 'maglevel'){
 		$genders[$a['sex']] = $a['number'];
 		$total += $a['number'];
 	}
-	$gender_names = array(0 => 'Male',1 => 'Female');
+	$gender_names = array(0 => 'Female',1 => 'Male');
 	echo '<p><h2>Gender</h2>';
 	echo '<table style="font-weight: bold">';
 	foreach (array_keys($genders) as $gender)
