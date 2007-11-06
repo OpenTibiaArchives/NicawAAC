@@ -192,11 +192,12 @@ public function myRetrieve($table,$data)
 			$query.= '`'.$this->escape_string($fields[$i]).'` = \''.$this->escape_string($values[$i]).'\' AND ';
 		$query = substr($query, 0, strlen($query)-4);
 		$query.=');';
-		$this->myQuery($query);
+		$results = $this->myQuery($query);
+		$array = $results->fetchAll();
 		if ($this->failed()) return false;
-		if ($this->num_rows($sql) <= 0) return null;
-		if ($this->num_rows($sql) > 1) throw new Exception('Unexpected SQL answer. More than one row exists.');
-		return $this->fetch_array();
+		if (count($array) <= 0) return false;
+		if (count($array) > 1) throw new Exception('Unexpected SQL answer. More than one row exists.');
+		return $array[0];
 	}
 
 //Update data
