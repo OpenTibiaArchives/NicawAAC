@@ -17,8 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 class SQL{
-private $last_query, $last_error;
-public $PDO;
+private $last_query, $last_error, $PDO;
 
 public function __construct(){
   $this->_init();
@@ -70,10 +69,9 @@ public function fetch_array()
 		throw new Exception('No valid resource for SQL::fetch_array()');
   }
 
-//Returns the number of rows affected
-public function num_rows()
+public function insert_id()
   {
-      return $this->last_query->rowCount();
+	return $this->PDO->lastInsertId();
   }
 
 //Quotes a string so it's safe to use in SQL statement
@@ -192,10 +190,10 @@ public function myRetrieve($table,$data)
 			$query.= '`'.$this->escape_string($fields[$i]).'` = \''.$this->escape_string($values[$i]).'\' AND ';
 		$query = substr($query, 0, strlen($query)-4);
 		$query.=');';
-		$results = $this->myQuery($query);
-		$array = $results->fetchAll();
-		if ($this->failed()) return false;
-		if (count($array) <= 0) return false;
+		$stm = $this->PDO->query($query);
+		if ($stm === false) return false;
+		$array = $stm->fetchAll();
+		if (count($array) <= 0) return null;
 		if (count($array) > 1) throw new Exception('Unexpected SQL answer. More than one row exists.');
 		return $array[0];
 	}
