@@ -71,7 +71,8 @@ public function load()
 			$this->storage[$a['key']] = (int)$a['value'];
 		//get guild stuff
 		$this->myQuery("SELECT players.guildnick, guild_ranks.level, guild_ranks.name, guilds.id, guilds.name FROM guild_ranks, players, guilds WHERE guilds.id = guild_ranks.guild_id AND players.rank_id = guild_ranks.id AND players.id = ".$this->attrs['id']);
-		if ($a = $this->fetch_array()){
+		if ($this->num_rows($guild) == 1){
+			$a = $this->fetch_array();
 			$this->attrs['guild_nick'] = $a[0];
 			$this->attrs['guild_level'] = $a[1];
 			$this->attrs['guild_rank'] = $a[2];

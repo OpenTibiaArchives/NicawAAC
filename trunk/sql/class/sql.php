@@ -17,7 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 class SQL{
-private $last_query, $last_error, $PDO;
+private $last_query, $last_error, $connection;
 
 public function __construct(){
   $this->_init();
@@ -25,53 +25,61 @@ public function __construct(){
 
 //creates new PDO object for database access
 protected function _init(){
-  global $cfg;
-  if (!isset($this->PDO))
-    try {
-      if ($cfg['DB_Type'] == 'mysql')
-        $this->PDO = new PDO('mysql:dbname='.$cfg['SQL_Database'].';host='.$cfg['SQL_Server'], $cfg['SQL_User'], $cfg['SQL_Password']);
-      elseif ($cfg['DB_Type'] == 'sqlite2')
-        $this->PDO = new PDO('sqlite2:'.$cfg['dirdata'].$cfg['SQL_filename']);
-      elseif ($cfg['DB_Type'] == 'sqlite')
-        $this->PDO = new PDO('sqlite:'.$cfg['dirdata'].$cfg['SQL_filename']);
-      else
-        $this->PDO = new PDO('uri:file://'.$cfg['dirdata'].$cfg['SQL_dnsfile'], $cfg['SQL_User'], $cfg['SQL_Password']);
-    } catch (PDOException $e) {
-      throw new Exception('Connection failed: ' . $e->getMessage().'<br/>Please check your SQL settings!');
-    }
+	global $cfg;
+	if (!isset($this->connection)){
+	  	$con = @mysql_connect($cfg['SQL_Server'],$cfg['SQL_User'],$cfg['SQL_Password']);
+		if ($con === false){
+			throw new Exception('Unable to connect to mysql server. Please make sure it is up and running and you have correct user/password.');
+			return false;
+		}
+		if (!@mysql_select_db($cfg['SQL_Database'])){
+			throw new Exception('Unable to select databse.');
+			return false;
+		}
+		$this->connection = $con;
+	}
+	return true;
 }
 
-//Perform simpple SQL query
+//Perform simple SQL query
 public function myQuery($q){
-	if (is_object($this->last_query))
-		$this->last_query->closeCursor();
-	$this->last_query = $this->PDO->query($q);
+	$this->last_query = @mysql_query($q);
 	if ($this->last_query === false){
-		$error = $this->PDO->errorInfo();
-		$this->last_error = $q."<br/>\n".$error[2].'<br/>'.$this->analyze();
+		$this->last_error = 'Error #'.mysql_errno()."\n".$q."\n" . mysql_error() . "\n";
 	}
 	return $this->last_query;
 }
 
 //True is last query failed
-public function failed()
-  {
+public function failed(){
     if ($this->last_query === false) return true;
 	return false;
-  }
+}
 
 //Returns current array with data values
-public function fetch_array()
-  {
-	if ($this->last_query !== false && $this->last_query !== null){
-        return $this->last_query->fetch();
-    }else
-		throw new Exception('No valid resource for SQL::fetch_array()');
-  }
+public function fetch_array($resource = null){
+    if ($resource === null)
+      $resource = $this->last_query;
+    if ($resource !== false && $resource !== null)
+      return mysql_fetch_array($resource);
+     else
+      return null;
+}
 
-public function insert_id()
+//Returns the last insert id
+public function insert_id($resource = null){
+      return mysql_insert_id();
+}
+  
+//Returns the number of rows affected
+public function num_rows($resource = null)
   {
-	return $this->PDO->lastInsertId();
+    if ($resource === null)
+      $resource = $this->last_query;
+    if ($resource !== false && $resource !== null)
+      return mysql_num_rows($resource);
+     else
+      return null;
   }
 
 //Quotes a string so it's safe to use in SQL statement
@@ -83,7 +91,7 @@ public function escape_string($string)
 //Quotes a string and adds apostrofes
 public function quote($string)
   {
-    return $this->PDO->quote($string);
+    return '\''.mysql_escape_string($string).'\'';
   }
 
 //Return last error
@@ -94,8 +102,8 @@ public function getError()
 	
 public function analyze()
 	{
-		$result = $this->PDO->query('SHOW TABLES');
-		while ($a = $result->fetch())
+		$result = @mysql_query('SHOW TABLES');
+		while ($a = mysql_fetch_array($result))
 			$t[] = $a[0];
 		$is_aac_db = in_array('nicaw_accounts',$t);
 		$is_server_db = in_array('accounts',$t) && in_array('players',$t);
@@ -111,20 +119,12 @@ public function analyze()
 	
 public function repairTables()
 	{
-		$this->myQuery('SHOW TABLES');
-		while ($a = $this->fetch_array())
+		$tables = @mysql_query('SHOW TABLES');
+		while ($a = @mysql_fetch_array($tables))
 			$tables[] = $a[0];
-		if (isset($tables) && !$this->failed())
-			foreach($tables as $table){
-				$this->myQuery('REPAIR TABLE '.$table);
-				if ($this->failed()){
-					echo 'Cannot repair '.$table.'<br/>';
-					return false;
-				}else{
-					$a = $this->fetch_array();
-					$return .= $a[0].' '.$a[1].' '.$a[2].' '.$a[3].'<br/>';
-				}
-			}
+		if (isset($tables))
+			foreach($tables as $table)
+				mysql_query('REPAIR TABLE '.$table);
 		return $return;
 	}
 
@@ -137,16 +137,16 @@ public function myInsert($table,$data)
 	{global $cfg;
 		$fields = array_keys($data);
 		$values = array_values($data);
-		$query = 'INSERT INTO `'.$this->escape_string($table).'` (';
+		$query = 'INSERT INTO `'.mysql_escape_string($table).'` (';
 		foreach ($fields as $field)
-			$query.= '`'.$this->escape_string($field).'`,';
+			$query.= '`'.mysql_escape_string($field).'`,';
 		$query = substr($query, 0, strlen($query)-1);
 		$query.= ') VALUES (';
 		foreach ($values as $value)
 			if ($value === null)
 				$query.= 'NULL,';
 			else
-				$query.= '\''.$this->escape_string($value).'\',';
+				$query.= '\''.mysql_escape_string($value).'\',';
 		$query = substr($query, 0, strlen($query)-1);
 		$query.= ');';
 		if ($this->myQuery($query) === false) 
@@ -161,16 +161,16 @@ public function myReplace($table,$data)
 	{global $cfg;
 		$fields = array_keys($data);
 		$values = array_values($data);
-		$query = 'REPLACE INTO `'.$this->escape_string($table).'` (';
+		$query = 'REPLACE INTO `'.mysql_escape_string($table).'` (';
 		foreach ($fields as $field)
-			$query.= '`'.$this->escape_string($field).'`,';
+			$query.= '`'.mysql_escape_string($field).'`,';
 		$query = substr($query, 0, strlen($query)-1);
 		$query.= ') VALUES (';
 		foreach ($values as $value)
 			if ($value === null)
 				$query.= 'NULL,';
 			else
-				$query.= '\''.$this->escape_string($value).'\',';
+				$query.= '\''.mysql_escape_string($value).'\',';
 		$query = substr($query, 0, strlen($query)-1);
 		$query.= ');';
 		if ($this->myQuery($query) === false) 
@@ -185,17 +185,16 @@ public function myRetrieve($table,$data)
 	{
 		$fields = array_keys($data); 
 		$values = array_values($data);
-		$query = 'SELECT * FROM `'.$this->escape_string($table).'` WHERE (';
+		$query = 'SELECT * FROM `'.mysql_escape_string($table).'` WHERE (';
 		for ($i = 0; $i < count($fields); $i++)
-			$query.= '`'.$this->escape_string($fields[$i]).'` = \''.$this->escape_string($values[$i]).'\' AND ';
+			$query.= '`'.mysql_escape_string($fields[$i]).'` = \''.mysql_escape_string($values[$i]).'\' AND ';
 		$query = substr($query, 0, strlen($query)-4);
 		$query.=');';
-		$stm = $this->PDO->query($query);
-		if ($stm === false) return false;
-		$array = $stm->fetchAll();
-		if (count($array) <= 0) return null;
-		if (count($array) > 1) throw new Exception('Unexpected SQL answer. More than one row exists.');
-		return $array[0];
+		$this->myQuery($query);
+		if ($this->failed()) return false;
+		if ($this->num_rows() <= 0) return false;
+		if ($this->num_rows() > 1) throw new Exception('Unexpected SQL answer. More than one row exists.');
+		return $this->fetch_array();
 	}
 
 //Update data
@@ -203,15 +202,15 @@ public function myUpdate($table,$data,$where,$limit=1)
 	{
 		$fields = array_keys($data); 
 		$values = array_values($data);
-		$query = 'UPDATE `'.$this->escape_string($table).'` SET ';
+		$query = 'UPDATE `'.mysql_escape_string($table).'` SET ';
 		for ($i = 0; $i < count($fields); $i++)
-			$query.= '`'.$this->escape_string($fields[$i]).'` = \''.$this->escape_string($values[$i]).'\', ';
+			$query.= '`'.mysql_escape_string($fields[$i]).'` = \''.mysql_escape_string($values[$i]).'\', ';
 		$query = substr($query, 0, strlen($query)-2);
 		$query.=' WHERE (';
 		$fields = array_keys($where); 
 		$values = array_values($where);
 		for ($i = 0; $i < count($fields); $i++)
-			$query.= '`'.$this->escape_string($fields[$i]).'` = \''.$this->escape_string($values[$i]).'\' AND ';
+			$query.= '`'.mysql_escape_string($fields[$i]).'` = \''.mysql_escape_string($values[$i]).'\' AND ';
 		$query = substr($query, 0, strlen($query)-4);
 		$query.=') LIMIT '.$limit.';';
 		$this->myQuery($query);
@@ -224,9 +223,9 @@ public function myDelete($table,$data,$limit = 1)
 	{
 		$fields = array_keys($data); 
 		$values = array_values($data);
-		$query = 'DELETE FROM `'.$this->escape_string($table).'` WHERE (';
+		$query = 'DELETE FROM `'.mysql_escape_string($table).'` WHERE (';
 		for ($i = 0; $i < count($fields); $i++)
-			$query.= '`'.$this->escape_string($fields[$i]).'` = \''.$this->escape_string($values[$i]).'\' AND ';
+			$query.= '`'.mysql_escape_string($fields[$i]).'` = \''.mysql_escape_string($values[$i]).'\' AND ';
 		$query = substr($query, 0, strlen($query)-4);
 		if ($limit > 0)
 			$query.=') LIMIT '.$limit.';';
