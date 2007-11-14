@@ -55,15 +55,15 @@ if ($cfg['secure_session'] && !empty($_SESSION['account']) && ($_SERVER['REMOTE_
 	unset($_SESSION['account']);
 
 //Check for correct PHP version
-if (!version_compare(phpversion(), "5.1.0", ">=") )
-	throw new Exception('You need PHP 5.1.x to run this AAC');
+if (!version_compare(phpversion(), "5.1.4", ">=") )
+	throw new Exception('There are known issues with this PHP version. Please update your sofware, try to get at least PHP 5.2.x');
 
 //Check if extensions loaded
 if (!extension_loaded('simplexml'))
-	throw new Exception('SimpleXML extension is not installed in php.ini');
+	throw new Exception('SimpleXML extension is not installed');
 if (!extension_loaded('pdo'))
-	throw new Exception('<i>PDO</i> (PHP Data Objects) is not installed in php.ini');
+	throw new Exception('PDO <i>(PHP Data Objects)</i> is not installed in php.ini');
 
 //Set AAC version
-$cfg['aac_version'] = 'sql_3.9';
+$cfg['aac_version'] = 'sql_3.11';
 ?>

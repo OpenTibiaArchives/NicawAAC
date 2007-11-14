@@ -12,17 +12,11 @@ $cfg['dirdata'] = 'C:/OTServ/ftp/incomming/new_server/data/';
 
 $cfg['house_file'] = 'world/Evolutions-house.xml';
 
-# You can choose between 'mysql', 'sqlite'
-$cfg['DB_Type'] = 'mysql';
-
 # MySQL server settings
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'pass';
 $cfg['SQL_Database'] = 'new';
-
-# If using SQLite. Database file should be in data directory.
-$cfg['SQL_filename'] = 'forgottenserver.s3db';
 
 # MD5 is hashing algorithm that makes passwords safer. 
 # It must correspond to your OTServ configuration!
