@@ -75,8 +75,10 @@ public function save()
 
 		if (!$this->myReplace('nicaw_accounts',$nicaw_acc))
 			throw new Exception('Cannot save account:<br/>'.$this->getError());
-		if (!$this->myReplace('accounts',$acc))
-			throw new Exception('Cannot save account:<br/>'.$this->getError());
+		
+		if (!$this->myUpdate('accounts',$acc, array('id' => $this->attrs['accno'])))
+			if (!$this->myInsert('accounts',$acc))
+				throw new Exception('Cannot save account:<br/>'.$this->getError());
 		return true;
 	}
 
