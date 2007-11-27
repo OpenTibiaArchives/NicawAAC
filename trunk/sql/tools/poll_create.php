@@ -29,7 +29,7 @@ if ($form->exists()){
 	$sql = new SQL();
 	//store poll question
     $sql->myInsert('nicaw_polls',array('id' => null, 'minlevel' => (int)$form->attrs['level'], 'question' => $form->attrs['question'], 'startdate' => strToDate($form->attrs['startdate']), 'enddate' => strToDate($form->attrs['enddate']), 'hidden' => $form->getBool('hidden')));
-    $poll_id = $sql->PDO->lastInsertId();
+    $poll_id = $sql->insert_id();
 	//store all poll options
 	foreach($options as $option)
 		$sql->myInsert('nicaw_poll_options',array('id' => null, 'poll_id' => $poll_id, 'option' => $option));

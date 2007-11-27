@@ -13,6 +13,7 @@ require ('class/globals.php');
 require ('class/sql.php');
 require ('class/account.php');
 require ('class/player.php');
+require ('class/guild.php');
 require ('class/iobox.php');
 
 //set custom exception handler
@@ -61,9 +62,7 @@ if (!version_compare(phpversion(), "5.1.4", ">=") )
 //Check if extensions loaded
 if (!extension_loaded('simplexml'))
 	throw new Exception('SimpleXML extension is not installed');
-if (!extension_loaded('pdo'))
-	throw new Exception('PDO <i>(PHP Data Objects)</i> is not installed in php.ini');
 
 //Set AAC version
-$cfg['aac_version'] = 'sql_3.11';
+$cfg['aac_version'] = 'sql_3.12';
 ?>

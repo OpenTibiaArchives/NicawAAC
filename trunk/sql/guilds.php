@@ -73,7 +73,7 @@ if ($owner == $_SESSION['account'] && !empty($_SESSION['account'])){?>
 <table style="width: 100%">
 <tr class="color0"><td style="width: 30%"><b>Rank</b></td><td style="width: 70%"><b>Name and Title</b></td></tr>
 <?
-$SQL->myQuery('SELECT players.rank_id, players.id, players.name, guild_ranks.name AS rank_name, players.guildnick FROM guild_ranks , players WHERE guild_id = 1 AND players.rank_id = guild_ranks.id ORDER BY guild_ranks.level DESC');
+$SQL->myQuery('SELECT players.rank_id, players.id, players.name, guild_ranks.name AS rank_name, players.guildnick FROM guild_ranks , players WHERE guild_id = '.$gid.' AND players.rank_id = guild_ranks.id ORDER BY guild_ranks.level DESC');
 while ($a = $SQL->fetch_array()){
 	$members[$a['rank_id']]['name'] = $a['rank_name'];
 	$members[$a['rank_id']]['members'][$a['id']]['name'] = $a['name'];
@@ -83,9 +83,9 @@ foreach ($members as $rank){
 	$i++;
 	$rank_name = $rank['name'];
 	foreach ($rank['members'] as $member){
-		if (!empty($member['nick'])) $nick = ' (<i>'.$member['nick'].'</i>)';
+		if (!empty($member['nick'])) $nick = ' (<i>'.htmlspecialchars($member['nick']).'</i>)';
 		else $nick = '';
-		echo '<tr '.getStyle($i).'><td>'.htmlspecialchars($rank_name).'</td><td><a href="characters.php?char='.addslashes(htmlspecialchars($member['name'])).'">'.htmlspecialchars($member['name']).'</a> '.htmlspecialchars($nick).'</td></tr>';
+		echo '<tr '.getStyle($i).'><td>'.htmlspecialchars($rank_name).'</td><td><a href="characters.php?char='.addslashes(htmlspecialchars($member['name'])).'">'.htmlspecialchars($member['name']).'</a> '.$nick.'</td></tr>';
 		$rank_name = '';
 	}
 }

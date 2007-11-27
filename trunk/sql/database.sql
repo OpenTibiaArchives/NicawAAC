@@ -49,3 +49,9 @@ CREATE TABLE `nicaw_poll_votes` (
   `account_id` int(11) NOT NULL,
   `ip` int(11) NOT NULL
 );
+
+CREATE TABLE `nicaw_guild_invites` (
+	`gid` int(10) unsigned NOT NULL COMMENT 'guild id',
+	`pid` int(10) unsigned NOT NULL COMMENT 'player id',
+	`rank` int(10) unsigned NOT NULL
+);

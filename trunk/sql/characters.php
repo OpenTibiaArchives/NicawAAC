@@ -53,7 +53,7 @@ if (!empty($_GET['char'])){
 		else
 			$lastlogin = date("jS F Y H:i:s",$player->getAttr('lastlogin'));
 		echo "<b>Last Login:</b> ".$lastlogin."<br/>\n";
-		if ($player->getAttr('redskulltime') > 0) echo '<b>Frag time left:</b> '.ceil(($player->getAttr('redskulltime') - time())/60/60).' h</b><br/>';
+		if ($player->getAttr('redskulltime') > time()) echo '<b>Frag time left:</b> '.ceil(($player->getAttr('redskulltime') - time())/60/60).' h</b><br/>';
 		if ($cfg['show_skills']){
 			echo "</td><td>";
 			$sn = $cfg['skill_names'];

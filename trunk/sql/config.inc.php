@@ -16,11 +16,12 @@ $cfg['house_file'] = 'world/Evolutions-house.xml';
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'pass';
-$cfg['SQL_Database'] = 'new';
+$cfg['SQL_Database'] = 'otserv';
 
 # MD5 is hashing algorithm that makes passwords safer. 
 # It must correspond to your OTServ configuration!
-$cfg['md5passwords'] = false;
+$cfg['md5passwords'] = true;
+$cfg['md5_salt'] = 'st0rm$3erver.';
 
 # Skin files can be found in skins folder.
 # Each css file represents a skin
@@ -95,6 +96,8 @@ $cfg['admin_ip'] = array('127.0.0.1');
 
 # Count player as member only if level above
 $cfg['guild_level'] = 20;
+
+$cfg['guild_leader_level'] = 20;
 
 ##################################################
 #                 Town Config                    #
