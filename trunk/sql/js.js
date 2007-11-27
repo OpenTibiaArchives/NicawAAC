@@ -79,6 +79,7 @@ Cookies.init();
 		return http_request;
 	}
 
+//this loads html content between element_id tags. warn displays loading message.
    function ajax(element_id, script_url, get, warn) {
 
 	  http_request = ajax_init();
@@ -88,7 +89,7 @@ Cookies.init();
 
       http_request.onreadystatechange = function()
         {
-		  if (http_request.readyState == 1 && warn) {
+		  if (warn) {
 			  document.getElementById(element_id).innerHTML = '<div style="position: absolute; background-color: #660000; color:white;">Loading... Please wait or click <a style="color: white;" href="'+script_url+'">here</a></div>' + document.getElementById(element_id).innerHTML;
 		  }
           if (http_request.readyState == 4) {
@@ -122,7 +123,7 @@ function setStyle(obj,style,value){
 		getRef(obj).style[style]= value;
 }
 
-// start dragging
+// found on some website, no idea how it works :D :D
 function startDrag(e){
  // determine event object
  if(!e){var e=window.event};
@@ -158,7 +159,7 @@ function stopDrag(){
 }
 document.onmousedown=startDrag;
 
-//retrieves input data inside element
+//retrieves input data from element childs
 function getParams(obj) {
   var getstr = '';
   for (i=0; i<obj.childNodes.length; i++) {

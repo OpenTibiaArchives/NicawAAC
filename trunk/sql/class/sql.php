@@ -23,7 +23,7 @@ public function __construct(){
   $this->_init();
 }
 
-//creates new PDO object for database access
+//creates new connection
 protected function _init(){
 	global $cfg;
 	if (!isset($this->connection)){
@@ -33,7 +33,7 @@ protected function _init(){
 			return false;
 		}
 		if (!@mysql_select_db($cfg['SQL_Database'])){
-			throw new Exception('Unable to select databse.');
+			throw new Exception('Unable to select databse: '.$cfg['SQL_Database'].'. Make sure it exists');
 			return false;
 		}
 		$this->connection = $con;
@@ -46,6 +46,9 @@ public function myQuery($q){
 	$this->last_query = @mysql_query($q);
 	if ($this->last_query === false){
 		$this->last_error = 'Error #'.mysql_errno()."\n".$q."\n" . mysql_error() . "\n";
+		$analysis = analyze();
+		if ($analysis !== false)
+			throw new Exception($analysis."\n".$this->last_error);
 	}
 	return $this->last_query;
 }
@@ -115,6 +118,7 @@ public function analyze()
 			return 'It appears you don\'t have SQL sample imported for OT server';
 		elseif ($is_cvs && !$is_svn)
 			return 'This AAC version does not support your server. Consider using SQL v1.5';
+		return false;
 	}
 	
 public function repairTables()

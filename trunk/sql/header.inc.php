@@ -37,7 +37,7 @@
 <?
 if (file_exists('navigation.xml')){
 	$XML = simplexml_load_file('navigation.xml');
-	if ($XML === false) die ('Malformed XML');
+	if ($XML === false) throw new Exception('Malformed XML');
 }else{die('Unable to load navigation.xml');}
 foreach ($XML->category as $cat){
 	echo '<div class="top">'.$cat['name'].'</div><ul>'."\n";
