@@ -20,8 +20,7 @@ $cfg['SQL_Database'] = 'otserv';
 
 # MD5 is hashing algorithm that makes passwords safer. 
 # It must correspond to your OTServ configuration!
-$cfg['md5passwords'] = true;
-$cfg['md5_salt'] = 'st0rm$3erver.';
+$cfg['md5passwords'] = false;
 
 # Skin files can be found in skins folder.
 # Each css file represents a skin
