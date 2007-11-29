@@ -46,7 +46,7 @@ public function myQuery($q){
 	$this->last_query = @mysql_query($q);
 	if ($this->last_query === false){
 		$this->last_error = 'Error #'.mysql_errno()."\n".$q."\n" . mysql_error() . "\n";
-		$analysis = analyze();
+		$analysis = $this->analyze();
 		if ($analysis !== false)
 			throw new Exception($analysis."\n".$this->last_error);
 	}
