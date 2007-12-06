@@ -42,7 +42,7 @@ a:hover{
 	position: relative;
 }
 #header {
-	background-image: url(skins/swamp/mushi.jpg);
+	background-image: url(skins/swamp/header.jpg);
 	background-repeat: no-repeat;
 	background-position: center;
 	position: absolute;

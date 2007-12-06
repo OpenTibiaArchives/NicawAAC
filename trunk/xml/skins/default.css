@@ -44,7 +44,7 @@ a:hover{
 	position: relative;
 }
 #header {	
-	background-image: url(/*$skindir*/header.jpg);
+	background-image: url(/*$skindir*/header.gif);
 	background-repeat: no-repeat;
 	position: absolute;
 	width: 800px;

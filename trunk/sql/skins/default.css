@@ -83,18 +83,18 @@ a:hover{
 	position: relative;
 }
 #header {	
-	background-image: url(skins/default/header.jpg);
+	background-image: url(skins/default/header.gif);
 	background-repeat: no-repeat;
 	position: absolute;
 	width: 800px;
-	height: 150px;
+	height: 190px;
 }
 #server_name {
 	display: none;
 }
 #panel {
 	position: absolute;
-	margin-top: 150px;
+	margin-top: 180px;
 }	
 #panel a:hover {
 	font-weight: bold;
@@ -147,7 +147,7 @@ a:hover{
 #content {
 	position: absolute;
 	margin-left: 174px;
-	margin-top: 150px;
+	margin-top: 180px;
 }
 #content .top {
 	background-image: url(skins/default/big-top.gif);

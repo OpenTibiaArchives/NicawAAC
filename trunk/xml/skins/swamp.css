@@ -43,7 +43,7 @@ a:hover{
 	position: relative;
 }
 #header {
-	background-image: url(/*$skindir*/mushi.jpg);
+	background-image: url(/*$skindir*/header.jpg);
 	background-repeat: no-repeat;
 	background-position: center;
 	position: absolute;
