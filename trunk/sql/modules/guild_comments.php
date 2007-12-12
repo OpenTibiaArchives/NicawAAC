@@ -23,7 +23,7 @@ $_SESSION['last_activity']=time();
 $form = new Form('comments');
 //check if any data was submited
 if ($form->exists()){
-	$gid = (int) $_GET['gid'];
+	$gid = (int) $_REQUEST['gid'];
 	//get guild owner acc
 	$SQL = new SQL();
 	$query = 'SELECT players.account_id, guilds.name FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.id = '.$SQL->quote($gid);
@@ -31,14 +31,15 @@ if ($form->exists()){
 	$result = $SQL->fetch_array();
 	$owner = (int) $result['account_id'];
 	//check if user is guild owner
-	if ($owner == $_SESSION['account'] && !empty($_SESSION['account']))
+	if ($owner == $_SESSION['account'] && !empty($_SESSION['account']) && strlen($form->attrs['comment']) <= 300)
 		file_put_contents('../guilds/'.$gid.'.txt',htmlspecialchars($form->attrs['comment']));
 }else{
-	$gid = (int) $_POST['gid'];
+	$gid = (int) $_REQUEST['gid'];
 	//create new form
 	$form = new IOBox('comments');
 	$form->target = $_SERVER['PHP_SELF'].'?gid='.$gid;
 	$form->addLabel('Edit Description');
+	$form->addMsg('Max 300 symbols');
 	$form->addTextbox('comment',@file_get_contents('../guilds/'.$gid.'.txt'));
 	$form->addClose('Cancel');
 	$form->addSubmit('Save');

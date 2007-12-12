@@ -24,9 +24,9 @@ function getinfo($host='localhost',$port=7171){
 		}
 	return $data;
 }
-
+if ($cfg['status_update_interval'] < 1) $cfg['status_update_interval'] = 1;
 $modtime = filemtime('status.xml');
-if (time() - $modtime > 1*60 || $modtime > time()){
+if (time() - $modtime > $cfg['status_update_interval']*60 || $modtime > time()){
 	$info = getinfo($cfg['server_ip'], $cfg['server_port']);
 	if (!empty($info)) file_put_contents('status.xml',$info);
 }else $info = file_get_contents('status.xml');

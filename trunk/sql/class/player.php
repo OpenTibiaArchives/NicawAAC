@@ -103,7 +103,7 @@ public function isValidName()
 		foreach ($cfg['invalid_names'] as $name)
 			if (eregi($name,$this->attrs['name']))
 				return false;
-		return preg_match($cfg['name_format'],$this->attrs['name'])
+		return preg_match($cfg['player_name_format'],$this->attrs['name'])
 		&& strlen($this->attrs['name']) <= 25 && strlen($this->attrs['name']) >= 4
 		&& !file_exists($cfg['dirdata'].'monster/'.$this->attrs['name'].'.xml')
 		&& !file_exists($cfg['dirdata'].'npc/'.$this->attrs['name'].'.xml');

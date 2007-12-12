@@ -92,7 +92,7 @@ if (isset($query)){
 		if ($a['access'] < $cfg['ranks_access'])
 			{
 				$i++;
-				echo '<tr '.getStyle($i).'><td>'.$i.'</td><td><a href="characters.php?char='.$a['name'].'">'.$a['name'].'</a></td><td>'.$a[$key].'</td></tr>'."\n";
+				echo '<tr '.getStyle($i).'><td>'.$i.'</td><td><a href="characters.php?char='.urlencode($a['name']).'">'.htmlspecialchars($a['name']).'</a></td><td>'.$a[$key].'</td></tr>'."\n";
 			}
 	}
 }

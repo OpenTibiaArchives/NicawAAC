@@ -54,6 +54,8 @@ if( get_magic_quotes_gpc() )
 //Anti session hijacking
 if ($cfg['secure_session'] && !empty($_SESSION['account']) && ($_SERVER['REMOTE_ADDR'] != $_SESSION['remote_ip'] || time() - $_SESSION['last_activity'] > 30*60))
 	unset($_SESSION['account']);
+	
+$_SESSION['last_activity'] = time();
 
 //Check for correct PHP version
 if (!version_compare(phpversion(), "5.1.4", ">=") )

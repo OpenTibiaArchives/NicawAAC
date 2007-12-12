@@ -27,7 +27,7 @@ function __construct($name){
 	$buttons = 0;
 }
 public function addMsg($msg){
-	$this->elements[]= '<p>'.$msg.'</p>';
+	$this->elements[]= '<p style="margin: 5px">'.$msg.'</p>';
 }
 public function addSelect($name,$options){
 	$code = '<select id="'.$this->name.'__'.$name.'" name="'.$this->name.'__'.$name.'">';

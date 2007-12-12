@@ -1,5 +1,4 @@
 <?
-die();
 /*
     Copyright (C) 2007  Nicaw
 
@@ -22,25 +21,39 @@ include ("../include.inc.php");
 $account = new Account($_SESSION['account']);
 ($account->load()) or die('You need to login first. '.$account->getError());
 //retrieve post data
-$form = new Form('delete');
+$form = new Form('new_guild');
 //check if any data was submited
 if ($form->exists()){
-	//load player
-	$player = new Player($form->attrs['character']);
-	if ($player->load()){
-		//check if player really belongs to account
-		if ($player->getAttr('account') === $account->getAttr('accno')){
-			$pos = $player->getAttr('spawn');
-			if ($player->repair()){
-				$account->logAction('Repaired character: '.$player->getAttr('name').', '.$pos['x'].' '.$pos['y'].' '.$pos['z']);
-				//create new message
-				$msg = new IOBox('message');
-				$msg->addMsg($player->getAttr('name').' was repaired.');
-				$msg->addClose('Finish');
-				$msg->show();
-			}else $error = $player->getError();
-		}else $error ='Player does not belong to account';
-	}else $error ='Unable to load player';
+	$form->attrs['guild_name'] = ucfirst($form->attrs['guild_name']);
+	//check for correct guild name
+	if (preg_match($cfg['guild_name_format'],$form->attrs['guild_name'])){
+		$new_guild = new Guild($form->attrs['guild_name']);
+		if (!$new_guild->exists()){
+			$owner = new Player($form->attrs['leader']);
+			//load owner character
+			if ($owner->load()){
+				//check if belong to current account
+				if ($owner->getAttr('account') == $_SESSION['account']){
+					//check if owner belongs to any guild
+					if (!$owner->isAttr('guild_id')){
+						if ($owner->getAttr('level') >= $cfg['guild_leader_level']){
+							//create guild and add owner as a leader
+							$new_guild->setAttr('owner_id', $owner->getAttr('id'));
+							$new_guild->memberJoin($owner->getAttr('id'), 3, 'Leader');
+							$new_guild->save();
+							$account->logAction('Created guild: '.$new_guild->getAttr('name'));
+							
+							//success
+							$msg = new IOBox('message');
+							$msg->addMsg('Guild was created');
+							$msg->addClose('Finish');
+							$msg->show();
+						}else $error = 'Character level too low';
+					}else $error = 'This character already belongs to guild';
+				}else $error = 'Not your character';
+			}else $error = 'Cannot load player';
+		}else $error = 'Guild exists with this name';
+	}else $error = 'Not a valid name';
 	if (!empty($error)){
 		//create new message
 		$msg = new IOBox('message');
@@ -61,7 +74,7 @@ if ($form->exists()){
 		$form->addClose('Close');
 	}else{
 		$form->addMsg('Select guild name and the owner. Must have at least level '.$cfg['guild_leader_level']);
-		$form->addInput('guild_name');
+		$form->addInput('guild name');
 		$form->addSelect('leader',array_combine($list,$list));
 		$form->addClose('Cancel');
 		$form->addSubmit('Next >>');

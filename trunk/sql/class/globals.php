@@ -71,4 +71,14 @@ function percent_bar($part, $total)
 		$percent_text = $percent.'%';
 	return '<div class="percent_bar" style="width:'.($percent*2).'px">'.$percent_text.'</div>';
 }
+
+function deeper_array_search($needle, $haystack, $attribute)
+{
+	while ($v = current($haystack)){
+		if ($v[$attribute] == $needle)
+			return key($haystack);
+		next($haystack);
+	}
+	return false;
+}
 ?>

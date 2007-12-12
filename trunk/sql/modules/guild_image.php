@@ -19,7 +19,7 @@
 include ("../include.inc.php");
 
 if (isset($_POST['image_submit'])){
-	$gid = (int) $_GET['gid'];
+	$gid = (int) $_REQUEST['gid'];
 	//get guild owner acc
 	$SQL = new SQL();
 	$query = 'SELECT players.account_id, guilds.name FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.id = '.$SQL->escape_string($gid);
@@ -40,7 +40,7 @@ if (isset($_POST['image_submit'])){
 	if (!empty($error)) echo $error;
 	else header('location: '.$_SERVER['HTTP_REFERER']);
 }else{
-$gid = (int) $_POST['gid'];
+$gid = (int) $_REQUEST['gid'];
 ?>
 <div id="iobox" class="draggable">
 <fieldset><legend>Upload Image</legend>

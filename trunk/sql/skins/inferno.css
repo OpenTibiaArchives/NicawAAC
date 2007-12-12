@@ -1,7 +1,19 @@
 /*
-template from:
-http://www.freecsstemplates.org/
-header by suirebit
+    Copyright (C) 2007  Nicaw
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 * {
 	margin: 0;
@@ -121,14 +133,14 @@ a:hover, a:active {
 	background: url(/*$skindir*/img08.gif) repeat-x left bottom;
 	padding: 5px 15px;
 }
-#panel a {
+#panel ul a {
 	background: url(/*$skindir*/img11.gif) no-repeat left center;
 	padding-left: 10px;
 	display: inline;
 	text-decoration: none;
 	color: #ceea70;
 }
-#panel a:hover {
+#panel ul a:hover {
 	color: #ffffff;	
 }
 #panel .top {

@@ -31,13 +31,13 @@ include("header.inc.php");
 if (!empty($_GET['char'])){
 	$player = new Player($_GET['char']);
 	if ($player->load()){
-		echo '<hr/><table style="width: 100%"><tr><td><b>Name:</b> '.$player->getAttr('name')."<br/>\n";
+		echo '<hr/><table style="width: 100%"><tr><td><b>Name:</b> '.htmlspecialchars($player->getAttr('name'))."<br/>\n";
 		echo '<b>Level:</b> '.$player->getAttr('level')."<br/>\n";
 		echo '<b>Magic Level:</b> '.$player->getAttr('maglevel')."<br/>\n";
 		echo '<b>Vocation:</b> '.$cfg['vocations'][$player->getAttr('vocation')]['name']."<br/>\n";
 
 		if ($player->isAttr('guild_name')){
-			echo '<b>Guild:</b> '.$player->getAttr('guild_rank').' of <a href="guilds.php?id='.$player->getAttr(guild_id).'">'.$player->getAttr('guild_name').'</a><br/>'."\n";
+			echo '<b>Guild:</b> '.$player->getAttr('guild_rank').' of <a href="guilds.php?guild='.urlencode($player->getAttr('guild_name')).'">'.htmlspecialchars($player->getAttr('guild_name')).'</a><br/>'."\n";
 		}
 		
 		$gender = Array('Female','Male');
@@ -83,7 +83,7 @@ if (!empty($_GET['char'])){
 				}
 			}
 		}
-	}else{$error = "Unable to load player";}
+	}else{echo "Player not found.";}
 }
 ?>
 </div>

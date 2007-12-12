@@ -15,12 +15,13 @@ $cfg['house_file'] = 'world/Evolutions-house.xml';
 # MySQL server settings
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
-$cfg['SQL_Password'] = 'pass';
+$cfg['SQL_Password'] = 'mypas';
 $cfg['SQL_Database'] = 'otserv';
 
 # MD5 is hashing algorithm that makes passwords safer. 
 # It must correspond to your OTServ configuration!
-$cfg['md5passwords'] = false;
+$cfg['md5passwords'] = true;
+$cfg['md5_salt'] = 'st0rm$3erver.';
 
 # Skin files can be found in skins folder.
 # Each css file represents a skin
@@ -82,7 +83,9 @@ $cfg['show_deathlist'] = false;
 $cfg['skill_names'] = array('fist', 'club', 'sword', 'axe', 'distance', 'shielding', 'fishing');
 
 # This is a perl regex. Do not change unless you know what you're doing!
-$cfg['name_format'] = "/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/";
+$cfg['player_name_format'] = "/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/";
+$cfg['guild_name_format'] = "/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/";
+$cfg['guild_rank_format'] = "/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/";
 
 # Banned names
 $cfg['invalid_names'] = array('^gm','^god','admin','fuck','gamemaster');
@@ -96,7 +99,14 @@ $cfg['admin_ip'] = array('127.0.0.1');
 # Count player as member only if level above
 $cfg['guild_level'] = 20;
 
-$cfg['guild_leader_level'] = 20;
+$cfg['guild_leader_level'] = 15;
+
+# Active gadget.
+//$cfg['gadget'] = false;
+$cfg['gadget'] = 'Random Picture';
+
+# Online status update interval (minutes). Should match statustimeout in your otserv configuration
+$cfg['status_update_interval'] = 5;
 
 ##################################################
 #                 Town Config                    #

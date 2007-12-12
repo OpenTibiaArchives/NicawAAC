@@ -52,7 +52,7 @@ if (isset($account->players)){
 	echo '<h3>Characters</h3>'."\n";
 	echo '<ul class="task-menu">';
 	foreach ($account->players as $player){
-		echo '<li style="background-image: url(ico/user.png);" onclick="window.location.href=\'characters.php?char='.$player->getAttr('name').'\'">'.htmlspecialchars($player->getAttr('name')).'</li>';
+		echo '<li style="background-image: url(ico/user.png);" onclick="window.location.href=\'characters.php?char='.htmlspecialchars($player->getAttr('name')).'\'">'.htmlspecialchars($player->getAttr('name')).'</li>';
 	}
 	echo '</ul>';
 }

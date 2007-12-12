@@ -57,15 +57,19 @@ foreach ($XML->category as $cat){
 <div class="bot"></div>
 </div>
 <div id="friends">
-<div class="top">Sponsor</div>
-<div class="mid">
-<div id="keywords" style="display:none">
-Funny Free Games MMORPG Tibia Nicaw AAC Opentibia Otserv
-</div>
-<script type="text/javascript"
-  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+<? if ($cfg['gadget'] !== false){?>
+<div class="top"><?=$cfg['gadget']?></div>
+<div id="gadget" class="mid">
+<?
+if (is_file('gadgets/'.$cfg['gadget'].'/index.php')){?>
+<script language="javascript" type="text/javascript">
+//<![CDATA[
+	ajax('gadget','gadgets/<?=$cfg['gadget']?>/index.php','',false);
+//]]>
 </script>
+<?}?>
 </div>
+<?}?>
 <div class="bot"></div>
 </div>
 </div>

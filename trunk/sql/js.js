@@ -1,16 +1,3 @@
-//default adsense values $.$
-google_ad_client = "pub-8407977271374637";
-google_ad_width = 125;
-google_ad_height = 125;
-google_ad_format = "125x125_as";
-google_ad_type = "text_image";
-google_ad_channel ="9679671194";
-google_color_border = "CCCCCC";
-google_color_bg = "CCCCCC";
-google_color_link = "000000";
-google_color_text = "333333";
-google_color_url = "666666";
-
 logout_time = 15*60;
 
 //mmmhmhm, have a cookie?
@@ -90,7 +77,7 @@ Cookies.init();
       http_request.onreadystatechange = function()
         {
 		  if (warn) {
-			  document.getElementById(element_id).innerHTML = '<div style="position: absolute; background-color: #660000; color:white;">Loading... Please wait or click <a style="color: white;" href="'+script_url+'">here</a></div>' + document.getElementById(element_id).innerHTML;
+			  document.getElementById(element_id).innerHTML = '<div style="z-index: 10; position: absolute; background-color: #660000; color:white;">Loading... Please wait or click <a style="color: white;" href="'+script_url+'?'+encodeURI(get)+'">here</a></div>' + document.getElementById(element_id).innerHTML;
 		  }
           if (http_request.readyState == 4) {
             if (http_request.status == 200) {
@@ -102,7 +89,7 @@ Cookies.init();
 					document.getElementById('iobox').style['visibility'] = 'visible';
 				}
             }else if(warn){
-              alert('Server failed to load script ('+http_request.status+')');
+              alert('Server failed to load script: \n'+script_url+'\nError: '+http_request.status);
             }
           }
         }
