@@ -54,7 +54,7 @@ if ($sql->failed())
 while ($a = $sql->fetch_array()){
 	$polls[$a['poll_id']]['question'] = $a['question'];
 	$polls[$a['poll_id']]['minlevel'] = $a['minlevel'];
-	if ($a['hidden'])
+	if (!$a['hidden'])
 		$polls[$a['poll_id']]['votes_total'] += $a['votes'];
 	$polls[$a['poll_id']]['options'][$a['option_id']]['id'] = $a['option_id'];
 	$polls[$a['poll_id']]['options'][$a['option_id']]['option'] = $a['option'];
@@ -62,9 +62,9 @@ while ($a = $sql->fetch_array()){
 }
 if (isset($polls))
 	foreach ($polls as $poll){
-		echo '<b>'.$poll['question'].'</b><table style="width: 100%">';
+		echo '<b>'.htmlspecialchars($poll['question']).'</b><table style="width: 100%">';
 		foreach ($poll['options'] as $option){
-			echo '<tr><td class="vote_cell"><img src="ico/wand.png" alt="vote" tile="Cast you vote" onclick="if (confirm(\'Vote for &quot;'.$option['option'].'&quot; ?\')) ajax(\'form\',\'modules/vote.php\',\'option='.$option['id'].'\',true)"/></td><td style="width: 100px">'.$option['option'].'</td><td>'.percent_bar($option['votes'], $poll['votes_total']).'</td></tr>';
+			echo '<tr><td class="vote_cell"><input type="radio" name="'.md5($poll['question']).'" onclick="if (confirm(\'Vote for &quot;'.addslashes(htmlspecialchars($option['option'])).'&quot; ?\')) ajax(\'form\',\'modules/vote.php\',\'option='.htmlspecialchars($option['id']).'\',true)"/></td><td style="width: 100px">'.htmlspecialchars($option['option']).'</td><td>'.percent_bar($option['votes'], $poll['votes_total']).'</td></tr>';
 		}
 		echo '</table>Total votes: '.$poll['votes_total'].'<br/><br/>';
 	}

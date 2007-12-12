@@ -123,8 +123,8 @@ public function analyze()
 	
 public function repairTables()
 	{
-		$tables = @mysql_query('SHOW TABLES');
-		while ($a = @mysql_fetch_array($tables))
+		$result = mysql_query('SHOW TABLES');
+		while ($a = mysql_fetch_array($result))
 			$tables[] = $a[0];
 		if (isset($tables))
 			foreach($tables as $table)

@@ -25,10 +25,11 @@ $form = new Form('tablerepair');
 //check if any data was submited
 if ($form->exists() && $form->getBool('confirm')){
 	$SQL = new SQL();
+	$SQL->repairTables();
 	//create new message
 	$form = new IOBox('tablerepair');
 	$form->target = $_SERVER['PHP_SELF'];
-	$form->addMsg($SQL->repairTables());
+	$form->addMsg('Done');
 	$form->addClose('OK');
 	$form->show();
 }else{

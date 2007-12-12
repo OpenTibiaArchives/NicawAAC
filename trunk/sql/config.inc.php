@@ -96,10 +96,14 @@ $cfg['admin_accounts'] = array();
 # Listed IP always allowed to connect, no matter if it has account or not
 $cfg['admin_ip'] = array('127.0.0.1');
 
-# Count player as member only if level above
+# Count player as member only if level above. Guilds with more members will be displayed first.
 $cfg['guild_level'] = 20;
 
-$cfg['guild_leader_level'] = 15;
+# Minimum level to create own guild. Cannot be lower than $cfg['guild_level']
+$cfg['guild_leader_level'] = 20;
+
+# Please disable guild manager if your server features guild editing
+$cfg['guild_manager_enabled'] = true;
 
 # Active gadget.
 //$cfg['gadget'] = false;

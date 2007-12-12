@@ -64,7 +64,8 @@ public function load()
 	}
 	
 public function save()
-	{
+	{global $cfg;
+		if (!$cfg['guild_manager_enabled']) return false;
 		if (!isset($this->attrs['id'])){
 			if ($this->exists()) throw new Exception('Trying to insert guild which already exists.');
 			$this->myInsert('guilds', array('name' => $this->attrs['name'], 'ownerid' => $this->attrs['owner_id'], 'creationdata' => time()));
@@ -103,6 +104,7 @@ public function save()
 				throw new Exception('Cannot save guild:<br/>'.$this->getError());
 		} 
 		//phew, saving done
+		return true;
 	}
 
 public function isNameInvited($name)

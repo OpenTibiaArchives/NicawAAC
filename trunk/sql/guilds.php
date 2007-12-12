@@ -32,7 +32,7 @@ $SQL = new SQL();
 <?
 //-----------------------Guild list
 if (!isset($_GET['guild'])){
-$query = 'SELECT guilds.id, guilds.name, COUNT(guilds.id) FROM guilds, guild_ranks, players WHERE guilds.id = guild_ranks.guild_id AND guild_ranks.id = players.rank_id GROUP BY guilds.id ORDER BY COUNT(guilds.id) DESC';
+$query = 'SELECT guilds.id, guilds.name, COUNT(guilds.id) FROM guilds, guild_ranks, players WHERE guilds.id = guild_ranks.guild_id AND guild_ranks.id = players.rank_id AND players.level >= '.$cfg['guild_level'].' GROUP BY guilds.id ORDER BY COUNT(guilds.id) DESC';
 $SQL->myQuery($query);
 if ($SQL->failed())
 	throw new Exception('SQL query failed:<br/>'.$SQL->getError());
