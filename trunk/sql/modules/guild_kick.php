@@ -53,6 +53,9 @@ if ($form->exists()){
 	$members = $guild->getAttr('members');
 	foreach ($members as $member)
 		$list[$member['name']] = $member['name'];
+	$members = $guild->getAttr('invited');
+	foreach ($members as $member)
+		$list[$member['name']] = $member['name'];
 	if (!isset($list)) die();
 
 	//create new form

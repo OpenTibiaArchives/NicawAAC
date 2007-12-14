@@ -29,14 +29,16 @@ $form = new Form('join');
 if ($form->exists()){
 	$player = new Player($form->attrs['player']);
 	if ($player->load() && $player->getAttr('account') == $_SESSION['account']){
-		if ($guild->memberJoin($player->getAttr('id'), 1)){
-			$guild->save();
-			//success
-			$msg = new IOBox('message');
-			$msg->addMsg('You have joined '.htmlspecialchars($guild->getAttr('name')));
-			$msg->addClose('OK');
-			$msg->show();
-		}else $error = 'Cannot join guild';
+		if (!$player->isAttr('guild_id')){
+			if ($guild->memberJoin($player->getAttr('id'), 1)){
+				$guild->save();
+				//success
+				$msg = new IOBox('message');
+				$msg->addMsg('You have joined '.htmlspecialchars($guild->getAttr('name')));
+				$msg->addClose('OK');
+				$msg->show();
+			}else $error = 'Cannot join guild';
+		}else $error = 'You already belong to guid.';
 	}else $error = 'Cannot load player';
 	if (!empty($error)){
 		//create new message

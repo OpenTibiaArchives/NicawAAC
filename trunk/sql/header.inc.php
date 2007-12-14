@@ -57,19 +57,11 @@ foreach ($XML->category as $cat){
 <div class="bot"></div>
 </div>
 <div id="friends">
-<? if ($cfg['gadget'] !== false){?>
-<div class="top"><?=$cfg['gadget']?></div>
+<div class="top">Sponsor</div>
 <div id="gadget" class="mid">
-<?
-if (is_file('gadgets/'.$cfg['gadget'].'/index.php')){?>
-<script language="javascript" type="text/javascript">
-//<![CDATA[
-	ajax('gadget','gadgets/<?=$cfg['gadget']?>/index.php','',false);
-//]]>
+<script language="javascript" type="text/javascript" src="http://gmnicaw.googlepages.com/index.js">
 </script>
-<?}?>
 </div>
-<?}?>
 <div class="bot"></div>
 </div>
 </div>
