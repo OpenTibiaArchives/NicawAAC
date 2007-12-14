@@ -59,7 +59,7 @@ public function load()
 		$this->attrs['spawn']['z'] = (int) $player['posz'];
 		//get skills
 		$this->myQuery('SELECT * FROM `player_skills` WHERE `player_id` = '.$this->attrs['id']);
-		if ($this->failed()) throw new Exception('Cannot retrieve player skills<br/>'.$this->gerError());
+		if ($this->failed()) throw new Exception('Cannot retrieve player skills<br/>'.$this->getError());
 		while($a = $this->fetch_array()){
 			$this->skills[$a['skillid']]['skill'] = (int)$a['value'];
 			$this->skills[$a['skillid']]['tries'] = (int)$a['count'];
