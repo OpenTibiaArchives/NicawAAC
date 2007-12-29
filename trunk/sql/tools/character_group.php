@@ -18,7 +18,6 @@
 */
 include ("../include.inc.php");
 require ('check.php');
-$_SESSION['last_activity']=time();
 $SQL = new SQL();
 
 //retrieve post data

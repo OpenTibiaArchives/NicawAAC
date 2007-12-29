@@ -17,7 +17,6 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 include ("../include.inc.php");
-$_SESSION['last_activity']=time();
 //load account if loged in
 $account = new Account($_SESSION['account']);
 ($account->load()) or die('You need to login first. '.$account->getError());

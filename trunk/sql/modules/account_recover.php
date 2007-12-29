@@ -19,7 +19,6 @@
 
 include ("../include.inc.php");
 ($cfg['Email_Recovery']) or die('Disabled in config');
-$_SESSION['last_activity']=time();
 
 //retrieve post data
 $form = new Form('recover');
@@ -106,6 +105,14 @@ If you don\'t want to recover your account, simply ignore this letter.';
 			if (!$account->save()) {$error = 'Error saving account';}
 		}else{ $error = "The link is invalid";}
 	}else{ $error = "Failed to load account";}
+	if (!empty($error)){
+		//create new message
+		$msg = new IOBox('message');
+		$msg->addMsg($error);
+		$msg->addReload('<< Back');
+		$msg->addClose('OK');
+		$msg->show();
+	}
 }else{
 	//create new form
 	$form = new IOBox('recover');

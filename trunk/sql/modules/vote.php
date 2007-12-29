@@ -18,7 +18,6 @@
 */
 
 include ("../include.inc.php");
-$_SESSION['last_activity']=time();
 //load account if loged in
 $account = new Account($_SESSION['account']);
 if ($account->load())

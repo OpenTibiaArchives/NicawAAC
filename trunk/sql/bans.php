@@ -40,7 +40,7 @@ while ($ban = $SQL->fetch_array()){
 		$timeleft = $d.'d '.$h.'h';
 	else
 		$timeleft = $h.'h';
-	if ($ban['time'] - time() > 0 && (($ban['time'] - time()) < $cfg['max_ban_time'] || $cfg['max_ban_time'] == 0)){
+	if ($ban['time']  > time() && ($ban['time'] - time() < $cfg['max_ban_time'] || $cfg['max_ban_time'] == 0)){
 		$i++;
 		echo '<tr '.getStyle($i).'><td>'.$ban['name'].'</td><td>'.$time.'</td><td>'.$timeleft.'</td></tr>'."\n";
 	}

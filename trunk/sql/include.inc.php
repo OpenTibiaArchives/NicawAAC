@@ -19,6 +19,10 @@ require ('class/iobox.php');
 //set custom exception handler
 set_exception_handler('exception_handler');
 
+/*No more fucking around. Lets make data dir easier for naabs*/
+$cfg['dirdata'] = str_replace('\\', '/', $cfg['dirdata']);
+if (!ereg('/$', $cfg['dirdata'])) $cfg['dirdata'].= '/';
+
 /*Checking if IP not banned.
 In fact, this can be done with .htaccess,
 but noobs just love this function =] */
@@ -64,7 +68,10 @@ if (!version_compare(phpversion(), "5.1.4", ">=") )
 //Check if extensions loaded
 if (!extension_loaded('simplexml'))
 	throw new Exception('SimpleXML extension is not installed');
-
+	
+if (ini_get(register_globals))
+	throw new Exception('Please turn off register globals [register_globals = Off] in your php.ini file.');
+	
 //Set AAC version
-$cfg['aac_version'] = 'sql_3.12';
+$cfg['aac_version'] = 'sql_3.14';
 ?>

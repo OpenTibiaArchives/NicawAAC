@@ -79,7 +79,7 @@ if (!empty($_GET['char'])){
 						$name = '<a href="characters.php?char='.$death['killer'].'">'.$death['killer'].'</a>';
 					else
 						$name = $death['killer'];
-					echo '<i>'.date("jS F Y H:i:s",$player->getAttr('lastlogin')).'</i> Killed at level '.$death['level'].' by '.$name.'<br/>';
+					echo '<i>'.date("jS F Y H:i:s",$death['date']).'</i> Killed at level '.$death['level'].' by '.$name.'<br/>';
 				}
 			}
 		}

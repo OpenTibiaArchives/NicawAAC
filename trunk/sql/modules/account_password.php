@@ -18,7 +18,6 @@
 */
 
 include ("../include.inc.php");
-$_SESSION['last_activity']=time();
 
 //retrieve post data
 $form = new Form('password');

@@ -18,7 +18,6 @@
 */
 include ("../include.inc.php");
 require ('check.php');
-$_SESSION['last_activity']=time();
 
 $ip = @file_get_contents('http://aac.nicaw.net/get_ip.php');
 if (!empty($ip)){
