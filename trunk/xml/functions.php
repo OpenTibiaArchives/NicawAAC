@@ -192,7 +192,7 @@ function teleportToTemple()
 
 function isValidName()
 	{global $cfg;
-		$name = strtolower($this->name);
+		$name = $this->name;
 		return !eregi("^gm",$name) 
 		&& !eregi("^god",$name)
 		&& !eregi("admin",$name)

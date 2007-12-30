@@ -1,5 +1,20 @@
-/*Skin by Nicaw
-Big thanks to http://www.csszengarden.com/ for inspiration and graphics elements*/
+/*
+    Copyright (C) 2007  Nicaw
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
 
 body {
 	background-color: black;
@@ -26,9 +41,28 @@ h2 {
 	height: 40px;
 	padding-left: 25px;
 }
+legend {
+	color: black;
+}
+form,input {
+	margin: 0; 
+	padding: 0; 
+	display: inline;
+}
+fieldset{
+	padding: 5px;
+}
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
 a:hover{
 	font-weight: normal;
 	color: gray;
+}
+.color0 {
+	background-color: #bc916f;
 }
 .top {
 	color: black;
@@ -49,13 +83,25 @@ a:hover{
 .textfield {
 	background-color: #fffdfa;
 }
+.task-menu{
+	cursor: pointer;
+}
+.task-menu li{
+	height: 16px;
+	background-repeat: no-repeat;
+	padding-left: 20px;
+	padding-bottom: 5px;
+}
+.task-menu li:hover {
+	background-color: #bc916f;
+}
 #container {
 	width: 750px;
 	height: 700px;
 	margin-left: auto;
 	margin-right: auto;
 	position: relative;
-	color: black;
+	color: white;
 }
 #header {	
 	background-image: url(/*$skindir*/header.gif);
@@ -76,12 +122,15 @@ a:hover{
 #panel {
 	position: absolute;
 	margin-top: 250px;
+	color: black;
 }	
 #panel a{
+	text-decoration: none;
+	font-variant: small-caps;
 	font-weight: bold;
 }
 #panel a:hover {
-	font-family: 'Bitstream Vera Sans', Tahoma;
+	text-decoration: underline;
 	color: black;
 }
 #panel li {
@@ -123,17 +172,11 @@ a:hover{
 	padding: 0;
 	margin: 0;
 }
-#panel a {
-	text-decoration: none;
-	color: black;
-}
-#panel a:hover {
-	font-weight: bold;
-}
 #content {
 	position: absolute;
 	margin-left: 195px;
 	margin-top: 250px;
+	color: black;
 }
 #content .top {
 	background-image: url(/*$skindir*/big-top.jpg);
@@ -181,6 +224,7 @@ a:hover{
 	margin-left: 240px;
 	margin-top: 200px;
 	cursor: pointer;
+	color: black;
 }
 #captcha-image {
 	margin-top: 5px;
@@ -188,4 +232,18 @@ a:hover{
 #choose-skill {
 	float: left;
 	margin-right: 20px;
+}
+#iobox {
+	z-index: 10;
+	position: fixed;
+	/*IE position: absolute;*/
+	background-color: #e2e2e2;
+	background-image: url(/*$skindir*/big-mid.jpg);
+	background-position: -20px;
+	border: 1px solid #000;
+	color: black;
+	cursor: move;
+}
+#iobox fieldset {
+	cursor: default;
 }

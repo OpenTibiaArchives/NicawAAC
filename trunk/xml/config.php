@@ -19,12 +19,12 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 /*Set location of data directory
 IMPORTANT! Use / to separate folders, put / in the end     */
-$cfg['dirdata'] = 'D:/OTServ/YurOTS/data/';
+$cfg['dirdata'] = 'C:/otserv/data/';
 
 //----------------------------- Website Configuration --------------------------
 
 //look in skins folder to see available skins
-$cfg['skin'] = 'dark';
+$cfg['skin'] = 'swamp';
 
 //name displayed in window title
 $cfg['server_name'] = 'Opentibia Server';

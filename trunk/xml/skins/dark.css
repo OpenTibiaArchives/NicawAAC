@@ -1,4 +1,20 @@
-/*Skin by Nicaw*/
+/*
+    Copyright (C) 2007  Nicaw
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
 
 body {
 	background-color: black;
@@ -17,9 +33,34 @@ h2 {
 	height: 40px;
 	padding-left: 25px;
 }
+legend {
+	color: white;
+}
+form,input {
+	margin: 0; 
+	padding: 0; 
+	display: inline;
+}
+fieldset{
+	padding: 5px;
+}
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
 a:hover{
 	font-weight: normal;
 	color: gray;
+}
+.color0 {
+	background-color: #444444;
+}
+.color1 {
+	background-color: #444444;
+}
+.color2 {
+	background-color: #656565;
 }
 .top {
 	color: white;
@@ -36,30 +77,45 @@ a:hover{
 .rowselect:hover {
 	background-color: #fcecbf;
 }
+.task-menu{
+	cursor: pointer;
+}
+.task-menu li{
+	height: 16px;
+	background-repeat: no-repeat;
+	padding-left: 20px;
+	padding-bottom: 5px;
+}
+.task-menu li:hover {
+	background-color: rgb(85,56,4);
+}
 #container {
 	width: 800px;
 	position: relative;
 }
 #header {	
-	background-image: url(/*$skindir*/header.gif);
+	background-image: url(skins/dark/header.gif);
 	background-repeat: no-repeat;
 	position: absolute;
 	width: 800px;
 	height: 150px;
+}
+#server_name {
+	display: none;
 }
 #panel {
 	position: absolute;
 	margin-top: 150px;
 }	
 #panel li {
-	background-image: url(/*$skindir*/list-item.gif);
+	background-image: url(skins/dark/list-item.gif);
 	background-repeat: no-repeat;
 	padding-left: 30px;
 	list-style-type: none;
 	height: 23px;
 }
 #panel .top {
-	background-image: url(/*$skindir*/top.gif);
+	background-image: url(skins/dark/top.gif);
 	width: 174px;
 	height: 25px;
 	padding-left: 0;
@@ -69,14 +125,14 @@ a:hover{
 	font-weight: bold;
 }
 #panel .mid {
-	background-image: url(/*$skindir*/mid.gif);
+	background-image: url(skins/dark/mid.gif);
 	background-repeat: repeat-y;
 	text-align: center;
 	padding: 10px;
 	width: 154px;
 }
 #panel .bot {
-	background-image: url(/*$skindir*/bot.gif);
+	background-image: url(skins/dark/bot.gif);
 	background-repeat: no-repeat;
 	padding: 0;
 	margin: 0;
@@ -101,7 +157,7 @@ a:hover{
 	margin-top: 150px;
 }
 #content .top {
-	background-image: url(/*$skindir*/big-top.gif);
+	background-image: url(skins/dark/big-top.gif);
 	width: 626px;
 	height: 25px;
 	padding-left: 0;
@@ -111,7 +167,7 @@ a:hover{
 	font-weight: bold;
 }
 #content .mid {
-	background-image: url(/*$skindir*/big-mid.gif);
+	background-image: url(skins/dark/big-mid.gif);
 	background-repeat: repeat-y;
 	padding-left: 20px;
 	padding-right: 20px;
@@ -121,7 +177,7 @@ a:hover{
 	min-height: 250px;
 }
 #content .bot {
-	background-image: url(/*$skindir*/big-bot.gif);
+	background-image: url(skins/dark/big-bot.gif);
 	background-repeat: no-repeat;
 	padding: 0;
 	margin: 0;
@@ -129,16 +185,16 @@ a:hover{
 	height: 13px;
 }
 #error {
-	background-image: url(/*$skindir*/error.png);
+	background-image: url(skins/dark/error.png);
 	background-repeat: no-repeat;
 	position: absolute;
 	font-family: Verdana;
 	font-size: 8pt;
 	font-weight: bold;
-	width: 180px;
+	width: 175px;
 	height: 70px;
 	padding-left: 60px;
-	padding-right: 10px;
+	padding-right: 15px;
 	padding-top: 20px;
 	padding-bottom: 20px;
 	margin-left: 240px;
@@ -149,7 +205,7 @@ a:hover{
 	margin-top: 5px;
 }
 #account-image {
-	background-image: url(/*$skindir*/beastie.gif);
+	background-image: url(skins/dark/beastie.gif);
 	background-repeat: no-repeat;
 	width: 227px;
 	height: 265px;
@@ -158,4 +214,15 @@ a:hover{
 #choose-skill {
 	float: left;
 	margin-right: 20px;
+}
+#iobox {
+	z-index: 10;
+	position: fixed;
+	/*IE position: absolute;*/
+	background-color: #656565;
+	border: 1px solid #000;
+	cursor: move;
+}
+#iobox fieldset {
+	cursor: default;
 }
