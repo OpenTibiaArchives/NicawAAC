@@ -1,4 +1,4 @@
-<?
+<?php
 /*
      Copyright (C) 2007  Nicaw
 
@@ -60,41 +60,40 @@ public function failed(){
 }
 
 //Returns current array with data values
-public function fetch_array($resource = null){
-    if ($resource === null)
-      $resource = $this->last_query;
-    if ($resource !== false && $resource !== null)
-      return mysql_fetch_array($resource);
-     else
-      return null;
+public function fetch_array(){
+    if (!$this->failed())
+      return mysql_fetch_array($this->last_query);
+    else
+      throw new Exception('Attempt to fetch failed query'."\n".$this->last_error);
 }
 
 //Returns the last insert id
-public function insert_id($resource = null){
+public function insert_id(){
       return mysql_insert_id();
 }
   
 //Returns the number of rows affected
-public function num_rows($resource = null)
+public function num_rows()
   {
-    if ($resource === null)
-      $resource = $this->last_query;
-    if ($resource !== false && $resource !== null)
-      return mysql_num_rows($resource);
-     else
-      return null;
+    if (!$this->failed())
+      return mysql_num_rows($this->last_query);
+    else
+      throw new Exception('Attempt to count failed query'."\n".$this->last_error);
   }
 
-//Quotes a string so it's safe to use in SQL statement
+//Quotes a string
 public function escape_string($string)
   {
-    return mysql_escape_string($string);
+    return mysql_real_escape_string($string);
   }
 
-//Quotes a string and adds apostrofes
-public function quote($string)
+//Quotes a value so it's safe to use in SQL statement
+public function quote($value)
   {
-    return '\''.mysql_escape_string($string).'\'';
+    if(is_numeric($value))
+	  return (int) $value;
+	else
+      return '\''.$this->escape_string($value).'\'';
   }
 
 //Return last error
@@ -106,6 +105,7 @@ public function getError()
 public function analyze()
 	{
 		$result = @mysql_query('SHOW TABLES');
+		if ($result === false) return false;
 		while ($a = mysql_fetch_array($result))
 			$t[] = $a[0];
 		$is_aac_db = in_array('nicaw_accounts',$t);
@@ -115,7 +115,7 @@ public function analyze()
 		if (!$is_aac_db)
 			return 'It appears you don\'t have SQL sample imported for AAC';
 		elseif (!$is_server_db)
-			return 'It appears you don\'t have SQL sample imported for OT server';
+			return 'It appears you don\'t have SQL sample imported for OT server or it is not supported';
 		elseif ($is_cvs && !$is_svn)
 			return 'This AAC version does not support your server. Consider using SQL v1.5';
 		return false;
@@ -150,7 +150,7 @@ public function myInsert($table,$data)
 			if ($value === null)
 				$query.= 'NULL,';
 			else
-				$query.= '\''.mysql_escape_string($value).'\',';
+				$query.= $this->quote($value).',';
 		$query = substr($query, 0, strlen($query)-1);
 		$query.= ');';
 		if ($this->myQuery($query) === false) 
@@ -174,7 +174,7 @@ public function myReplace($table,$data)
 			if ($value === null)
 				$query.= 'NULL,';
 			else
-				$query.= '\''.mysql_escape_string($value).'\',';
+				$query.= $this->quote($value).',';
 		$query = substr($query, 0, strlen($query)-1);
 		$query.= ');';
 		if ($this->myQuery($query) === false) 
@@ -191,13 +191,13 @@ public function myRetrieve($table,$data)
 		$values = array_values($data);
 		$query = 'SELECT * FROM `'.mysql_escape_string($table).'` WHERE (';
 		for ($i = 0; $i < count($fields); $i++)
-			$query.= '`'.mysql_escape_string($fields[$i]).'` = \''.mysql_escape_string($values[$i]).'\' AND ';
+			$query.= '`'.mysql_escape_string($fields[$i]).'` = '.$this->quote($values[$i]).' AND ';
 		$query = substr($query, 0, strlen($query)-4);
 		$query.=');';
 		$this->myQuery($query);
 		if ($this->failed()) return false;
 		if ($this->num_rows() <= 0) return false;
-		if ($this->num_rows() > 1) throw new Exception('Unexpected SQL answer. More than one row exists.');
+		if ($this->num_rows() > 1) throw new Exception('Unexpected SQL answer. More than one item exists.');
 		return $this->fetch_array();
 	}
 
@@ -208,15 +208,18 @@ public function myUpdate($table,$data,$where,$limit=1)
 		$values = array_values($data);
 		$query = 'UPDATE `'.mysql_escape_string($table).'` SET ';
 		for ($i = 0; $i < count($fields); $i++)
-			$query.= '`'.mysql_escape_string($fields[$i]).'` = \''.mysql_escape_string($values[$i]).'\', ';
+			$query.= '`'.mysql_escape_string($fields[$i]).'` = '.$this->quote($values[$i]).', ';
 		$query = substr($query, 0, strlen($query)-2);
 		$query.=' WHERE (';
 		$fields = array_keys($where); 
 		$values = array_values($where);
 		for ($i = 0; $i < count($fields); $i++)
-			$query.= '`'.mysql_escape_string($fields[$i]).'` = \''.mysql_escape_string($values[$i]).'\' AND ';
+			$query.= '`'.mysql_escape_string($fields[$i]).'` = '.$this->quote($values[$i]).' AND ';
 		$query = substr($query, 0, strlen($query)-4);
-		$query.=') LIMIT '.$limit.';';
+		if (isset($limit))
+			$query.=') LIMIT '.$limit.';';
+		else
+			$query.=');';
 		$this->myQuery($query);
 		if ($this->failed()) return false;
 		return true;
@@ -229,7 +232,7 @@ public function myDelete($table,$data,$limit = 1)
 		$values = array_values($data);
 		$query = 'DELETE FROM `'.mysql_escape_string($table).'` WHERE (';
 		for ($i = 0; $i < count($fields); $i++)
-			$query.= '`'.mysql_escape_string($fields[$i]).'` = \''.mysql_escape_string($values[$i]).'\' AND ';
+			$query.= '`'.mysql_escape_string($fields[$i]).'` = '.$this->quote($values[$i]).' AND ';
 		$query = substr($query, 0, strlen($query)-4);
 		if ($limit > 0)
 			$query.=') LIMIT '.$limit.';';

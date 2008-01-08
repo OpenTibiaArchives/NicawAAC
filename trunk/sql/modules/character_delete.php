@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -18,8 +18,8 @@
 */
 include ("../include.inc.php");
 //load account if loged in
-$account = new Account($_SESSION['account']);
-($account->load()) or die('You need to login first. '.$account->getError());
+$account = new Account();
+($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
 //retrieve post data
 $form = new Form('delete');
 //check if any data was submited
@@ -27,13 +27,13 @@ if ($form->exists()){
 	//check for correct password
 	if ($account->checkPassword($form->attrs['password'])){
 		//load player
-		$player = new Player($form->attrs['character']);
-		if ($player->load()){
+		$player = new Player();
+		if ($player->load($form->attrs['character'])){
 			//check if player really belongs to account
 			if ($player->getAttr('account') === $account->getAttr('accno')){
 				//delete the player
 				if ($player->delete()){
-					$account->logAction('Deleted character: '.$form->attrs['character']);
+					$account->logAction('Deleted character '.$player->getAttr('name'));
 					//create new message
 					$msg = new IOBox('message');
 					$msg->addMsg('Your character was deleted.');
@@ -53,7 +53,7 @@ if ($form->exists()){
 	}
 }else{
 	foreach ($account->players as $player)
-		$list[] = $player->getAttr('name');
+		$list[$player['id']] = $player['name'];
 	//create new form
 	$form = new IOBox('delete');
 	$form->target = $_SERVER['PHP_SELF'];
@@ -63,7 +63,7 @@ if ($form->exists()){
 		$form->addClose('Close');
 	}else{
 		$form->addMsg('Which character do you want to delete?<br/>Enter your password to confirm.');
-		$form->addSelect('character',array_combine($list,$list));
+		$form->addSelect('character',$list);
 		$form->addInput('password','password');
 		$form->addClose('Cancel');
 		$form->addSubmit('Next >>');

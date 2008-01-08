@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -23,7 +23,7 @@ include ("header.inc.php");
 <div id="content">
 <div class="top">Polls</div>
 <div class="mid">
-<?
+<?php 
 $sql = new SQL();
 if (isset($_GET['id']))
 	$params = 'AND nicaw_polls.id = '.$sql->quote((int)$_GET['id']);
@@ -72,4 +72,4 @@ if (isset($polls))
 </div>
 <div class="bot"></div>
 </div>
-<?include ("footer.inc.php");?>
+<?php include ("footer.inc.php");?>

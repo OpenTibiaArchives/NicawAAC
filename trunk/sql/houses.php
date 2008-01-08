@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -20,7 +20,7 @@ include ("include.inc.php");
 $ptitle="Houses - $cfg[server_name]";
 include ("header.inc.php");
 if (!is_file($cfg['dirdata'].$cfg['house_file']))
-	throw new Exception('House file not found');
+	throw new Exception('House file not found: '.$cfg['dirdata'].$cfg['house_file']);
 ?>
 <div id="content">
 <div class="top">Houses</div>
@@ -28,7 +28,7 @@ if (!is_file($cfg['dirdata'].$cfg['house_file']))
 <div style="height: 500px; overflow: auto; margin: 10px;">
 <table>
 <tr class="color0"><td width="40%"><b>House</b></td><td width="30%"><b>Location</b></td><td width="30%"><b>Owner</b></td></tr>
-<?
+<?php 
 $HousesXML = simplexml_load_file($cfg['dirdata'].$cfg['house_file']);
 $MySQL = new SQL();
 $MySQL->myQuery('SELECT `players`.`name`, `houses`.`id` FROM `players`, `houses` WHERE `houses`.`owner` = `players`.`id`;');
@@ -49,4 +49,4 @@ echo $list;
 </div>
 <div class="bot"></div>
 </div>
-<?include('footer.inc.php');?>
+<?php include('footer.inc.php');?>

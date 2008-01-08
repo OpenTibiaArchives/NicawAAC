@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -18,17 +18,17 @@
 */
 include ("../include.inc.php");
 //load account if loged in
-$account = new Account($_SESSION['account']);
-($account->load()) or die('You need to login first. '.$account->getError());
+$account = new Account();
+($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
 //load guild
-$guild = new Guild($_REQUEST['guild_name']);
-if (!$guild->load()) throw new Exception('Unable to load guild.');
+$guild = new Guild();
+if (!$guild->load($_REQUEST['guild_id'])) throw new Exception('Unable to load guild.');
 //retrieve post data
 $form = new Form('leave');
 //check if any data was submited
 if ($form->exists()){
-	$player = new Player($form->attrs['player']);
-	if ($player->load() && $player->getAttr('account') == $_SESSION['account']){
+	$player = new Player();
+	if ($player->load($form->attrs['player']) && $player->getAttr('account') == $_SESSION['account']){
 		if ($player->getAttr('id') == $guild->getAttr('owner_id')){
 			$guild->remove();
 			
@@ -56,13 +56,13 @@ if ($form->exists()){
 }else{
 	//make a list of member characters
 	foreach ($account->players as $player)
-		if ($guild->isNameMember($player->getAttr('name')))
-			$list[$player->getAttr('name')] = $player->getAttr('name');
+		if ($guild->isMember($player['id']))
+			$list[$player['id']] = $player['name'];
 	if (!isset($list)) die();
 
 	//create new form
 	$form = new IOBox('leave');
-	$form->target = $_SERVER['PHP_SELF'].'?guild_name='.urlencode($_REQUEST['guild_name']);
+	$form->target = $_SERVER['PHP_SELF'].'?guild_id='.urlencode($_REQUEST['guild_id']);
 	$form->addLabel('Leave Guild');
 	if ($account->getAttr('accno') == $guild->getAttr('owner_acc'))
 		$form->addMsg('If you leave with owner character guild will get disbanded!');

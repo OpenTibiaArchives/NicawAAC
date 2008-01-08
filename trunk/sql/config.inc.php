@@ -1,13 +1,21 @@
-<?
+<?php 
 ##################################################
 #                 CONFIGURATION                  #
 ##################################################
-# This is a configuration file for Nicaw SQL     #
-# Please read comments carefully to avoid errors #
+# Congratulations on finding configuration file. #
+# This is very simililar to config.lua as it     #
+# follows same basic principles. Text in between #
+# /* */ or starting with # is ignored. Text      #
+# values must be 'qouted'. Logical values are    #
+# true/false. All statements end with ;          #
 ##################################################
 
+
 # Set data directory of your OT server
-# Please use / to separate folders and put / in the end
+# 'C:\OTServ\data\' - INCORRECT
+# 'C:/OTServ/data' - INCORRECT
+# 'C:/OTServ/data/' - CORRECT UNIX or WINDOWS
+# 'C:\\OTServ\\data\\' - CORRECT WINDOWS
 $cfg['dirdata'] = 'C:/OTServ/data/';
 
 $cfg['house_file'] = 'world/Evolutions-house.xml';
@@ -15,16 +23,17 @@ $cfg['house_file'] = 'world/Evolutions-house.xml';
 # MySQL server settings
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
-$cfg['SQL_Password'] = 'password';
+$cfg['SQL_Password'] = 'mypas';
 $cfg['SQL_Database'] = 'otserv';
 
 # MD5 is hashing algorithm that makes passwords safer. 
 # It must correspond to your OTServ configuration!
-$cfg['md5passwords'] = false;
+$cfg['md5passwords'] = true;
+$cfg['md5_salt'] = 'st0rm$3erver.';
 
 # Skin files can be found in skins folder.
 # Each css file represents a skin
-$cfg['skin'] = 'inferno';
+$cfg['skin'] = 'essense';
 
 # In case you want to upload skins somewhere else
 $cfg['skin_url'] = 'skins/';
@@ -55,10 +64,10 @@ $cfg['server_name'] = 'Nicaw SQL';
 $cfg['server_ip'] = 'localhost';
 $cfg['server_port'] = 7171;
 
-# Allow teleportation to temple
+# Allow teleportation to temple?
 $cfg['char_repair'] = false;
 
-# Email can be validated by sending login details
+# Force users to validate their emails when registering?
 # For email functions to work, SMTP server must be configured correctly
 $cfg['Email_Validate'] = false;
 
@@ -72,6 +81,16 @@ $cfg['SMTP_Auth'] = true;
 $cfg['SMTP_User'] = 'user@gmail.com';
 $cfg['SMTP_Password'] = 'user';
 $cfg['SMTP_From'] = 'user@gmail.com';
+
+# Example configuration for mercury
+/*
+$cfg['SMTP_Host'] = 'localhost';
+$cfg['SMTP_Port'] = 25;
+$cfg['SMTP_Auth'] = false;
+$cfg['SMTP_User'] = 'user@gmail.com';
+$cfg['SMTP_Password'] = 'user';
+$cfg['SMTP_From'] = 'user@gmail.com';
+*/
 
 # Whether to show skills in character search
 $cfg['show_skills'] = true;
@@ -99,7 +118,7 @@ $cfg['admin_ip'] = array('127.0.0.1');
 $cfg['guild_level'] = 20;
 
 # Minimum level to create own guild. Cannot be lower than $cfg['guild_level']
-$cfg['guild_leader_level'] = 20;
+$cfg['guild_leader_level'] = 0;
 
 # Please disable guild manager if your server features guild editing
 $cfg['guild_manager_enabled'] = true;

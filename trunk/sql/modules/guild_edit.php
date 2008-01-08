@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -18,25 +18,25 @@
 */
 include ("../include.inc.php");
 //load account if loged in
-$account = new Account($_SESSION['account']);
-($account->load()) or die('You need to login first. '.$account->getError());
+$account = new Account();
+($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
 //load guild
-$guild = new Guild($_REQUEST['guild_name']);
-if (!$guild->load()) throw new Exception('Unable to load guild.');
+$guild = new Guild();
+if (!$guild->load($_REQUEST['guild_id'])) throw new Exception('Unable to load guild.');
 if ($guild->getAttr('owner_acc') != $_SESSION['account']) die('Not your guild');
 //retrieve post data
 $fselect = new Form('edit_select');
 $fedit = new Form('edit');
 //check if any data was submited
 if ($fselect->exists()){
-	if ($guild->isNameMember($fselect->attrs['player'])){
-	$player = new Player($fselect->attrs['player']);
-		if ($player->load()){
+	if ($guild->isMember($fselect->attrs['player'])){
+	$player = new Player();
+		if ($player->load($fselect->attrs['player'])){
 			//create new form
 			$form = new IOBox('edit');
-			$form->target = $_SERVER['PHP_SELF'].'?guild_name='.urlencode($_REQUEST['guild_name']).'&player_name='.urlencode($fselect->attrs['player']);
+			$form->target = $_SERVER['PHP_SELF'].'?guild_id='.$guild->getAttr('id').'&player_id='.$player->getAttr('id');
 			$form->addLabel('Edit Member');
-			$form->addMsg('Editing: '.$fselect->attrs['player']);
+			$form->addMsg('Editing: '.$player->getAttr('name'));
 			$form->addInput('rank', 'text', $player->getAttr('guild_rank'));
 			$form->addInput('nick', 'text', $player->getAttr('guild_nick'));
 			$form->addClose('Cancel');
@@ -52,14 +52,14 @@ if ($fselect->exists()){
 		$msg->show();
 	}
 }elseif ($fedit->exists()){
-	if ($guild->isNameMember($_REQUEST['player_name'])){
+	if ($guild->isMember($_REQUEST['player_id'])){
 	$fedit->attrs['rank'] = ucfirst($fedit->attrs['rank']);
 	$fedit->attrs['nick'] = ucfirst($fedit->attrs['nick']);
 		if (preg_match($cfg['guild_rank_format'],$fedit->attrs['rank']) && (preg_match($cfg['guild_rank_format'],$fedit->attrs['nick']) || empty($fedit->attrs['nick']))){
-		$player = new Player($_REQUEST['player_name']);
-			if ($player->load()){
-				$guild->memberNameSetRank($player->getAttr('name'), $fedit->attrs['rank']);
-				$guild->memberNameSetNick($player->getAttr('name'), $fedit->attrs['nick']);
+		$player = new Player();
+			if ($player->load($_REQUEST['player_id'])){
+				$guild->memberSetRank($player->getAttr('id'), $fedit->attrs['rank']);
+				$guild->memberSetNick($player->getAttr('id'), $fedit->attrs['nick']);
 				$guild->save();
 				//success
 				$msg = new IOBox('message');
@@ -78,14 +78,13 @@ if ($fselect->exists()){
 	}
 }else{
 	//make a list of member characters
-	$members = $guild->getAttr('members');
-	foreach ($members as $member)
-		$list[$member['name']] = $member['name'];
+	foreach ($guild->members as $member)
+		$list[$member['id']] = $member['name'];
 	if (!isset($list)) die();
 
 	//create new form
 	$form = new IOBox('edit_select');
-	$form->target = $_SERVER['PHP_SELF'].'?guild_name='.$_REQUEST['guild_name'];
+	$form->target = $_SERVER['PHP_SELF'].'?guild_id='.$guild->getAttr('id');
 	$form->addLabel('Edit Member');
 	$form->addMsg('Select the character to edit.');
 	$form->addSelect('player', $list);

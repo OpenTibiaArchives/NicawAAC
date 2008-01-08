@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -19,8 +19,8 @@
 
 include ("../include.inc.php");
 //load account if loged in
-$account = new Account($_SESSION['account']);
-if ($account->load())
+$account = new Account();
+if ($account->load($_SESSION['account']))
 	if ($account->canVote((int) $_POST['option'])){
 		$account->vote((int) $_POST['option']);
 		//create new message

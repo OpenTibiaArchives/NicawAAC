@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -25,7 +25,7 @@ $cfg['max_ban_time'] = 2*30*24*60*60; //2 months
 <div id="content">
 <div class="top">Banned Players</div>
 <div class="mid">
-<?
+<?php 
 $SQL = new SQL();
 $SQL->myQuery('SELECT name, time FROM bans, players WHERE players.id = bans.player ORDER BY time ASC');
 if ($SQL->failed()) 
@@ -50,4 +50,4 @@ echo '</table>'."\n";
 </div>
 <div class="bot"></div>
 </div>
-<?include ("footer.inc.php");?>
+<?php include ("footer.inc.php");?>

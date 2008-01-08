@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -18,18 +18,18 @@
 */
 include ("../include.inc.php");
 //load account if loged in
-$account = new Account($_SESSION['account']);
-($account->load()) or die('You need to login first. '.$account->getError());
+$account = new Account();
+($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
 //load guild
-$guild = new Guild($_REQUEST['guild_name']);
-if (!$guild->load()) throw new Exception('Unable to load guild.');
+$guild = new Guild();
+if (!$guild->load($_REQUEST['guild_id'])) throw new Exception('Unable to load guild.');
 if ($guild->getAttr('owner_acc') != $_SESSION['account']) die('Not your guild');
 //retrieve post data
 $form = new Form('kick');
 //check if any data was submited
 if ($form->exists()){
-	$player = new Player($form->attrs['player']);
-	if ($player->load()){
+	$player = new Player();
+	if ($player->load($form->attrs['player'])){
 		if ($player->getAttr('account') != $guild->getAttr('owner_acc')){
 			if ($guild->memberLeave($player->getAttr('id'))){
 				$guild->save();
@@ -50,17 +50,15 @@ if ($form->exists()){
 	}
 }else{
 	//make a list of member characters
-	$members = $guild->getAttr('members');
-	foreach ($members as $member)
-		$list[$member['name']] = $member['name'];
-	$members = $guild->getAttr('invited');
-	foreach ($members as $member)
-		$list[$member['name']] = $member['name'];
+	foreach ($guild->members as $member)
+		$list[$member['id']] = $member['name'];
+	foreach ($guild->invited as $member)
+		$list[$member['id']] = $member['name'];
 	if (!isset($list)) die();
 
 	//create new form
 	$form = new IOBox('kick');
-	$form->target = $_SERVER['PHP_SELF'].'?guild_name='.urlencode($_REQUEST['guild_name']);
+	$form->target = $_SERVER['PHP_SELF'].'?guild_id='.urlencode($_REQUEST['guild_id']);
 	$form->addLabel('Kick Member');
 	$form->addMsg('Select the character to kick.');
 	$form->addSelect('player', $list);

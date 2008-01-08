@@ -1,4 +1,4 @@
-<?
+<?php
 /*
      Copyright (C) 2007  Nicaw
 
@@ -16,6 +16,40 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
+
+class AAC
+{
+	public function ValidPlayerName($name)
+	{global $cfg;
+		foreach ($cfg['invalid_names'] as $baned_name)
+			if (eregi($baned_name,$name))
+				return false;
+		return preg_match("/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/",$name)
+		&& strlen($name) <= 25 && strlen($name) >= 4
+		&& !file_exists($cfg['dirdata'].'monster/'.$name.'.xml')
+		&& !file_exists($cfg['dirdata'].'npc/'.$name.'.xml');
+	}
+	
+	public function ValidPassword($pass)
+	{
+		return strlen($pass) > 5;
+	}
+	
+	public function ValidAccountNumber($n)
+	{
+		return is_numeric($n) && $n > 100000 && $n < 100000000;
+	}
+	
+	public function ValidEmail($email)
+	{
+		return eregi('^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}$',$email);
+	}
+	
+	public function ValidGuildName($name)
+	{
+		return preg_match("/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/",$name);
+	}
+}
 
 function exception_handler($exception) {
 	echo '<pre style="position: absolute; top: 0px; left: 0px; background-color: white; color: black; border: 3px solid red;"><b>'.$exception->getMessage(). '<br/>'.basename($exception->getFile()).' on line: '.$exception->getLine().'</b><br/>Script was terminated because something unexpected happened. You can report this, if you think it\'s a bug.';

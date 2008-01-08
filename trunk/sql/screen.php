@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -16,7 +16,6 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-header("Content-type: text/css");
 include ("config.inc.php");
 function detect()
     {
@@ -51,9 +50,10 @@ $o = $d['os'];
 // real CSS starts here. im making it a variable so i can mess with it later :)
 $CSS = file_get_contents('skins/'.$cfg['skin'].'.css');
 
-//replace /*$cfg['skin']dir*/ with images directory
+//replace /*skindir*/ with images directory
 $CSS = str_ireplace('/*$skindir*/',$cfg['skin_url'].$cfg['skin'].'/',$CSS);
 
+header("Content-type: text/css");
 //output for IE
 if ($b=="IE" && ($v=="5.5" || $v=="6")){
 //lets fix IE png background problems now.

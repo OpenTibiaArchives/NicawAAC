@@ -1,4 +1,4 @@
-<?
+<?php
 /*
      Copyright (C) 2007  Nicaw
 
@@ -19,19 +19,25 @@
 class Guild extends SQL
 {
 private $attrs;
+public $members = array();
+public $invited = array();
 
-public function __construct($n)
+public function __construct()
 	{
-		//initialize SQL class
-		$this->_init();
-		$this->attrs['name'] = (string) $n;
-		$this->attrs['members'] = array();
-		$this->attrs['invited'] = array();
+		parent::__construct();
 	}
-
-public function load()
+	
+public function find($name)
 	{
-		$query = 'SELECT players.account_id, guilds.* FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.name = '.$this->quote($this->attrs['name']);
+		$guild = $this->myRetrieve('guilds', array('name' => $name));
+		if ($guild === false) return false;
+		$this->load($guild['id']);
+		return true;
+	}
+	
+public function load($id)
+	{
+		$query = 'SELECT players.account_id, guilds.* FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.id = '.$this->quote($id);
 		$this->myQuery($query);
 		if ($this->failed())
 			throw new Exception('Failed to load guild:<br/>'.$this->getError());
@@ -41,6 +47,7 @@ public function load()
 			return false;
 		$a = $this->fetch_array();
 		$this->attrs['id'] = (int) $a['id'];
+		$this->attrs['name'] = (string) $a['name'];
 		$this->attrs['owner_id'] = (int) $a['ownerid'];
 		$this->attrs['owner_acc'] = (string) $a['account_id'];
 		
@@ -50,7 +57,7 @@ public function load()
 			throw new Exception('Failed to load invited members:<br/>'.$this->getError());
 
 		while ($a = $this->fetch_array())
-			$this->attrs['invited'][] = array('id' => $a['id'], 'name' => $a['name'], 'rank' => $a['rank']);
+			$this->invited[] = array('id' => $a['id'], 'name' => $a['name'], 'rank' => $a['rank']);
 		
 		//get members
 		$this->myQuery('SELECT players.name, players.guildnick, players.id, guild_ranks.name AS rank FROM guild_ranks, players WHERE players.rank_id = guild_ranks.id AND guild_ranks.guild_id = '.$this->attrs['id']);
@@ -58,7 +65,7 @@ public function load()
 			throw new Exception('Failed to load guild members:<br/>'.$this->getError());
 
 		while ($a = $this->fetch_array())
-			$this->attrs['members'][] = array('id' => $a['id'], 'name' => $a['name'], 'rank' => $a['rank'], 'nick' => $a['guildnick']);
+			$this->members[] = array('id' => $a['id'], 'name' => $a['name'], 'rank' => $a['rank'], 'nick' => $a['guildnick']);
 
 		return true;
 	}
@@ -81,13 +88,13 @@ public function save()
 		
 		//save ranks (case sensitive)
 		$unique_ranks = array();
-		foreach ($this->attrs['members'] as $member)
+		foreach ($this->members as $member)
 			if (!array_key_exists($member['rank'], $unique_ranks)){
 				if (!$this->myInsert('guild_ranks', array('guild_id' => $this->attrs['id'], 'name' => $member['rank'], 'level' => 1)))
 					throw new Exception('Cannot save guild:<br/>'.$this->getError());
 				$unique_ranks[$member['rank']] = $this->insert_id();
 			}
-		foreach ($this->attrs['invited'] as $member)
+		foreach ($this->invited as $member)
 			if (!array_key_exists($member['rank'], $unique_ranks)){
 				if (!$this->myInsert('guild_ranks', array('guild_id' => $this->attrs['id'], 'name' => $member['rank'], 'level' => 1)))
 					throw new Exception('Cannot save guild:<br/>'.$this->getError());
@@ -95,11 +102,11 @@ public function save()
 			}
 		
 		//save/update players
-		foreach ($this->attrs['invited'] as $member){
+		foreach ($this->invited as $member){
 			if (!$this->myInsert('nicaw_guild_invites', array('gid' => $this->attrs['id'], 'pid' => $member['id'], 'rank' => $unique_ranks[$member['rank']])))
 				throw new Exception('Cannot save guild:<br/>'.$this->getError());
 		}
-		foreach ($this->attrs['members'] as $member){
+		foreach ($this->members as $member){
 			if (!$this->myUpdate('players', array('rank_id' => $unique_ranks[$member['rank']], 'guildnick' => $member['nick']), array('id' =>  $member['id'])))
 				throw new Exception('Cannot save guild:<br/>'.$this->getError());
 		} 
@@ -107,30 +114,21 @@ public function save()
 		return true;
 	}
 
-public function isNameInvited($name)
+	
+public function isInvited($id)
 	{
-		return deeper_array_search($name, $this->attrs['invited'], 'name') !== false;
+		return deeper_array_search($id, $this->invited, 'id') !== false;
 	}
 	
-public function isIdInvited($id)
+public function isMember($id)
 	{
-		return deeper_array_search($id, $this->attrs['invited'], 'id') !== false;
-	}
-	
-public function isNameMember($name)
-	{
-		return deeper_array_search($name, $this->attrs['members'], 'name') !== false;
-	}
-
-public function isIdMember($id)
-	{
-		return deeper_array_search($id, $this->attrs['members'], 'id') !== false;
+		return deeper_array_search($id, $this->members, 'id') !== false;
 	}
 	
 public function memberInvite($id, $rank)
 	{
 		//player is already a member - do nothing
-		if ($this->isIdMember($id) || $this->isIdInvited($id))
+		if ($this->isMember($id) || $this->isInvited($id))
 			return false;
 		$this->myQuery('SELECT name FROM players WHERE id = '.(int)$id);
 		if ($this->failed()) 
@@ -138,26 +136,26 @@ public function memberInvite($id, $rank)
 		if ($this->num_rows() != 1)
 			throw new Exception('Cannot retrieve player name');
 		$a = $this->fetch_array();
-		$this->attrs['invited'][] = array('id' => $id, 'name' => $a['name'], 'rank' => $rank);
+		$this->invited[] = array('id' => $id, 'name' => $a['name'], 'rank' => $rank);
 		return true;
 	}
 	
 public function memberJoin($id, $level, $rank = null)
 	{
 		
-		if ($this->isIdInvited($id)){
-			$invite_key = deeper_array_search($id, $this->attrs['invited'], 'id');
-			$this->attrs['members'][] = $this->attrs['invited'][$invite_key];
-			unset($this->attrs['invited'][$invite_key]);
+		if ($this->isInvited($id)){
+			$invite_key = deeper_array_search($id, $this->invited, 'id');
+			$this->members[] = $this->invited[$invite_key];
+			unset($this->invited[$invite_key]);
 			return true;
-		}elseif (!$this->isIdMember($id) && $rank != null){
+		}elseif (!$this->isMember($id) && $rank != null){
 			$this->myQuery('SELECT name FROM players WHERE id = '.(int)$id);
 			if ($this->failed()) 
 				throw new Exception($this->getError());
 			if ($this->num_rows() != 1)
 				throw new Exception('Cannot retrieve player name');
 			$a = $this->fetch_array();
-			$this->attrs['members'][] = array('id' => $id, 'name' => $a['name'], 'rank' => $rank, 'level' => $level);
+			$this->members[] = array('id' => $id, 'name' => $a['name'], 'rank' => $rank, 'level' => $level, 'nick' => '');
 			return true;
 		}
 		return false;
@@ -165,13 +163,13 @@ public function memberJoin($id, $level, $rank = null)
 	
 public function memberLeave($id)
 	{
-		if ($this->isIdMember($id)){
-			$key = deeper_array_search($id, $this->attrs['members'], 'id');
-			unset($this->attrs['members'][$key]);
+		if ($this->isMember($id)){
+			$key = deeper_array_search($id, $this->members, 'id');
+			unset($this->members[$key]);
 			return true;
-		}elseif ($this->isIdInvited($id)){
-			$key = deeper_array_search($id, $this->attrs['invited'], 'id');
-			unset($this->attrs['invited'][$key]);
+		}elseif ($this->isInvited($id)){
+			$key = deeper_array_search($id, $this->invited, 'id');
+			unset($this->invited[$key]);
 			return true;
 		}
 		return false;
@@ -191,18 +189,18 @@ public function exists()
 	{
 		$this->myQuery('SELECT * FROM `guilds` WHERE `name` = '.$this->quote($this->attrs['name']));
 		if ($this->failed()) throw new Exception('Guild::exists() cannot determine whether guild exists');
-		if ($this->num_rows($sql) > 0) return true;
+		if ($this->num_rows() > 0) return true;
 		return false;
 	}
 
 public function countInvited()
 	{
-		return count($this->attrs['invited']);
+		return count($this->invited);
 	}
 
 public function countMember()
 	{
-		return count($this->attrs['members']);
+		return count($this->members);
 	}
 	
 public function remove()
@@ -212,18 +210,18 @@ public function remove()
 		$this->myQuery('DELETE FROM guild_ranks WHERE guild_id = '.(int)$this->attrs['id']);	
 	}
 
-public function memberNameSetRank($name, $rank)
+public function memberSetRank($id, $rank)
 	{
-		$key = deeper_array_search($name, $this->attrs['members'], 'name');
+		$key = deeper_array_search($id, $this->members, 'id');
 		if ($key === false) throw new Exception('Member not found');
-		$this->attrs['members'][$key]['rank'] = $rank;
+		$this->members[$key]['rank'] = $rank;
 	}
 	
-public function memberNameSetNick($name, $nick)
+public function memberSetNick($id, $nick)
 	{
-		$key = deeper_array_search($name, $this->attrs['members'], 'name');
+		$key = deeper_array_search($id, $this->members, 'id');
 		if ($key === false) throw new Exception('Member not found');
-		$this->attrs['members'][$key]['nick'] = $nick;
+		$this->members[$key]['nick'] = $nick;
 	}
 }
 ?>

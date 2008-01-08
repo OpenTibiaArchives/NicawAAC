@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -18,8 +18,8 @@
 */
 include ("../include.inc.php");
 //load account if loged in
-$account = new Account($_SESSION['account']);
-($account->load()) or die('You need to login first. '.$account->getError());
+$account = new Account();
+($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
 
 //retrieve post data
 $form = new Form('comments');

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -18,11 +18,11 @@
 */
 include ("../include.inc.php");
 //load account if loged in
-$account = new Account($_SESSION['account']);
-($account->load()) or die('You need to login first. '.$account->getError());
+$account = new Account();
+($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
 //load guild
-$guild = new Guild($_REQUEST['guild_name']);
-if (!$guild->load()) throw new Exception('Unable to load guild.');
+$guild = new Guild();
+if (!$guild->load($_REQUEST['guild_id'])) throw new Exception('Unable to load guild.');
 if ($guild->getAttr('owner_acc') != $_SESSION['account']) die('Not your guild');
 //retrieve post data
 $form = new Form('invite');
@@ -31,8 +31,8 @@ if ($form->exists()){
 	if ($guild->countInvited() <= 20){
 		$form->attrs['rank'] = ucfirst($form->attrs['rank']);
 		if (preg_match($cfg['guild_rank_format'],$form->attrs['rank'])){
-			$player = new Player($form->attrs['player']);
-			if ($player->load()){
+			$player = new Player();
+			if ($player->find($form->attrs['player'])){
 				if ($guild->memberInvite($player->getAttr('id'), $form->attrs['rank'])){
 					$guild->save();
 					//success
@@ -54,7 +54,7 @@ if ($form->exists()){
 }else{
 	//create new form
 	$form = new IOBox('invite');
-	$form->target = $_SERVER['PHP_SELF'].'?guild_name='.urlencode($_REQUEST['guild_name']);
+	$form->target = $_SERVER['PHP_SELF'].'?guild_id='.(int)$_REQUEST['guild_id'];
 	$form->addLabel('Invite Member');
 	$form->addMsg('Enter the name and rank of player you want to invite');
 	$form->addInput('player');

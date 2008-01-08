@@ -1,4 +1,4 @@
-<?
+<?php
 /*
      Copyright (C) 2007  Nicaw
 
@@ -20,19 +20,23 @@ class Player extends SQL
 {
 private $attrs, $skills, $storage;
 
-public function __construct($n)
+public function __construct()
 	{
-		//initialize SQl object
-		$this->_init();
-		$this->attrs['name'] = $n;
+		parent::__construct();
+	}
+	
+public function find($name)
+	{
+		$player = $this->myRetrieve('players', array('name' => $name));
+		if ($player === false) return false;
+		$this->load($player['id']);
 		return true;
 	}
 
-public function load()
+public function load($id)
 	{
-		if (!isset($this->attrs['name'])) return false;
 		//I don't load complete data like items etc, just the stuff I need
-		$player = $this->myRetrieve('players', array('name' => $this->attrs['name']));
+		$player = $this->myRetrieve('players', array('id' => $id));
 		if ($player === false) return false;
 		$group = $this->myRetrieve('groups', array('id' => (int) $player['group_id']));
 		if ($group === false)
@@ -71,7 +75,7 @@ public function load()
 			$this->storage[$a['key']] = (int)$a['value'];
 		//get guild stuff
 		$this->myQuery("SELECT players.guildnick, guild_ranks.level, guild_ranks.name, guilds.id, guilds.name FROM guild_ranks, players, guilds WHERE guilds.id = guild_ranks.guild_id AND players.rank_id = guild_ranks.id AND players.id = ".$this->attrs['id']);
-		if (!$this->failed() && $this->num_rows($guild) == 1){
+		if (!$this->failed() && $this->num_rows() == 1){
 			$a = $this->fetch_array();
 			$this->attrs['guild_nick'] = $a[0];
 			$this->attrs['guild_level'] = $a[1];
@@ -98,22 +102,11 @@ public function save()
 		return $this->myUpdate('players', $d, array('id' => $this->attrs['id']));
 	}
 
-public function isValidName()
-	{global $cfg;
-		foreach ($cfg['invalid_names'] as $name)
-			if (eregi($name,$this->attrs['name']))
-				return false;
-		return preg_match($cfg['player_name_format'],$this->attrs['name'])
-		&& strlen($this->attrs['name']) <= 25 && strlen($this->attrs['name']) >= 4
-		&& !file_exists($cfg['dirdata'].'monster/'.$this->attrs['name'].'.xml')
-		&& !file_exists($cfg['dirdata'].'npc/'.$this->attrs['name'].'.xml');
-	}
-
 public function exists()
 	{
 		$this->myQuery('SELECT * FROM `players` WHERE `name` = '.$this->quote($this->attrs['name']));
 		if ($this->failed()) throw new Exception('Player::exists() cannot determine whether player exists');
-		if ($this->num_rows($sql) > 0) return true;
+		if ($this->num_rows() > 0) return true;
 		return false;
 	}
 
@@ -167,7 +160,7 @@ public function delete()
 			&& $this->myDelete('player_viplist',array('player_id' => $this->attrs['id']),0);
 	}
 
-public function make()
+public function create()
 	{global $cfg;
 
 		if ($this->exists())
@@ -228,7 +221,7 @@ public function make()
 				next($cfg['vocations'][$this->attrs['vocation']]['skills']);
 			}
 		}
-	return $this->load();
+	return $this->load($this->attrs['id']);
 	}
 
 public function repair()
@@ -240,7 +233,7 @@ public function repair()
 			'posy' => $cfg['temple'][$this->attrs['city']]['y'],
 			'posz' => $cfg['temple'][$this->attrs['city']]['z']
 			/*, 'experience' => $exp*/), array('id' => $this->attrs['id']))) throw new Exception($this->getError());
-		return $this->load();
+		return $this->load($this->attrs['id']);
 	}
 }
 ?>

@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -25,8 +25,8 @@ $form = new Form('admin');
 //name send by GET param and character deleted
 if (isset($_GET['name'])){
 	//load player
-	$player = new Player($_GET['name']);
-	if ($player->load()){
+	$player = new Player();
+	if ($player->find($_GET['name'])){
 			//delete the player
 			if ($player->delete()){
 				//create new message

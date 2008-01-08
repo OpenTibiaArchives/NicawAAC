@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -18,7 +18,6 @@
 */
 include ("include.inc.php");
 require ('tools/check.php');
-$_SESSION['last_activity']=time();
 
 $ptitle="Admin Panel - $cfg[server_name]";
 include ("header.inc.php");
@@ -34,12 +33,13 @@ include ("header.inc.php");
 <li onclick="ajax('form','tools/group_create.php','',true)" style=" background-image: url(ico/group_add.png);">Create Group</li>
 <li onclick="ajax('form','tools/ip_update.php','',true)" style=" background-image: url(ico/computer_link.png);">Update IP</li>
 <li onclick="ajax('form','tools/table_repair.php','',true)" style=" background-image: url(ico/database_error.png);">Repair Tables</li>
-<? if(!empty($_SESSION['account'])): ?>
+<li onclick="self.window.location.href='tools/php_info.php'" style=" background-image: url(ico/information.png);">PHP Info</li>
+<?php  if(!empty($_SESSION['account'])): ?>
 <li onclick="window.location.href='login.php?logout&amp;redirect=account.php'" style=" background-image: url(ico/resultset_previous.png);">Logout</li>
-<? endif; ?>
+<?php  endif; ?>
 </ul>
 <div id="ajax"></div>
-<?
+<?php 
 $ServerXML = simplexml_load_file('status.xml');
 $params = htmlspecialchars('?url='.$cfg['server_url'].'&version='.$cfg['aac_version'].'&remote_ip='.$_SERVER['REMOTE_ADDR'].'&server_ip='.$_SERVER['SERVER_ADDR'].'&port='.$_SERVER['SERVER_PORT'].'&server_software='.urlencode($_SERVER['SERVER_SOFTWARE']).'&otserv_type='.$ServerXML->serverinfo['server'].$ServerXML->serverinfo['version']);
 ?>
@@ -53,7 +53,7 @@ if (Cookies.get('allow_iframe') == null){
 	}
 }
 if (Cookies.get('allow_iframe') == 'yes'){
-	document.write('<iframe width="100%" height="400px" src="http://aac.nicaw.net/<?=$params?>" ></iframe>');
+	document.write('<iframe width="100%" height="400px" src="http://aac.nicaw.net/<?php echo params?>" ></iframe>');
 }
 if (Cookies.get('allow_iframe') == 'no'){
   document.write('<span onclick="Cookies.erase(\'allow_iframe\'); location.reload(false);" style="cursor: pointer">Click here to enable iframe</span>');
@@ -63,6 +63,6 @@ if (Cookies.get('allow_iframe') == 'no'){
 </div>
 <div class="bot"></div>
 </div>
-<?
+<?php 
 include ("footer.inc.php");
 ?>

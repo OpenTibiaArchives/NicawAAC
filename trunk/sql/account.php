@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -18,8 +18,8 @@
 */
 include ("include.inc.php");
 
-$account = new Account($_SESSION['account']);
-if (!$account->load()){
+$account = new Account();
+if (!$account->load($_SESSION['account'])){
 	$_SESSION['account'] = '';
 	header('location: login.php?redirect=account.php');
 	die();
@@ -36,9 +36,9 @@ include ("header.inc.php");
 <ul class="task-menu" style="width: 200px;">
 <li onclick="ajax('form','modules/character_create.php','',true)" style="background-image: url(ico/user_add.png);">Create Character</li>
 <li onclick="ajax('form','modules/character_delete.php','',true)" style="background-image: url(ico/user_delete.png);">Delete Character</li>
-<?if ($cfg['char_repair']){?>
+<?php if ($cfg['char_repair']){?>
 <li onclick="ajax('form','modules/character_repair.php','',true)" style="background-image: url(ico/user_edit.png);">Repair Character</li>
-<?}?>
+<?php }?>
 <li onclick="ajax('form','modules/account_password.php','',true)" style="background-image: url(ico/key.png);">Change Password</li>
 <li onclick="ajax('form','modules/account_email.php','',true)" style="background-image: url(ico/email.png);">Change Email</li>
 <li onclick="ajax('form','modules/account_comments.php','',true)" style="background-image: url(ico/page_edit.png);">Edit Comments</li>
@@ -47,12 +47,12 @@ include ("header.inc.php");
 <li onclick="window.location.href='login.php?logout&amp;redirect=account.php'" style="background-image: url(ico/resultset_previous.png);">Logout</li>
 </ul>
 </td><td>
-<?
+<?php 
 if (isset($account->players)){
 	echo '<h3>Characters</h3>'."\n";
 	echo '<ul class="task-menu">';
 	foreach ($account->players as $player){
-		echo '<li style="background-image: url(ico/user.png);" onclick="window.location.href=\'characters.php?char='.htmlspecialchars($player->getAttr('name')).'\'">'.htmlspecialchars($player->getAttr('name')).'</li>';
+		echo '<li style="background-image: url(ico/user.png);" onclick="window.location.href=\'characters.php?player_id='.htmlspecialchars($player['id']).'\'">'.htmlspecialchars($player['name']).'</li>';
 	}
 	echo '</ul>';
 }
@@ -63,7 +63,7 @@ if (isset($account->players)){
 <div id="ajax"></div>
 <div class="bot"></div>
 </div>
-<?
+<?php 
 }
 include ("footer.inc.php");
 ?>

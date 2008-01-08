@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -19,15 +19,15 @@
 include ("../include.inc.php");
 ($cfg['char_repair']) or die('repair disabled');
 //load account if loged in
-$account = new Account($_SESSION['account']);
-($account->load()) or die('You need to login first. '.$account->getError());
+$account = new Account();
+($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
 //retrieve post data
 $form = new Form('delete');
 //check if any data was submited
 if ($form->exists()){
 	//load player
-	$player = new Player($form->attrs['character']);
-	if ($player->load()){
+	$player = new Player();
+	if ($player->load($form->attrs['character'])){
 		//check if player really belongs to account
 		if ($player->getAttr('account') === $account->getAttr('accno')){
 			$pos = $player->getAttr('spawn');
@@ -51,7 +51,7 @@ if ($form->exists()){
 	}
 }else{
 	foreach ($account->players as $player)
-		$list[] = $player->getAttr('name');
+		$list[$player['id']] = $player['name'];
 	//create new form
 	$form = new IOBox('delete');
 	$form->target = $_SERVER['PHP_SELF'];
@@ -61,7 +61,7 @@ if ($form->exists()){
 		$form->addClose('Close');
 	}else{
 		$form->addMsg('Select a character.<br/>You will lose some experience and will be teleported to temple.');
-		$form->addSelect('character',array_combine($list,$list));
+		$form->addSelect('character',$list);
 		$form->addClose('Cancel');
 		$form->addSubmit('Next >>');
 	}

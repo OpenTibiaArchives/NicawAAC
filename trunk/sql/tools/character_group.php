@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -25,8 +25,8 @@ $form = new Form('admin');
 $group = new Form('group');
 
 if (isset($_GET['name']) && $group->exists()){
-  $player = new Player($_GET['name']);
-  if ($player->load()){
+  $player = new Player();
+  if ($player->find($_GET['name'])){
 		$player->setAttr('group',$group->attrs['group']);
 		if ($player->save()){
 			//create new message

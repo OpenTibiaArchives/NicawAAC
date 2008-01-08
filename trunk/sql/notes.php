@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -24,11 +24,11 @@ include ("header.inc.php");
 <div class="top">Home</div>
 <div class="mid">
 <pre>
-<?
+<?php 
 echo htmlentities(file_get_contents("notes.inc"));
 ?>
 </pre>
 </div>
 <div class="bot"></div>
 </div>
-<?include ("footer.inc.php");?>
+<?php include ("footer.inc.php");?>

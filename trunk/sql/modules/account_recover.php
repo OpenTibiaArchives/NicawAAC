@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -27,19 +27,17 @@ if ($form->exists()){
 	//image verification
 	if ($form->validated()){
 		//load the character
-		$player = new Player($form->attrs['character']);
-		if ($player->load()){
-			//check if name is valid
-			if ($player->isValidName()){
-				//load account
-				$account = new Account($player->getAttr('account'));
-				if ($account->load()){
-					//check for email match
-					if (strtolower($account->getAttr('email')) == strtolower($form->attrs['email']) && !empty($form->attrs['email'])){
-						//assign recovery key to account
-						$key = $account->addRecoveryKey();
-						if ($account->save()){
-							$body = 'Dear player,
+		$player = new Player();
+		if ($player->find($form->attrs['character'])){
+			//load account
+			$account = new Account();
+			if ($account->load($player->getAttr('account'))){
+				//check for email match
+				if (strtolower($account->getAttr('email')) == strtolower($form->attrs['email']) && !empty($form->attrs['email'])){
+					//assign recovery key to account
+					$key = $account->addRecoveryKey();
+					if ($account->save()){
+						$body = 'Dear player,
 
 this email is a response for your request to recover your account on http://'.$cfg['server_url'].'/
 
@@ -47,34 +45,33 @@ Your account number is: '.$player->getAttr('account').'
 If you also forgot password, please follow this link:
 http://'.$cfg['server_url'].$_SERVER['PHP_SELF'].'?account='.$player->getAttr('account').'&key='.$key.'
 If you don\'t want to recover your account, simply ignore this letter.';
-							//send recovery key
-							require("../phpmailer/class.phpmailer.php");
+						//send recovery key
+						require("../phpmailer/class.phpmailer.php");
 
-							$mail = new PHPMailer();
-							$mail->IsSMTP();						
-							$mail->Host = $cfg['SMTP_Host'];
-							$mail->Port = $cfg['SMTP_Port'];
-							$mail->SMTPAuth = $cfg['SMTP_Auth'];
-							$mail->Username = $cfg['SMTP_User'];
-							$mail->Password = $cfg['SMTP_Password'];
+						$mail = new PHPMailer();
+						$mail->IsSMTP();						
+						$mail->Host = $cfg['SMTP_Host'];
+						$mail->Port = $cfg['SMTP_Port'];
+						$mail->SMTPAuth = $cfg['SMTP_Auth'];
+						$mail->Username = $cfg['SMTP_User'];
+						$mail->Password = $cfg['SMTP_Password'];
 
-							$mail->From = $cfg['SMTP_From'];
-							$mail->AddAddress($account->getAttr('email'));
+						$mail->From = $cfg['SMTP_From'];
+						$mail->AddAddress($account->getAttr('email'));
 
-							$mail->Subject = $cfg['server_name'].' - Lost Account';
-							$mail->Body    = $body;
+						$mail->Subject = $cfg['server_name'].' - Lost Account';
+						$mail->Body    = $body;
 
-							if ($mail->Send()){
-								//create new message
-								$msg = new IOBox('message');
-								$msg->addMsg('An email with recovery details was sent to your inbox.');
-								$msg->addClose('Finish');
-								$msg->show();
-							}else{ $error = "Mailer Error: " . $mail->ErrorInfo;}
-						}else{ $error = $account->getError();}
-					}else{ $error = "Incorrect email address";}
-				}else{ $error = "Failed to load account";}
-			}else{ $error = "Can't use this character to recover account.";}
+						if ($mail->Send()){
+							//create new message
+							$msg = new IOBox('message');
+							$msg->addMsg('An email with recovery details was sent to your inbox.');
+							$msg->addClose('Finish');
+							$msg->show();
+						}else{ $error = "Mailer Error: " . $mail->ErrorInfo;}
+					}else{ $error = $account->getError();}
+				}else{ $error = "Incorrect email address";}
+			}else{ $error = "Failed to load account";}
 		}else{ $error = "Failed to load this character";}
 	}else{ $error = "Image verification failed";}
 	if (!empty($error)){

@@ -1,12 +1,37 @@
-<?
+<?php 
 //page generation time
 $mtime = microtime();
 $mtime = explode(" ",$mtime);
 $mtime = $mtime[1] + $mtime[0];
 $tstart = $mtime;
 
-error_reporting(E_ALL ^ E_NOTICE);
+//error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(E_ALL);
 session_start();
+
+//emulate register_globals = off
+if (ini_get('register_globals')){
+	if (isset($_REQUEST['GLOBALS']) || isset($_FILES['GLOBALS'])) {
+	    die('GLOBALS overwrite attempt detected');
+	}
+
+	// Variables that shouldn't be unset
+	$noUnset = array('GLOBALS',  '_GET',
+	                 '_POST',    '_COOKIE',
+	                 '_REQUEST', '_SERVER',
+	                 '_ENV',     '_FILES');
+
+	$input = array_merge($_GET,    $_POST,
+	                     $_COOKIE, $_SERVER,
+	                     $_ENV,    $_FILES,
+	                     isset($_SESSION) && is_array($_SESSION) ? $_SESSION : array());
+	
+	foreach ($input as $k => $v) {
+	    if (!in_array($k, $noUnset) && isset($GLOBALS[$k])) {
+	        unset($GLOBALS[$k]);
+	    }
+	}
+}
 
 require ('config.inc.php');
 require ('class/globals.php');
@@ -19,25 +44,21 @@ require ('class/iobox.php');
 //set custom exception handler
 set_exception_handler('exception_handler');
 
-/*No more fucking around. Lets make data dir easier for naabs*/
-$cfg['dirdata'] = str_replace('\\', '/', $cfg['dirdata']);
-if (!ereg('/$', $cfg['dirdata'])) $cfg['dirdata'].= '/';
-
 /*Checking if IP not banned.
 In fact, this can be done with .htaccess,
 but noobs just love this function =] */
 if (file_exists('banned.inc')){
-$banned_ips = file ('banned.inc');
-foreach ($banned_ips as $ip){
-	if ($ip == $_SERVER['REMOTE_ADDR']){
-		die("Sorry, your IP is banned from the website."); 
-		//ha ha ha. die die die. My favourite PHP function :)
+	$banned_ips = file ('banned.inc');
+	foreach ($banned_ips as $ip){
+		if ($ip == $_SERVER['REMOTE_ADDR']){
+			die("Sorry, your IP is banned from the website."); 
+			//ha ha ha. die die die. My favourite PHP function :)
+		}
 	}
-}
 }
 
 //just make sure GD extension is loaded before using CAPTCHA
-$cfg['use_captha'] = $cfg['use_captha'] && extension_loaded('gd');
+$cfg['use_captha'] = $cfg['use_captcha'] && extension_loaded('gd');
 
 //store server URL in variable for redirecting
 if ($_SERVER['SERVER_PORT'] == 80 || $_SERVER['SERVER_PORT'] == 443)
@@ -68,9 +89,6 @@ if (!version_compare(phpversion(), "5.1.4", ">=") )
 //Check if extensions loaded
 if (!extension_loaded('simplexml'))
 	throw new Exception('SimpleXML extension is not installed');
-	
-if (ini_get(register_globals))
-	throw new Exception('Please turn off register globals [register_globals = Off] in your php.ini file.');
 	
 //Set AAC version
 $cfg['aac_version'] = 'sql_3.14';

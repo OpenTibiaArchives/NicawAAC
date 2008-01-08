@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -21,7 +21,7 @@ include ("include.inc.php");
 if (isset($_GET['RSS2'])){
 header("Content-type: application/rss+xml");
 
-echo '<?xml version="1.0"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>'.htmlspecialchars($cfg['server_name']).' News</title><link>'.htmlspecialchars($cfg['server_url']).'</link><description>Server news contains latest information about updates, downtimes and events.</description>';
+echo '<?php xml version="1.0"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>'.htmlspecialchars($cfg['server_name']).' News</title><link>'.htmlspecialchars($cfg['server_url']).'</link><description>Server news contains latest information about updates, downtimes and events.</description>';
 
 $mysql = new SQL();
 $sql = $mysql->myQuery('SELECT * FROM `nicaw_news` ORDER BY `date` DESC LIMIT 10');
@@ -49,7 +49,7 @@ include ("header.inc.php");
 <div class="top">Server News</div>
 <div class="mid">
 <a href="news.php?RSS2" style="text-decoration: none; float: right;"><img src="ico/rss.gif" title="Subscribe to RSS" alt="rss" style="vertical-align: middle;"/></a>
-<?
+<?php 
 $mysql = new SQL();
 if (isset($_GET['id']))
 	$mysql->myQuery('SELECT * FROM `nicaw_news` WHERE `id` = \''.mysql_escape_string((int)$_GET['id']).'\'');
@@ -73,4 +73,4 @@ while ($a = $mysql->fetch_array()){
 </div>
 <div class="bot"></div>
 </div>
-<?include ("footer.inc.php");}?>
+<?php include ("footer.inc.php");}?>

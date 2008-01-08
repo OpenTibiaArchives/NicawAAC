@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -23,17 +23,18 @@ $form = new Form('character');
 //check if any data was submited
 if ($form->exists()){
 	//load account if loged in
-	$account = new Account($_SESSION['account']);
-	($account->load()) or die('You need to login first. '.$account->getError());
+	$account = new Account();
+	($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
 	//create new player object
 	$form->attrs['name'] = ucfirst($form->attrs['name']);
-	$newplayer = new Player($form->attrs['name']);
+	$newplayer = new Player();
 	//check for correct parameters
-	if ($cfg['temple'][(int)$form->attrs['residence']]['enabled'] == 1 && $cfg['vocations'][(int)$form->attrs['vocation']]['enabled'] == 1 && ereg("^[01]$",$form->attrs['sex'])){
+	if ($cfg['temple'][$form->attrs['residence']]['enabled'] && $cfg['vocations'][(int)$form->attrs['vocation']]['enabled'] && ereg("^[01]$",$form->attrs['sex'])){
 		//check character number
 		if (count($account->players) < $cfg['maxchars']){
 			//check for valid name
-			if ($newplayer->isValidName()){
+			if (AAC::ValidPlayerName($form->attrs['name'])){
+				$newplayer->setAttr('name',(string)$form->attrs['name']);
 				//player name must not exist
 				if (!$newplayer->exists()){
 					//set attributes for new player
@@ -42,7 +43,7 @@ if ($form->exists()){
 					$newplayer->setAttr('sex',(int)$form->attrs['sex']);
 					$newplayer->setAttr('city',(int)$form->attrs['residence']);
 					//create character and add it to account
-					if ($newplayer->make()){
+					if ($newplayer->create()){
 						$account->logAction('Created character: '.$form->attrs['name']);
 						//create new message
 						$msg = new IOBox('message');
@@ -65,13 +66,13 @@ if ($form->exists()){
 }else{
 	//make a list of valid vocations
 	while ($vocation = current($cfg['vocations'])) {
-		if ((int) $vocation['enabled'] == 1)
+		if (isset($vocation['enabled']) && $vocation['enabled'])
 			$vocations[key($cfg['vocations'])] = $vocation['name'];
 		next($cfg['vocations']);
 	}
 	//make a list of valid spawn places
 	while ($spawn = current($cfg['temple'])) {
-		if ((int) $spawn['enabled'] == 1){
+		if (isset($spawn['enabled']) && $spawn['enabled']){
 			$spawns[key($cfg['temple'])] = $spawn['name'];
 		}
 	    next($cfg['temple']);

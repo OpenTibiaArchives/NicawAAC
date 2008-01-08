@@ -3,15 +3,15 @@
 <head>
 <meta name="Author" content="nicaw" />
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<title><?=$ptitle?></title>
+<title><?php echo $ptitle?></title>
 <link rel="stylesheet" href="default.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="screen.php" type="text/css" media="screen" />
 <link rel="stylesheet" href="print.css" type="text/css" media="print" />
 <link rel="alternate" type="application/rss+xml" title="News" href="news.php?RSS2" />
 <script language="javascript" type="text/javascript" src="js.js"></script>
-<script language="javascript" type="text/javascript" src="<?=$cfg['skin_url'].$cfg['skin']?>.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $cfg['skin_url'].$cfg['skin']?>.js"></script>
 <link rel="shortcut icon" href="favicon.ico" />
-<?if ($cfg['secure_session'] && !empty($_SESSION['account'])){?>
+<?php if ($cfg['secure_session'] && !empty($_SESSION['account'])){?>
 <script language="javascript" type="text/javascript">
 //<![CDATA[
 	function tick()
@@ -26,15 +26,15 @@
 	tick();
 //]]>
 </script>
-<?}?>
+<?php }?>
 </head>
 <body>
 <div id="form"></div>
 <div id="container">
-<div id="header"><div id="server_name"><?=$cfg['server_name']?></div></div>
+<div id="header"><div id="server_name"><?php echo $cfg['server_name']?></div></div>
 <div id="panel">
 <div id="navigation">
-<?
+<?php 
 if (file_exists('navigation.xml')){
 	$XML = simplexml_load_file('navigation.xml');
 	if ($XML === false) throw new Exception('Malformed XML');
@@ -51,7 +51,7 @@ foreach ($XML->category as $cat){
 <div class="top">Status</div>
 <div class="mid">
 <div id="server_state">
-<?include('status.php');?>
+<?php include('status.php');?>
 </div>
 </div>
 <div class="bot"></div>

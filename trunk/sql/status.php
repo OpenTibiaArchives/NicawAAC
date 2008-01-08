@@ -1,9 +1,9 @@
-<?
+<?php 
 include ('config.inc.php');
 function getinfo($host='localhost',$port=7171){
 		// connects to server
         $socket = @fsockopen($host, $port, $errorCode, $errorString, 1);
-
+		$data = '';
         // if connected then checking statistics
         if($socket)
         {

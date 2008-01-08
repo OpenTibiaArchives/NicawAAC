@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -20,8 +20,8 @@ include ("include.inc.php");
 
 ########################## LOGIN ############################
 if (isset($_POST['login_submit'])){
-	$account = new Account($_POST['account']);
-	if ($account->load()){
+	$account = new Account();
+	if ($account->load($_POST['account'])){
 		if ($account->checkPassword($_POST['password'])){
 			$_SESSION['account']=$account->getAttr('accno');
 			$_SESSION['remote_ip']=$_SERVER['REMOTE_ADDR'];
@@ -51,7 +51,7 @@ include ("header.inc.php");
 <div class="mid">
 <fieldset>
 <legend><b>Account Login</b></legend>
-<form id="login_form" action="login.php?redirect=<?=htmlspecialchars($_GET['redirect'])?>" method="post">
+<form id="login_form" action="login.php?redirect=<?php echo htmlspecialchars($_GET['redirect'])?>" method="post">
 <table>
 <tr><td style="text-align: right"><label for="account">Account:</label></td>
 <td><input id="account" name="account" type="password" class="textfield" maxlength="8" size="10"/></td></tr>
@@ -65,10 +65,10 @@ include ("header.inc.php");
 <legend>More Options</legend>
 <ul class="task-menu" style="width: 200px;">
 <li onclick="ajax('form','modules/account_create.php','',true)" style="background-image: url(ico/vcard_add.png);">New Account</li>
-<?if($cfg['Email_Recovery']){?><li onclick="ajax('form','modules/account_recover.php','',true)" style="background-image: url(ico/arrow_redo.png);">Recover Account</li><?}?>
+<?php if($cfg['Email_Recovery']){?><li onclick="ajax('form','modules/account_recover.php','',true)" style="background-image: url(ico/arrow_redo.png);">Recover Account</li><?php }?>
 </ul>
 </fieldset>
 </div>
 <div class="bot"></div>
 </div>
-<?include ("footer.inc.php");?>
+<?php include ("footer.inc.php");?>

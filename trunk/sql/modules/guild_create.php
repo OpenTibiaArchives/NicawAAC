@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -18,20 +18,21 @@
 */
 include ("../include.inc.php");
 //load account if loged in
-$account = new Account($_SESSION['account']);
-($account->load()) or die('You need to login first. '.$account->getError());
+$account = new Account();
+($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
 //retrieve post data
 $form = new Form('new_guild');
 //check if any data was submited
 if ($form->exists()){
 	$form->attrs['guild_name'] = ucfirst($form->attrs['guild_name']);
 	//check for correct guild name
-	if (preg_match($cfg['guild_name_format'],$form->attrs['guild_name'])){
-		$new_guild = new Guild($form->attrs['guild_name']);
+	if (AAC::ValidGuildName($form->attrs['guild_name'])){
+		$new_guild = new Guild();
+		$new_guild->setAttr('name', $form->attrs['guild_name']);
 		if (!$new_guild->exists()){
-			$owner = new Player($form->attrs['leader']);
+			$owner = new Player();
 			//load owner character
-			if ($owner->load()){
+			if ($owner->load($form->attrs['leader'])){
 				//check if belong to current account
 				if ($owner->getAttr('account') == $_SESSION['account']){
 					//check if owner belongs to any guild
@@ -64,7 +65,7 @@ if ($form->exists()){
 	}
 }else{
 	foreach ($account->players as $player)
-		$list[] = $player->getAttr('name');
+		$list[$player['id']] = $player['name'];
 	//create new form
 	$form = new IOBox('new_guild');
 	$form->target = $_SERVER['PHP_SELF'];
@@ -75,7 +76,7 @@ if ($form->exists()){
 	}else{
 		$form->addMsg('Select guild name and the owner. Must have at least level '.$cfg['guild_leader_level']);
 		$form->addInput('guild name');
-		$form->addSelect('leader',array_combine($list,$list));
+		$form->addSelect('leader',$list);
 		$form->addClose('Cancel');
 		$form->addSubmit('Next >>');
 	}

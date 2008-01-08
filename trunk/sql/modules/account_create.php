@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -27,12 +27,13 @@ if ($form->exists()){
 		//email formating rules
 		if (eregi("^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}$",$form->attrs['email'])){
 
-			$account = new Account(rand(100000,999999));
-			while ($account->exists())
-				$account = new Account(rand(100000,999999));
+			$account = new Account();
+			do 
+				$account->setAttr('accno', rand(100000,999999)); 
+			while ($account->exists());
 			//set account atrributes
 			$accno = $account->getAttr('accno');
-			if ($form->attrs['password'] == $form->attrs['confirm'] && strlen($form->attrs['password']) > 5)
+			if ($form->attrs['password'] == $form->attrs['confirm'] && AAC::ValidPassword($form->attrs['password']))
 				$password = $form->attrs['password'];
 			else
 				$password = substr(str_shuffle('qwertyuipasdfhjklzxcvbnm123456789'), 0, 6);

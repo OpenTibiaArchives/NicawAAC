@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -24,69 +24,67 @@ include("header.inc.php");
 <div class="top">Character Lookup</div>
 <div class="mid">
 <form method="get" action="characters.php"> 
-<input type="text" name="char"/> 
+<input type="text" name="player_name"/> 
 <input type="submit" value="Search"/> 
 </form>
-<?
-if (!empty($_GET['char'])){
-	$player = new Player($_GET['char']);
-	if ($player->load()){
-		echo '<hr/><table style="width: 100%"><tr><td><b>Name:</b> '.htmlspecialchars($player->getAttr('name'))."<br/>\n";
-		echo '<b>Level:</b> '.$player->getAttr('level')."<br/>\n";
-		echo '<b>Magic Level:</b> '.$player->getAttr('maglevel')."<br/>\n";
-		echo '<b>Vocation:</b> '.$cfg['vocations'][$player->getAttr('vocation')]['name']."<br/>\n";
+<?php 
+$player = new Player();
+if (!empty($_GET['player_id']) && $player->load($_GET['player_id']) || !empty($_GET['player_name']) && $player->find($_GET['player_name'])){
+	echo '<hr/><table style="width: 100%"><tr><td><b>Name:</b> '.htmlspecialchars($player->getAttr('name'))."<br/>\n";
+	echo '<b>Level:</b> '.$player->getAttr('level')."<br/>\n";
+	echo '<b>Magic Level:</b> '.$player->getAttr('maglevel')."<br/>\n";
+	echo '<b>Vocation:</b> '.$cfg['vocations'][$player->getAttr('vocation')]['name']."<br/>\n";
 
-		if ($player->isAttr('guild_name')){
-			echo '<b>Guild:</b> '.$player->getAttr('guild_rank').' of <a href="guilds.php?guild='.urlencode($player->getAttr('guild_name')).'">'.htmlspecialchars($player->getAttr('guild_name')).'</a><br/>'."\n";
-		}
-		
-		$gender = Array('Female','Male');
-		echo '<b>Gender:</b> '.$gender[$player->getAttr('sex')].'<br/>'."\n";
-		if (!empty($cfg['temple'][$player->getAttr('city')]['name']))
-			echo "<b>Residence</b>: ".ucfirst($cfg['temple'][$player->getAttr('city')]['name'])."<br/>";
+	if ($player->isAttr('guild_name')){
+		echo '<b>Guild:</b> '.$player->getAttr('guild_rank').' of <a href="guilds.php?guild_id='.$player->getAttr('guild_id').'">'.htmlspecialchars($player->getAttr('guild_name')).'</a><br/>'."\n";
+	}
+	
+	$gender = Array('Female','Male');
+	echo '<b>Gender:</b> '.$gender[$player->getAttr('sex')].'<br/>'."\n";
+	if (!empty($cfg['temple'][$player->getAttr('city')]['name']))
+		echo "<b>Residence</b>: ".ucfirst($cfg['temple'][$player->getAttr('city')]['name'])."<br/>";
 
-		if ($player->isAttr('position')){
-			echo "<b>Position: </b> ".$player->getAttr('position')."<br/>";
+	if ($player->isAttr('position')){
+		echo "<b>Position: </b> ".$player->getAttr('position')."<br/>";
+	}
+	if ($player->getAttr('lastlogin') == 0)
+		$lastlogin = 'Never';
+	else
+		$lastlogin = date("jS F Y H:i:s",$player->getAttr('lastlogin'));
+	echo "<b>Last Login:</b> ".$lastlogin."<br/>\n";
+	if ($player->getAttr('redskulltime') > time()) echo '<b>Frag time left:</b> '.ceil(($player->getAttr('redskulltime') - time())/60/60).' h</b><br/>';
+	if ($cfg['show_skills']){
+		echo "</td><td>";
+		$sn = $cfg['skill_names'];
+		for ($i=0; $i < count($sn); $i++){
+			echo '<b>'.ucfirst($sn[$i]).':</b> '.$player->getSkill($i)."<br/>\n";
 		}
-		if ($player->getAttr('lastlogin') == 0)
-			$lastlogin = 'Never';
-		else
-			$lastlogin = date("jS F Y H:i:s",$player->getAttr('lastlogin'));
-		echo "<b>Last Login:</b> ".$lastlogin."<br/>\n";
-		if ($player->getAttr('redskulltime') > time()) echo '<b>Frag time left:</b> '.ceil(($player->getAttr('redskulltime') - time())/60/60).' h</b><br/>';
-		if ($cfg['show_skills']){
-			echo "</td><td>";
-			$sn = $cfg['skill_names'];
-			for ($i=0; $i < count($sn); $i++){
-				echo '<b>'.ucfirst($sn[$i]).':</b> '.$player->getSkill($i)."<br/>\n";
-			}
-			echo '</td></tr>';
-		}
-		echo '</table>';
-		$account = new Account($player->getAttr('account'));
-		if ($account->load())
-			if (strlen($account->getAttr('comment'))>0){
-				echo "<b>Comments</b><br/><div style=\"overflow:hidden\"><pre>".htmlspecialchars($account->getAttr('comment'))."</pre></div><br/>\n";
-			}	
-		echo '<hr/>';
-		if ($cfg['show_deathlist']){
-			$deaths = $player->getDeaths();
-			if ($deaths !== false && !empty($deaths)){
-			echo '<b>Deaths</b><br/>';
-				foreach ($deaths as $death){
-					$killer = new Player($death['killer']);
-					if ($killer->exists())
-						$name = '<a href="characters.php?char='.$death['killer'].'">'.$death['killer'].'</a>';
-					else
-						$name = $death['killer'];
-					echo '<i>'.date("jS F Y H:i:s",$death['date']).'</i> Killed at level '.$death['level'].' by '.$name.'<br/>';
-				}
+		echo '</td></tr>';
+	}
+	echo '</table>';
+	$account = new Account();
+	if ($account->load($player->getAttr('account')))
+		if (strlen($account->getAttr('comment'))>0){
+			echo "<b>Comments</b><br/><div style=\"overflow:hidden\"><pre>".htmlspecialchars($account->getAttr('comment'))."</pre></div><br/>\n";
+		}	
+	echo '<hr/>';
+	if ($cfg['show_deathlist']){
+		$deaths = $player->getDeaths();
+		if ($deaths !== false && !empty($deaths)){
+		echo '<b>Deaths</b><br/>';
+			foreach ($deaths as $death){
+				$killer = new Player($death['killer']);
+				if ($killer->exists())
+					$name = '<a href="characters.php?char='.$death['killer'].'">'.$death['killer'].'</a>';
+				else
+					$name = $death['killer'];
+				echo '<i>'.date("jS F Y H:i:s",$death['date']).'</i> Killed at level '.$death['level'].' by '.$name.'<br/>';
 			}
 		}
-	}else{echo "Player not found.";}
-}
+	}
+}elseif (isset($_GET['player_id']) || isset($_GET['player_name'])) echo 'Player not found';
 ?>
 </div>
 <div class="bot"></div>
 </div>
-<?include ("footer.inc.php");?>
+<?php include ("footer.inc.php");?>

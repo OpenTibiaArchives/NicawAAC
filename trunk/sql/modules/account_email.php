@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -18,15 +18,15 @@
 */
 include ("../include.inc.php");
 //load account if loged in
-$account = new Account($_SESSION['account']);
-($account->load()) or die('You need to login first. '.$account->getError());
+$account = new Account();
+($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
 
 //retrieve post data
 $form = new Form('email');
 //check if any data was submited
 if ($form->exists()){
 	//validate email
-	if (eregi("^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}$",$form->attrs['email'])){
+	if (AAC::ValidEmail($form->attrs['email'])){
 		//check if password match
 		if ($account->checkPassword($form->attrs['password'])){
 			$account->logAction($account->getAttr('email').' changed to '.$form->attrs['email']);

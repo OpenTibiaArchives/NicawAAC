@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -26,7 +26,7 @@ $SQL = new SQL();
 <div class="top">Highscores</div>
 <div class="mid">
 <select name="sort" onchange="self.location.href=this.value">
-<?
+<?php 
 if (empty($_GET['sort'])) $_GET['sort'] = 'census';
 
 $options = array_merge(array('census', 'level', 'maglevel'), $cfg['skill_names']);
@@ -40,8 +40,9 @@ foreach ($options as $skill){
 }
 echo '</select>';
 
-$p = (int) $_GET['page'];
-if (empty($p) || $p < 0) $p = 0;
+if (!isset($_GET['page']) || $_GET['page'] < 0) $p = 0;
+else $p = (int) $_GET['page'];
+
 if ($_GET['sort'] == 'level' || $_GET['sort'] == 'maglevel'){
 	$query = 'SELECT groups.access, groups.id, players.name, players.level, players.maglevel, players.experience FROM players LEFT OUTER JOIN groups ON players.group_id = groups.id ORDER BY `'.mysql_escape_string($_GET['sort']).'` DESC LIMIT '.$cfg['ranks_per_page']*$p.', '.$cfg['ranks_per_page'].';';
 	$key = $_GET['sort'];
@@ -77,12 +78,12 @@ if ($_GET['sort'] == 'level' || $_GET['sort'] == 'maglevel'){
 
 if (isset($query)){
 ?>
-<input type="button" value="&lt;&lt;" onclick="self.window.location.href='ranks.php?sort=<?=htmlspecialchars($_GET['sort'])?>&amp;page=<?=$p-1?>'"/>
-<b>Statistics page: <?=$p+1?></b>
-<input type="button" value="&gt;&gt;" onclick="self.window.location.href='ranks.php?sort=<?=htmlspecialchars($_GET['sort'])?>&amp;page=<?=$p+1?>'"/>
+<input type="button" value="&lt;&lt;" onclick="self.window.location.href='ranks.php?sort=<?php echo urlencode($_GET['sort'])?>&amp;page=<?php echo p-1?>'"/>
+<b>Statistics page: <?php echo $p+1?></b>
+<input type="button" value="&gt;&gt;" onclick="self.window.location.href='ranks.php?sort=<?php echo urlencode($_GET['sort'])?>&amp;page=<?php echo p+1?>'"/>
 <table>
-<tr class="color0"><td style="width:30px">#</td><td style="width:150px"><b>Name</b></td><td style="width:60px"><b><?=htmlspecialchars(ucfirst($_GET['sort']))?></b></td></tr>
-<?
+<tr class="color0"><td style="width:30px">#</td><td style="width:150px"><b>Name</b></td><td style="width:60px"><b><?php echo htmlspecialchars(ucfirst($_GET['sort']))?></b></td></tr>
+<?php 
 	$SQL->myQuery($query);
 	if ($SQL->failed())
 		throw new Exception('SQL query failed:<br/>'.$SQL->getError());
@@ -92,7 +93,7 @@ if (isset($query)){
 		if ($a['access'] < $cfg['ranks_access'])
 			{
 				$i++;
-				echo '<tr '.getStyle($i).'><td>'.$i.'</td><td><a href="characters.php?char='.urlencode($a['name']).'">'.htmlspecialchars($a['name']).'</a></td><td>'.$a[$key].'</td></tr>'."\n";
+				echo '<tr '.getStyle($i).'><td>'.$i.'</td><td><a href="characters.php?player_name='.urlencode($a['name']).'">'.htmlspecialchars($a['name']).'</a></td><td>'.$a[$key].'</td></tr>'."\n";
 			}
 	}
 }
@@ -101,4 +102,4 @@ if (isset($query)){
 </div>
 <div class="bot"></div>
 </div>
-<?include('footer.inc.php');?>
+<?php include('footer.inc.php');?>

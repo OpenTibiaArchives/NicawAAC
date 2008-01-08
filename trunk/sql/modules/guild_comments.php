@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -22,24 +22,23 @@ include ("../include.inc.php");
 $form = new Form('comments');
 //check if any data was submited
 if ($form->exists()){
-	$gid = (int) $_REQUEST['gid'];
 	//get guild owner acc
-	$SQL = new SQL();
-	$query = 'SELECT players.account_id, guilds.name FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.id = '.$SQL->quote($gid);
-	$SQL->myQuery($query);
-	$result = $SQL->fetch_array();
-	$owner = (int) $result['account_id'];
+	$guild = new Guild();
 	//check if user is guild owner
-	if ($owner == $_SESSION['account'] && !empty($_SESSION['account']) && strlen($form->attrs['comment']) <= 300)
-		file_put_contents('../guilds/'.$gid.'.txt',htmlspecialchars($form->attrs['comment']));
+	if ($guild->load($_REQUEST['guild_id']) && $guild->getAttr('owner_acc') == $_SESSION['account'] && !empty($_SESSION['account']) && strlen($form->attrs['comment']) <= 300)
+		file_put_contents('../guilds/'.$guild->getAttr('id').'.txt',htmlspecialchars($form->attrs['comment']));
+	else{
+		$msg = new IOBox('comments');
+		$msg->addMsg('Cannot load this guild');
+		$msg->show();
+	}
 }else{
-	$gid = (int) $_REQUEST['gid'];
 	//create new form
 	$form = new IOBox('comments');
-	$form->target = $_SERVER['PHP_SELF'].'?gid='.$gid;
+	$form->target = $_SERVER['PHP_SELF'].'?guild_id='.(int)$_REQUEST['guild_id'];
 	$form->addLabel('Edit Description');
 	$form->addMsg('Max 300 symbols');
-	$form->addTextbox('comment',@file_get_contents('../guilds/'.$gid.'.txt'));
+	$form->addTextbox('comment',@file_get_contents('../guilds/'.(int)$_REQUEST['guild_id'].'.txt'));
 	$form->addClose('Cancel');
 	$form->addSubmit('Save');
 	$form->show();

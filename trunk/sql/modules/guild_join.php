@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -18,17 +18,17 @@
 */
 include ("../include.inc.php");
 //load account if loged in
-$account = new Account($_SESSION['account']);
-($account->load()) or die('You need to login first. '.$account->getError());
+$account = new Account();
+($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
 //load guild
-$guild = new Guild($_REQUEST['guild_name']);
-if (!$guild->load()) throw new Exception('Unable to load guild.');
+$guild = new Guild();
+if (!$guild->load($_REQUEST['guild_id'])) throw new Exception('Unable to load guild.');
 //retrieve post data
 $form = new Form('join');
 //check if any data was submited
 if ($form->exists()){
-	$player = new Player($form->attrs['player']);
-	if ($player->load() && $player->getAttr('account') == $_SESSION['account']){
+	$player = new Player();
+	if ($player->load($form->attrs['player']) && $player->getAttr('account') == $_SESSION['account']){
 		if (!$player->isAttr('guild_id')){
 			if ($guild->memberJoin($player->getAttr('id'), 1)){
 				$guild->save();
@@ -38,7 +38,7 @@ if ($form->exists()){
 				$msg->addClose('OK');
 				$msg->show();
 			}else $error = 'Cannot join guild';
-		}else $error = 'You already belong to guid.';
+		}else $error = 'You already belong to guild. Leave "'.htmlspecialchars($player->getAttr('guild_name')).'" first.';
 	}else $error = 'Cannot load player';
 	if (!empty($error)){
 		//create new message
@@ -50,13 +50,13 @@ if ($form->exists()){
 }else{
 	//make a list of invited characters
 	foreach ($account->players as $player)
-		if ($guild->isNameInvited($player->getAttr('name')) && $player->load() && !$player->isAttr('guild_id'))
-			$list[$player->getAttr('name')] = $player->getAttr('name');
+		if ($guild->isInvited($player['id']))
+			$list[$player['id']] = $player['name'];
 	if (!isset($list)) die();
 
 	//create new form
 	$form = new IOBox('join');
-	$form->target = $_SERVER['PHP_SELF'].'?guild_name='.urlencode($_REQUEST['guild_name']);
+	$form->target = $_SERVER['PHP_SELF'].'?guild_id='.urlencode($_REQUEST['guild_id']);
 	$form->addLabel('Join Guild');
 	$form->addMsg('Select the character to join');
 	$form->addSelect('player', $list);

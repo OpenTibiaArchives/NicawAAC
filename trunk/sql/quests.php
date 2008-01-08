@@ -1,4 +1,4 @@
-<?
+<?php 
 /*
     Copyright (C) 2007  Nicaw
 
@@ -23,7 +23,7 @@ include ("header.inc.php");
 <div id="content">
 <div class="top">Quests</div>
 <div class="mid">
-<?
+<?php 
 $QuestXML = @simplexml_load_file('quests.xml');
 if ($QuestXML === false) throw new Exception('quests.xml not found');
 echo '<table><tr class="color0"><td><b>Quest</b></td><td><b>Level</b></td><td><b>Description</b></td><td><b>Rewards</b></td></tr>';
@@ -36,4 +36,4 @@ echo '</table>';
 </div>
 <div class="bot"></div>
 </div>
-<?include ("footer.inc.php");?>
+<?php include ("footer.inc.php");?>
