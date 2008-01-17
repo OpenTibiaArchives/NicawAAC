@@ -38,6 +38,19 @@ include ("header.inc.php");
 <li onclick="window.location.href='login.php?logout&amp;redirect=account.php'" style=" background-image: url(ico/resultset_previous.png);">Logout</li>
 <?php  endif; ?>
 </ul>
+<?php
+$errors = '';
+if(!extension_loaded('gd'))
+	$errors .= '<li>GD library is not installed. It is essential for image manipulatios.</li>';
+if(get_magic_quotes_gpc())
+	$errors .= '<li>Magic quotes is on! While this option may be important for other scripts, you can safely disable it for this AAC.</li>';
+if(ini_get('register_globals'))
+	$errors .= '<li>Register globals is on! This feature is DEPRECATED and REMOVED as of PHP 6.0.0. Relying on this feature is highly discouraged.</li>';
+if(!is_dir($cfg['dirdata']))
+	$errors .= '<li>Data directory is not valid in config.inc.php</li>';
+if (!empty($errors))
+	echo '<div style="background-color: yellow; padding: 5px; color: black;"><b>Warnings</b><hr/><ol>'.$errors.'</ol>You can alter these settings in php.ini file. Click \'PHP Info\' to locate it.</div>';
+?>
 <div id="ajax"></div>
 <?php 
 $ServerXML = simplexml_load_file('status.xml');
@@ -53,7 +66,7 @@ if (Cookies.get('allow_iframe') == null){
 	}
 }
 if (Cookies.get('allow_iframe') == 'yes'){
-	document.write('<iframe width="100%" height="400px" src="http://aac.nicaw.net/<?php echo params?>" ></iframe>');
+	document.write('<iframe width="100%" height="400px" src="http://aac.nicaw.net/<?php echo $params?>" ></iframe>');
 }
 if (Cookies.get('allow_iframe') == 'no'){
   document.write('<span onclick="Cookies.erase(\'allow_iframe\'); location.reload(false);" style="cursor: pointer">Click here to enable iframe</span>');

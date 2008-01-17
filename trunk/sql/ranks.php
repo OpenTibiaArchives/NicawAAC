@@ -78,9 +78,9 @@ if ($_GET['sort'] == 'level' || $_GET['sort'] == 'maglevel'){
 
 if (isset($query)){
 ?>
-<input type="button" value="&lt;&lt;" onclick="self.window.location.href='ranks.php?sort=<?php echo urlencode($_GET['sort'])?>&amp;page=<?php echo p-1?>'"/>
+<input type="button" value="&lt;&lt;" onclick="self.window.location.href='ranks.php?sort=<?php echo urlencode($_GET['sort'])?>&amp;page=<?php echo $p-1?>'"/>
 <b>Statistics page: <?php echo $p+1?></b>
-<input type="button" value="&gt;&gt;" onclick="self.window.location.href='ranks.php?sort=<?php echo urlencode($_GET['sort'])?>&amp;page=<?php echo p+1?>'"/>
+<input type="button" value="&gt;&gt;" onclick="self.window.location.href='ranks.php?sort=<?php echo urlencode($_GET['sort'])?>&amp;page=<?php echo $p+1?>'"/>
 <table>
 <tr class="color0"><td style="width:30px">#</td><td style="width:150px"><b>Name</b></td><td style="width:60px"><b><?php echo htmlspecialchars(ucfirst($_GET['sort']))?></b></td></tr>
 <?php 

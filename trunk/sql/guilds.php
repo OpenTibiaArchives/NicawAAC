@@ -38,11 +38,11 @@ if ($SQL->failed())
 	throw new Exception('SQL query failed:<br/>'.$SQL->getError());
 while ($a = $SQL->fetch_array()){
 ?>
-<table border="1" onclick="window.location.href='guilds.php?guild_id=<?php echo rlencode($a['id'])?>'" style="cursor: pointer; width: 100%;">
-<tr><td style="width: 64px; height: 64px; padding: 10px;"><img src="guilds/<?php echo a['id']?>.gif" alt="NO IMG" height="64" width="64"/></td>
+<table border="1" onclick="window.location.href='guilds.php?guild_id=<?php echo urlencode($a['id'])?>'" style="cursor: pointer; width: 100%;">
+<tr><td style="width: 64px; height: 64px; padding: 10px;"><img src="guilds/<?php echo $a['id']?>.gif" alt="NO IMG" height="64" width="64"/></td>
 <td style="vertical-align: top;">
 <b><?php echo htmlspecialchars($a['name'])?></b><hr/>
-<?php echo file_get_contents('guilds/'.$a['id'].'.txt')?>
+<?php echo @file_get_contents('guilds/'.$a['id'].'.txt')?>
 </td></tr>
 </table>
 	
@@ -56,12 +56,12 @@ elseif (!empty($_GET['guild_name']) && !$guild->find($_GET['guild_name']))
 	echo 'Guild not found.';
 else{
 ?>
-<table style="width: 100%"><tr><td style="width: 64px; height: 64px; padding: 10px;"><img src="guilds/<?php echo guild->getAttr('id')?>.gif" alt="NO IMG" height="64" width="64"/></td><td style="text-align: center">
+<table style="width: 100%"><tr><td style="width: 64px; height: 64px; padding: 10px;"><img src="guilds/<?php echo $guild->getAttr('id')?>.gif" alt="NO IMG" height="64" width="64"/></td><td style="text-align: center">
 <h1 style="display: inline"><?php echo htmlspecialchars($guild->getAttr('name'))?>
 </h1></td><td style="width: 64px; height: 64px; padding: 10px;">
-<img src="guilds/<?php echo guild->getAttr('id')?>.gif" alt="NO IMG" height="64" width="64"/></td></tr>
+<img src="guilds/<?php echo $guild->getAttr('id')?>.gif" alt="NO IMG" height="64" width="64"/></td></tr>
 </table>
-<p><?php echo file_get_contents('guilds/'.$guild->getAttr('id').'.txt')?></p><hr/>
+<p><?php echo @file_get_contents('guilds/'.$guild->getAttr('id').'.txt')?></p><hr/>
 <ul class="task-menu" style="width: 200px;">
 <li style="background-image: url(ico/book_previous.png);" onclick="self.window.location.href='guilds.php'">Back</li>
 <?php 
@@ -77,17 +77,17 @@ if (!empty($_SESSION['account'])){
 			$member = true;
 	}
 	if ($guild->getAttr('owner_acc') == $_SESSION['account']){?>
-<li style="background-image: url(ico/user_go.png);" onclick="ajax('form','modules/guild_invite.php','guild_id=<?php echo guild->getAttr('id')?>',true)">Invite Player</li>
-<li style="background-image: url(ico/group_delete.png);" onclick="ajax('form','modules/guild_kick.php','guild_id=<?php echo guild->getAttr('id')?>',true)">Kick Member</li>
-<li style="background-image: url(ico/user_edit.png);" onclick="ajax('form','modules/guild_edit.php','guild_id=<?php echo guild->getAttr('id')?>',true)">Edit Member</li>
-<li style="background-image: url(ico/image_add.png);" onclick="ajax('form','modules/guild_image.php','guild_id=<?php echo guild->getAttr('id')?>',true)">Upload Image</li>
-<li style="background-image: url(ico/page_edit.png);" onclick="ajax('form','modules/guild_comments.php','guild_id=<?php echo guild->getAttr('id')?>',true)">Edit Description</li>
+<li style="background-image: url(ico/user_go.png);" onclick="ajax('form','modules/guild_invite.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Invite Player</li>
+<li style="background-image: url(ico/group_delete.png);" onclick="ajax('form','modules/guild_kick.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Kick Member</li>
+<li style="background-image: url(ico/user_edit.png);" onclick="ajax('form','modules/guild_edit.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Edit Member</li>
+<li style="background-image: url(ico/image_add.png);" onclick="ajax('form','modules/guild_image.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Upload Image</li>
+<li style="background-image: url(ico/page_edit.png);" onclick="ajax('form','modules/guild_comments.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Edit Description</li>
 <?php 	}
 	if ($invited){?>
-<li style="background-image: url(ico/user_red.png);" onclick="ajax('form','modules/guild_join.php','guild_id=<?php echo guild->getAttr('id')?>',true)">Join Guild</li>
+<li style="background-image: url(ico/user_red.png);" onclick="ajax('form','modules/guild_join.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Join Guild</li>
 <?php 	}
 	if ($member){?>
-<li style="background-image: url(ico/user_delete.png);" onclick="ajax('form','modules/guild_leave.php','guild_id=<?php echo guild->getAttr('id')?>',true)">Leave Guild</li>
+<li style="background-image: url(ico/user_delete.png);" onclick="ajax('form','modules/guild_leave.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Leave Guild</li>
 <?php 	}?>
 <li style="background-image: url(ico/resultset_previous.png);" onclick="self.window.location.href='login.php?logout&amp;redirect=account.php'">Logout</li>
 <?php }else{?>

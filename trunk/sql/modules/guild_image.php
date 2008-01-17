@@ -35,10 +35,11 @@ if (isset($_POST['image_submit'])){
 				copy($_FILES['image']['tmp_name'],'../guilds/'.$guild->getAttr('id').'.gif');
 			}elseif (extension_loaded('gd')){
 				if ($_FILES['image']['type'] == 'image/png')
-					$im = imagecreatefrompng($_FILES['image']['tmp_name']);
+					$im = @imagecreatefrompng($_FILES['image']['tmp_name']);
 				elseif ($_FILES['image']['type'] == 'image/jpeg')
-					$im = imagecreatefromjpeg($_FILES['image']['tmp_name']);
+					$im = @imagecreatefromjpeg($_FILES['image']['tmp_name']);
 				else die('Unsupported image type');
+				if ($im === false) die('Unsupported image type');
 				$_im = imagecreatetruecolor(64, 64);
 				imagefill($_im, 0, 0, imagecolorallocate($_im, 255, 255, 255));
 				$x = imagesx($im);

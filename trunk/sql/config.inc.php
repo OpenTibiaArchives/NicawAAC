@@ -23,17 +23,16 @@ $cfg['house_file'] = 'world/Evolutions-house.xml';
 # MySQL server settings
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
-$cfg['SQL_Password'] = 'mypas';
+$cfg['SQL_Password'] = 'password';
 $cfg['SQL_Database'] = 'otserv';
 
 # MD5 is hashing algorithm that makes passwords safer. 
 # It must correspond to your OTServ configuration!
-$cfg['md5passwords'] = true;
-$cfg['md5_salt'] = 'st0rm$3erver.';
+$cfg['md5passwords'] = false;
 
 # Skin files can be found in skins folder.
 # Each css file represents a skin
-$cfg['skin'] = 'essense';
+$cfg['skin'] = 'inferno';
 
 # In case you want to upload skins somewhere else
 $cfg['skin_url'] = 'skins/';
@@ -95,15 +94,12 @@ $cfg['SMTP_From'] = 'user@gmail.com';
 # Whether to show skills in character search
 $cfg['show_skills'] = true;
 
-# Whether to show deathlist in character search
+# Whether to show deathlist in character search, DevLand only
 $cfg['show_deathlist'] = false;
 
 $cfg['skill_names'] = array('fist', 'club', 'sword', 'axe', 'distance', 'shielding', 'fishing');
 
-# This is a perl regex.
-$cfg['player_name_format'] = "/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/";
-$cfg['guild_name_format'] = "/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/";
-$cfg['guild_rank_format'] = "/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/";
+# Name formats were moved to globals.php
 
 # Banned names
 $cfg['invalid_names'] = array('^gm','^god','admin','fuck','gamemaster');
@@ -129,7 +125,10 @@ $cfg['status_update_interval'] = 5;
 ##################################################
 #                 Town Config                    #
 ##################################################
-
+/*
+NOTICE
+Town IDs must be correct and match those in your map
+*/
 # Town names
 $cfg['temple'][1]['name'] = 'Devland';
 $cfg['temple'][2]['name'] = 'Forgotten';

@@ -48,12 +48,14 @@ public function addCaptcha(){
 	$this->elements[]= '<img width="250px" height="40px" src="'.$img.'" alt="Verification Image"/>';
 	$this->elements[]= '<input id="captcha" name="'.$this->name.'__captcha" type="text" maxlength="10" style="text-transform: uppercase"/>&nbsp;<label for="captcha">- Verification</label>';
 }
-public function addInput($name, $type = 'text', $value = '', $length = 100){
-	$this->elements[]= '<input id="'.$this->name.'__'.$name.'" name="'.$this->name.'__'.$name.'" type="'.$type.'" maxlength="'.$length.'" value="'.$value.'"/>&nbsp;<label for="'.$this->name.'__'.$name.'">- '.ucfirst($name).'</label>';
+public function addInput($name, $type = 'text', $value = '', $length = 100, $readonly = false){
+	if ($readonly) $readonly = ' readonly="readonly"';
+	else $readonly = '';
+	$this->elements[]= '<input id="'.$this->name.'__'.$name.'" name="'.$this->name.'__'.$name.'" type="'.$type.'" maxlength="'.$length.'" value="'.$value.'"'.$readonly.'/>&nbsp;<label for="'.$this->name.'__'.$name.'">- '.ucfirst($name).'</label>';
 }
-public function addCheckBox($name, $checked = false){
-  if ($checked)
-    $check = ' checked="checked"';
+public function addCheckBox($name, $check = false){
+	if ($check) $check = ' checked="checked"';
+	else $check = '';
 	$this->elements[]= '<input type="checkbox" id="'.$this->name.'__'.$name.'" name="'.$this->name.'__'.$name.'"'.$check.'>&nbsp;<label for="'.$this->name.'__'.$name.'">'.ucfirst($name).'</label>';
 }
 public function addTextbox($name,$value = '',$cols = 40,$rows = 10){

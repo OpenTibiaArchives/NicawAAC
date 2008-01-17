@@ -5,8 +5,7 @@ $mtime = explode(" ",$mtime);
 $mtime = $mtime[1] + $mtime[0];
 $tstart = $mtime;
 
-//error_reporting(E_ALL ^ E_NOTICE);
-error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_NOTICE);
 session_start();
 
 //emulate register_globals = off
@@ -44,18 +43,17 @@ require ('class/iobox.php');
 //set custom exception handler
 set_exception_handler('exception_handler');
 
-/*Checking if IP not banned.
-In fact, this can be done with .htaccess,
-but noobs just love this function =] */
+# Check if IP not banned ?
+/*
 if (file_exists('banned.inc')){
 	$banned_ips = file ('banned.inc');
 	foreach ($banned_ips as $ip){
 		if ($ip == $_SERVER['REMOTE_ADDR']){
 			die("Sorry, your IP is banned from the website."); 
-			//ha ha ha. die die die. My favourite PHP function :)
 		}
 	}
 }
+*/
 
 //just make sure GD extension is loaded before using CAPTCHA
 $cfg['use_captha'] = $cfg['use_captcha'] && extension_loaded('gd');

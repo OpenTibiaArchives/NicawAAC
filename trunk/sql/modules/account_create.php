@@ -25,7 +25,7 @@ if ($form->exists()){
 	//image verification
 	if ($form->validated()){
 		//email formating rules
-		if (eregi("^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}$",$form->attrs['email'])){
+		if (AAC::ValidEmail($form->attrs['email'])){
 
 			$account = new Account();
 			do 
@@ -66,17 +66,25 @@ Powered by <a href=\"http://nicaw.net/\">Nicaw AAC</a>";
 			$mail->Subject = $cfg['server_name'].' - Login Details';
 			$mail->Body    = $body;
 
-			if ($mail->Send())
-					$success = 'Your login details were emailed to '.$form->attrs['email'];
-				else
+			if ($mail->Send()){
+					//create new message
+					$msg = new IOBox('message');
+					$msg->addMsg('Your login details were emailed to '.$form->attrs['email']);
+					$msg->addClose('Finish');
+					$msg->show();
+				}else
 					$error = "Mailer Error: " . $mail->ErrorInfo;
 					
 			}else{
-				$success ='Please write down your login information:<br/>
-Account number: <b>'.$accno.'</b><br/>
-Password: <b>'.$password.'</b><br/>
-You can now login into your account and start creating characters.<br/>';
-					$account->logAction('Created');
+				//create new message
+				$msg = new IOBox('message');
+				$msg->addMsg('Please write down your login information:');
+				$msg->addInput('account','text',$accno,50,true);
+				$msg->addInput('password','text',$password,50,true);
+				$msg->addMsg('You can now login into your account and start creating characters.');
+				$msg->addClose('Finish');
+				$msg->show();
+				$account->logAction('Created');
 			}
 		}else{ $error = "Bad email address";}
 	}else{ $error = "Image verification failed";}
@@ -86,12 +94,6 @@ You can now login into your account and start creating characters.<br/>';
 		$msg->addMsg($error);
 		$msg->addReload('<< Back');
 		$msg->addClose('OK');
-		$msg->show();
-	}elseif (!empty($success)){
-		//create new message
-		$msg = new IOBox('message');
-		$msg->addMsg($success);
-		$msg->addClose('Finish');
 		$msg->show();
 	}
 }else{

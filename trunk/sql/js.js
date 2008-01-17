@@ -32,7 +32,7 @@ var Cookies = {
 		this.create(name,'',-1);
 		this[name] = undefined;
 	}
-};
+}
 Cookies.init();
 
 //Simple _POST AJAX
