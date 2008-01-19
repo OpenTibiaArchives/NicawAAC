@@ -1,6 +1,6 @@
 <?php
 /*
-    Copyright (C) 2007  Nicaw
+    Copyright (C) 2007 - 2008  Nicaw
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ if ($fselect->exists()){
 	if ($guild->isMember($_REQUEST['player_id'])){
 	$fedit->attrs['rank'] = ucfirst($fedit->attrs['rank']);
 	$fedit->attrs['nick'] = ucfirst($fedit->attrs['nick']);
-		if (preg_match($cfg['guild_rank_format'],$fedit->attrs['rank']) && (preg_match($cfg['guild_rank_format'],$fedit->attrs['nick']) || empty($fedit->attrs['nick']))){
+		if (AAC::ValidGuildRank($fedit->attrs['rank']) && (AAC::ValidGuildNick($fedit->attrs['nick']) || empty($fedit->attrs['nick']))){
 		$player = new Player();
 			if ($player->load($_REQUEST['player_id'])){
 				$guild->memberSetRank($player->getAttr('id'), $fedit->attrs['rank']);

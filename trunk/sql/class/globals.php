@@ -1,6 +1,6 @@
 <?php
 /*
-     Copyright (C) 2007  Nicaw
+     Copyright (C) 2007 - 2008  Nicaw
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,6 +46,16 @@ class AAC
 	}
 	
 	public function ValidGuildName($name)
+	{
+		return preg_match("/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/",$name);
+	}
+	
+	public function ValidGuildRank($name)
+	{
+		return preg_match("/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/",$name);
+	}
+	
+	public function ValidGuildNick($name)
 	{
 		return preg_match("/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/",$name);
 	}

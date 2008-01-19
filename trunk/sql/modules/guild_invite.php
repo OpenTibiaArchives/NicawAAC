@@ -1,6 +1,6 @@
 <?php
 /*
-    Copyright (C) 2007  Nicaw
+    Copyright (C) 2007 - 2008  Nicaw
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ $form = new Form('invite');
 if ($form->exists()){
 	if ($guild->countInvited() <= 20){
 		$form->attrs['rank'] = ucfirst($form->attrs['rank']);
-		if (preg_match($cfg['guild_rank_format'],$form->attrs['rank'])){
+		if (AAC::ValidGuildRank($form->attrs['rank'])){
 			$player = new Player();
 			if ($player->find($form->attrs['player'])){
 				if ($guild->memberInvite($player->getAttr('id'), $form->attrs['rank'])){
