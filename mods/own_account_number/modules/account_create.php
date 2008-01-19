@@ -25,7 +25,7 @@ if ($form->exists()){
 	//image verification
 	if ($form->validated()){
 		//email formating rules
-		if (eregi("^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}$",$form->attrs['email'])){
+		if (AAC::ValidEmail($form->attrs['email'])){
 			$account = new Account();
 			$account->setAttr('accno', (int)$form->attrs['number']);
 			if (AAC::ValidAccountNumber($form->attrs['number']) && !$account->exists()){
