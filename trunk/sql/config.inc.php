@@ -18,15 +18,15 @@ $cfg['house_file'] = 'world/Evolutions-house.xml';
 # MySQL server settings
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
-$cfg['SQL_Password'] = 'mypas';
+$cfg['SQL_Password'] = 'password';
 $cfg['SQL_Database'] = 'otserv';
 
 # Must correspond to your OTServ configuration
 # Options: plain, md5, sha1
-$cfg['password_type'] = 'md5';
+$cfg['password_type'] = 'plain';
 
 # Not currently supported by OTServ
-$cfg['password_salt'] = 'st0rm$3erver.';
+$cfg['password_salt'] = '';
 
 # Skin files can be found in skins folder.
 # Each css file represents a skin
