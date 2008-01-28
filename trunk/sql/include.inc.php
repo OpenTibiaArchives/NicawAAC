@@ -31,6 +31,14 @@ if (ini_get('register_globals')){
 	    }
 	}
 }
+//emulate magic_quotes_gpc = off
+if( get_magic_quotes_gpc() )
+{
+  $_POST = array_map('stripslashes', $_POST);
+  $_GET = array_map('stripslashes', $_GET);
+  $_COOKIE = array_map('stripslashes', $_COOKIE);
+  $_REQUEST = array_map('stripslashes', $_REQUEST);
+}
 
 require ('config.inc.php');
 require ('class/globals.php');
@@ -43,18 +51,6 @@ require ('class/iobox.php');
 //set custom exception handler
 set_exception_handler('exception_handler');
 
-# Check if IP not banned ?
-/*
-if (file_exists('banned.inc')){
-	$banned_ips = file ('banned.inc');
-	foreach ($banned_ips as $ip){
-		if ($ip == $_SERVER['REMOTE_ADDR']){
-			die("Sorry, your IP is banned from the website."); 
-		}
-	}
-}
-*/
-
 //just make sure GD extension is loaded before using CAPTCHA
 $cfg['use_captha'] = $cfg['use_captcha'] && extension_loaded('gd');
 
@@ -65,24 +61,11 @@ else
 	$cfg['server_url'] = $_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'];
 $cfg['server_href'] = 'http://'.$cfg['server_url'].dirname(htmlspecialchars($_SERVER['PHP_SELF'])).'/';
 
-//disable magic_quotes_gpc.
-if( get_magic_quotes_gpc() )
-{
-  $_POST = array_map('stripslashes', $_POST);
-  $_GET = array_map('stripslashes', $_GET);
-  $_COOKIE = array_map('stripslashes', $_COOKIE);
-  $_REQUEST = array_map('stripslashes', $_REQUEST);
-}
-
 //Anti session hijacking
 if ($cfg['secure_session'] && !empty($_SESSION['account']) && ($_SERVER['REMOTE_ADDR'] != $_SESSION['remote_ip'] || time() - $_SESSION['last_activity'] > 30*60))
 	unset($_SESSION['account']);
 	
 $_SESSION['last_activity'] = time();
-
-//Check for correct PHP version
-if (!version_compare(phpversion(), "5.1.4", ">=") )
-	throw new Exception('There are known issues with this PHP version. Please update your sofware, try to get at least PHP 5.2.x');
 
 //Check if extensions loaded
 if (!extension_loaded('simplexml'))

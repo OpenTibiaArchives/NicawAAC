@@ -46,10 +46,12 @@ if(get_magic_quotes_gpc())
 	$errors .= '<li>Magic quotes is on! While this option may be important for other scripts, you can safely disable it for this AAC.</li>';
 if(ini_get('register_globals'))
 	$errors .= '<li>Register globals is on! This feature is DEPRECATED and REMOVED as of PHP 6.0.0. Relying on this feature is highly discouraged.</li>';
+if (!version_compare(phpversion(), "5.1.4", ">=") )
+	$errors .= '<li>There are known issues with this PHP version. Please update your sofware, try to get at least PHP 5.2.x</li>';
 if(!is_dir($cfg['dirdata']))
-	$errors .= '<li>Data directory is not valid in config.inc.php</li>';
+	$errors .= '<li>Data directory is not a valid path in config.inc.php</li>';
 if (!empty($errors))
-	echo '<div style="background-color: yellow; padding: 5px; color: black;"><b>Warnings</b><hr/><ol>'.$errors.'</ol>You can alter these settings in php.ini file. Click \'PHP Info\' to locate it.</div>';
+	echo '<div style="background-color: yellow; padding: 5px; color: black;"><b>Warnings</b><hr/><ol>'.$errors.'</ol>You can alter most settings in php.ini file. Click \'PHP Info\' to locate it.</div>';
 ?>
 <div id="ajax"></div>
 <?php 

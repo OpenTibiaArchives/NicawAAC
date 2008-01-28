@@ -29,7 +29,7 @@ protected function _init(){
 	if (!isset($this->connection)){
 	  	$con = @mysql_connect($cfg['SQL_Server'],$cfg['SQL_User'],$cfg['SQL_Password']);
 		if ($con === false){
-			throw new Exception('Unable to connect to mysql server. Please make sure it is up and running and you have correct user/password.');
+			throw new Exception('Unable to connect to mysql server. Please make sure it is up and running and you have correct user/password in config.inc.php.');
 			return false;
 		}
 		if (!@mysql_select_db($cfg['SQL_Database'])){
@@ -113,7 +113,7 @@ public function analyze()
 		$is_svn = in_array('player_depotitems',$t) && in_array('groups',$t);
 		$is_cvs = in_array('playerstorage',$t) && in_array('skills',$t);
 		if (!$is_aac_db)
-			return 'It appears you don\'t have SQL sample imported for AAC';
+			return 'It appears you don\'t have SQL sample imported for AAC (database.sql)';
 		elseif (!$is_server_db)
 			return 'It appears you don\'t have SQL sample imported for OT server or it is not supported';
 		elseif ($is_cvs && !$is_svn)

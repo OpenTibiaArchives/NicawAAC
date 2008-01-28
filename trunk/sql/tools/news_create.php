@@ -35,7 +35,7 @@ if ($form->exists()){
 	$form->addInput('title');
 	$form->addInput('creator');
 	$form->addTextBox('text');
-	$form->addCheckBox('HTML',false);
+	$form->addCheckBox('html',false);
 	$form->addClose('Cancel');
 	$form->addSubmit('Save');
 	$form->show();

@@ -10,12 +10,7 @@
 # true/false. All statements end with ;          #
 ##################################################
 
-
 # Set data directory of your OT server
-# 'C:\OTServ\data\' - INCORRECT
-# 'C:/OTServ/data' - INCORRECT
-# 'C:/OTServ/data/' - CORRECT UNIX or WINDOWS
-# 'C:\\OTServ\\data\\' - CORRECT WINDOWS
 $cfg['dirdata'] = 'C:/OTServ/data/';
 
 $cfg['house_file'] = 'world/Evolutions-house.xml';
@@ -26,10 +21,12 @@ $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'mypas';
 $cfg['SQL_Database'] = 'otserv';
 
-# MD5 is hashing algorithm that makes passwords safer. 
-# It must correspond to your OTServ configuration!
-$cfg['md5passwords'] = true;
-$cfg['md5_salt'] = 'st0rm$3erver.';
+# Must correspond to your OTServ configuration
+# Options: plain, md5, sha1
+$cfg['password_type'] = 'md5';
+
+# Not currently supported by OTServ
+$cfg['password_salt'] = 'st0rm$3erver.';
 
 # Skin files can be found in skins folder.
 # Each css file represents a skin
@@ -100,10 +97,10 @@ $cfg['show_deathlist'] = false;
 
 $cfg['skill_names'] = array('fist', 'club', 'sword', 'axe', 'distance', 'shielding', 'fishing');
 
-# Name formats were moved to globals.php
+# Name formating was moved to globals.php
 
 # Banned names
-$cfg['invalid_names'] = array('^gm','^god','admin','fuck','gamemaster');
+$cfg['invalid_names'] = array('^gm','^god','admin','fuck','gamemaster', 'owner');
 
 # Accounts that are allowed to access admin panel
 $cfg['admin_accounts'] = array();
@@ -115,7 +112,7 @@ $cfg['admin_ip'] = array('127.0.0.1');
 $cfg['guild_level'] = 20;
 
 # Minimum level to create own guild. Cannot be lower than $cfg['guild_level']
-$cfg['guild_leader_level'] = 0;
+$cfg['guild_leader_level'] = 20;
 
 # Please disable guild manager if your server features guild editing
 $cfg['guild_manager_enabled'] = true;

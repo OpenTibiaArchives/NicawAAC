@@ -92,18 +92,23 @@ public function setAttr($attr,$value)
 
 public function setPassword($new)
 	{global $cfg;
-		if ($cfg['md5passwords']){
-			$new = md5($new.$cfg['md5_salt']);
-		}
+		$new = $new.$cfg['password_salt'];
+		if ($cfg['password_type'] == 'md5')
+			$new = md5($new);
+		elseif ($cfg['password_type'] == 'sha1')
+			$new = sha1($new);
+		if (empty($new)) throw new Exception('Empty password is not allowed.');
 		$this->attrs['password'] = $new;
 	}
 
-public function checkPassword($p)
+public function checkPassword($pass)
 	{global $cfg;
-		if ($cfg['md5passwords']){
-			$p = md5($p.$cfg['md5_salt']);
-		}
-		return $this->attrs['password'] == $p;
+		$pass = $pass.$cfg['password_salt'];
+		if ($cfg['password_type'] == 'md5')
+			$pass = md5($pass);
+		elseif ($cfg['password_type'] == 'sha1')
+			$pass = sha1($pass);
+		return $this->attrs['password'] == $pass && !empty($pass);
 	}
 
 public function exists()

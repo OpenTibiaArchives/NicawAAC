@@ -194,32 +194,33 @@ public function create()
 		//make items
 		$sid = 100;
 		while ($item = current($cfg['vocations'][$this->attrs['vocation']]['equipment'])){
-				$sid++;
-				$d['player_id']	= $this->attrs['id'];
-				$d['pid']		= key($cfg['vocations'][$this->attrs['vocation']]['equipment']);
-				$d['sid']		= $sid;
-				$d['itemtype']	= $item;
-				
-				if (!$this->myInsert('player_items',$d)) throw new Exception('Player::make() Cannot insert items:<br/>'.$this->getError());
-				unset($d);
-				next($cfg['vocations'][$this->attrs['vocation']]['equipment']);
+			$sid++;
+			$d['player_id']	= $this->attrs['id'];
+			$d['pid']		= key($cfg['vocations'][$this->attrs['vocation']]['equipment']);
+			$d['sid']		= $sid;
+			$d['itemtype']	= $item;
+			
+			if (!$this->myInsert('player_items',$d)) throw new Exception('Player::make() Cannot insert items:<br/>'.$this->getError());
+			unset($d);
+			next($cfg['vocations'][$this->attrs['vocation']]['equipment']);
 		}
 
 		//make skills only if not created by trigger
 		$this->myQuery('SELECT COUNT(player_skills.skillid) as count FROM player_skills WHERE player_id = '.$this->quote($this->attrs['id']));
 		$a = $this->fetch_array();
-		if ($a['count'] == 0){
-			$i = 0;
-			while ($skill = current($cfg['vocations'][$this->attrs['vocation']]['skills'])){
-				$d['player_id']	= $this->attrs['id'];
-				$d['skillid']	= key($cfg['vocations'][$this->attrs['vocation']]['skills']);
-				$d['value']		= $skill;
-				$d['count']		= '0';
+		$i = 0;
+		while ($skill = current($cfg['vocations'][(int)$this->attrs['vocation']]['skills'])){
+			$skill_id	= key($cfg['vocations'][(int)$this->attrs['vocation']]['skills']);
 
-				if (!$this->myInsert('player_skills',$d)) throw new Exception('Player::make() Cannot insert skills:<br/>'.$this->getError());;
-				unset($d);
-				next($cfg['vocations'][$this->attrs['vocation']]['skills']);
+			if ($a['count'] == 0){
+				if (!$this->myInsert('player_skills',array('player_id' => $this->attrs['id'], 'skillid' => $skill_id, 'value' => $skill, 'count' => 0))) 
+					throw new Exception('Player::make() Cannot insert skills:<br/>'.$this->getError());
+			}else{
+				if (!$this->myUpdate('player_skills',array('value' => $skill),array('player_id' => $this->attrs['id'], 'skillid' => $skill_id))) 
+					throw new Exception('Player::make() Cannot update skills:<br/>'.$this->getError());
 			}
+
+			next($cfg['vocations'][$this->attrs['vocation']]['skills']);
 		}
 	return $this->load($this->attrs['id']);
 	}
@@ -227,7 +228,7 @@ public function create()
 public function repair()
 	{global $cfg;
 		$lvl = $this->attrs['level'];
-		$exp = round(50*($lvl-1)*($lvl*$lvl-5*$lvl+12)/3);
+		$exp = AAC::getExperienceByLevel($lvl);
 		if (!$this->myUpdate('players',array(
 			'posx' => $cfg['temple'][$this->attrs['city']]['x'],
 			'posy' => $cfg['temple'][$this->attrs['city']]['y'],

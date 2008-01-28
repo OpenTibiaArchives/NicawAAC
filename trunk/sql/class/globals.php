@@ -59,28 +59,15 @@ class AAC
 	{
 		return preg_match("/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/",$name);
 	}
+	
+	public function getExperienceByLevel($lvl)
+	{
+		return floor(50*($lvl-1)*($lvl*$lvl-5*$lvl+12)/3);
+	}
 }
 
 function exception_handler($exception) {
 	echo '<pre style="position: absolute; top: 0px; left: 0px; background-color: white; color: black; border: 3px solid red;"><b>'.$exception->getMessage(). '<br/>'.basename($exception->getFile()).' on line: '.$exception->getLine().'</b><br/>Script was terminated because something unexpected happened. You can report this, if you think it\'s a bug.';
-}
-
-function errorLog($err){
-	$f = fopen('errors.inc','a');
-	fwrite($f,date("Y.m.d H:i",time()).' '.$err."\r\n");
-	fclose($f);
-}
-
-function posToStr($pos){
-	$array[] = $pos['x'];
-	$array[] = $pos['y'];
-	$array[] = $pos['z'];
-	return implode(';',$array);
-}
-
-function strToPos($str){
-	$pos = explode(';',$str);
-	return array('x' => $pos[0], 'y' => $pos[1], 'z' => $pos[2]);
 }
 
 function strToDate($str){

@@ -1,5 +1,7 @@
 <?php 
 include('config.inc.php');
-
-header('location: '.$cfg['start_page']);
+if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1')
+	header('location: admin.php');
+else
+	header('location: '.$cfg['start_page']);
 ?>
