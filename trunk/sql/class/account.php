@@ -65,18 +65,16 @@ public function save()
 		$nicaw_acc['comment'] = $this->attrs['comment'];
 		$nicaw_acc['recovery_key'] = $this->attrs['recovery_key'];
 		
-		if (!$this->myDelete('accounts', array('id' => $this->attrs['accno'])))
-			throw new Exception('Cannot delete old account rows:<br/>'.$this->getError());
-			
-		if (!$this->myInsert('accounts',$acc))
-			throw new Exception('Cannot save account:<br/>'.$this->getError());
-		
-		if (!$this->myDelete('nicaw_accounts', array('account_id' => $this->attrs['accno'])))
-			throw new Exception('Cannot delete old account rows:<br/>'.$this->getError());
-
-		if (!$this->myInsert('nicaw_accounts',$nicaw_acc))
+		if (!$this->myReplace('nicaw_accounts',$nicaw_acc))
 			throw new Exception('Cannot save account:<br/>'.$this->getError());
 
+		if ($this->exists()){
+			if (!$this->myUpdate('accounts',$acc, array('id' => $this->attrs['accno'])))
+				throw new Exception('Cannot save account:<br/>'.$this->getError());
+		}else{
+			if (!$this->myInsert('accounts',$acc))
+				throw new Exception('Cannot save account:<br/>'.$this->getError());
+		}
 		return true;
 	}
 
