@@ -18,7 +18,7 @@ $cfg['house_file'] = 'world/Evolutions-house.xml';
 # MySQL server settings
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
-$cfg['SQL_Password'] = 'password';
+$cfg['SQL_Password'] = 'mypas';
 $cfg['SQL_Database'] = 'otserv';
 
 # Must correspond to your OTServ configuration

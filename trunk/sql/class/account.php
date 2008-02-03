@@ -119,7 +119,8 @@ public function exists()
 
 public function logAction($action)
 	{
-		if (!$this->myInsert('nicaw_account_logs',array('id' => NULL, 'ip' => ip2long($_SERVER['REMOTE_ADDR']), 'account_id' => $this->attrs['accno'], 'date' => time(), 'action' => $action)))
+		$this->myQuery('INSERT INTO `nicaw_account_logs` (id, ip, account_id, date, action) VALUES(NULL, INET_ATON('.$this->quote($_SERVER['REMOTE_ADDR']).'), '.$this->quote($this->attrs['accno']).', UNIX_TIMESTAMP(NOW()), '.$this->quote($action).')');
+		if ($this->failed())
 			throw new Exception($this->getError());
 	}
 	
@@ -142,13 +143,14 @@ public function checkRecoveryKey($key)
 
 public function vote($option)
 	{
-		if(!$this->myInsert('nicaw_poll_votes',array('option_id' => $option, 'ip' => ip2long($_SERVER['REMOTE_ADDR']), 'account_id' => $this->attrs['accno'])))
-			throw new Exception('It appears you didn\'t import database.sql for AAC:<br/>'.$this->getError());
+		$this->myQuery('INSERT INTO `nicaw_poll_votes` (option_id, ip, account_id) VALUES('.$this->quote($option).', INET_ATON('.$this->quote($_SERVER['REMOTE_ADDR']).'), '.$this->quote($this->attrs['accno']).')');
+		if ($this->failed())
+			throw new Exception($this->getError());
 	}
 	
 public function getMaxLevel()
 	{
-		$this->myQuery('SELECT MAX(level) AS maxlevel FROM `players` WHERE `account_id` = '.$this->qoute($this->attrs['accno']));
+		$this->myQuery('SELECT MAX(level) AS maxlevel FROM `players` WHERE `account_id` = '.$this->quote($this->attrs['accno']));
 		if ($this->failed())
 			throw new Exception($this->getError);
 		$row = $this->fetch_array();
@@ -160,7 +162,7 @@ public function canVote($option)
 		$query = 'SELECT nicaw_polls.id FROM nicaw_polls, nicaw_poll_options
 WHERE nicaw_polls.id = nicaw_poll_options.poll_id
 AND nicaw_poll_options.id = '.$this->quote($option).'
-AND '.$this->qoute($this->getMaxLevel()).' > minlevel
+AND '.$this->quote($this->getMaxLevel()).' > minlevel
 AND nicaw_polls.startdate < UNIX_TIMESTAMP(NOW())
 AND nicaw_polls.enddate > UNIX_TIMESTAMP(NOW())';
 		$this->myQuery($query);
@@ -171,15 +173,15 @@ AND nicaw_polls.enddate > UNIX_TIMESTAMP(NOW())';
 		$a = $this->fetch_array();
 		$poll_id = $a['id'];
 		$query = 'SELECT * FROM nicaw_poll_votes, nicaw_poll_options
-WHERE nicaw_poll_options.poll_id = '.$this->qoute($poll_id).'
+WHERE nicaw_poll_options.poll_id = '.$this->quote($poll_id).'
 AND nicaw_poll_options.id = nicaw_poll_votes.option_id
-AND (account_id = '.$this->quote($this->attrs['accno']).' OR ip = '.ip2long($_SERVER['REMOTE_ADDR']).')
+AND (account_id = '.$this->quote($this->attrs['accno']).' OR ip = INET_ATON('.$this->quote($_SERVER['REMOTE_ADDR']).')
 )';
 		$this->myQuery($query);
 		if ($this->failed())
 			throw new Exception($this->getError);
-		if ($this->num_rows() == 0) return false;
-		elseif ($this->num_rows() == 1) return true;
+		if ($this->num_rows() == 0) return true;
+		elseif ($this->num_rows() == 1) return false;
 		else throw new Exception('Unexpected SQL answer.');
 	}
 }
