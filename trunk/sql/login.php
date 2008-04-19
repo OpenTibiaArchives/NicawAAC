@@ -22,10 +22,13 @@ include ("include.inc.php");
 if (isset($_POST['login_submit'])){
 	$account = new Account();
 	if ($account->load($_POST['account'])){
-		if ($account->checkPassword($_POST['password'])){
+		if ($account->checkPassword($_POST['password']) || !$cfg['secure_session'] && $_POST['password'] == sha1($account->getAttr('password'))){
 			$_SESSION['account']=$account->getAttr('accno');
 			$_SESSION['remote_ip']=$_SERVER['REMOTE_ADDR'];
-			$_SESSION['last_activity']=time();
+			if (!empty($_COOKIE['remember'])){
+				setcookie('account',$account->getAttr('accno'),time() + (30*24*3600),'/');
+				setcookie('password',sha1($account->getAttr('password')),time() + (30*24*3600),'/');
+			}
 			if (!empty($_GET['redirect'])) {
 				header('location: '.$_GET['redirect']);
 				die('Redirecting to <a href="'.$_GET['redirect'].'>'.$_GET['redirect'].'</a>');
@@ -36,7 +39,7 @@ if (isset($_POST['login_submit'])){
 
 ########################## LOGOUT ###########################
 elseif (isset($_GET['logout'])){
-	session_unset();
+	$_SESSION['account'] = false;
 }
 elseif (!empty($_SESSION['account']) && !empty($_GET['redirect'])){
 	header('location: '.$_GET['redirect']);
@@ -46,6 +49,22 @@ elseif (!empty($_SESSION['account']) && !empty($_GET['redirect'])){
 $ptitle="Account - $cfg[server_name]";
 include ("header.inc.php");
 ?>
+<script language="javascript" type="text/javascript">
+//<![CDATA[
+	function remember_toggle(node)
+	{
+		if (node.checked){
+			Cookies.create('remember','yes',30);
+		}else{
+			Cookies.erase('account');
+			Cookies.erase('password');
+			Cookies.erase('remember');
+			document.getElementById('account').value = '';
+			document.getElementById('password').value = '';
+		}
+	}
+//]]>
+</script>
 <div id="content">
 <div class="top">Account</div>
 <div class="mid">
@@ -53,11 +72,21 @@ include ("header.inc.php");
 <legend><b>Account Login</b></legend>
 <form id="login_form" action="login.php?redirect=<?php echo htmlspecialchars($_GET['redirect'])?>" method="post">
 <table>
-<tr><td style="text-align: right"><label for="account">Account:</label></td>
-<td><input id="account" name="account" type="password" class="textfield" maxlength="8" size="10"/></td></tr>
-<tr><td style="text-align: right"><label for="password">Password:</label></td>
-<td><input id="password" name="password" type="password" class="textfield" maxlength="30" size="10"/></td></tr>
-<tr><td></td><td><input type="submit" name="login_submit" value="Sign in"/></td></tr>
+<tr><td style="text-align: right"><label for="account">Account</label>&nbsp;</td>
+<?php
+if (isset($_POST['login_submit'])) {
+	$account = $_POST['account'];
+	$password = $_POST['password'];
+}elseif (!empty($_COOKIE['remember'])){
+	$account = $_COOKIE['account'];
+	$password = $_COOKIE['password'];
+}
+?>
+<td><input id="account" name="account" type="password" class="textfield" maxlength="8" size="10" tabindex="101" value="<?php echo $account;?>"/></td>
+<td <?php if ($cfg['secure_session']) echo ' style="visibility: hidden"';?>>&nbsp;<input id="remember" name="remember" type="checkbox" tabindex="103" onclick="remember_toggle(this)"<?php if (!empty($_COOKIE['remember'])) echo ' checked="checked"';?>/>&nbsp;<label for="remember">Remember Me?</label></td></tr>
+<tr><td style="text-align: right"><label for="password">Password</label>&nbsp;</td>
+<td><input id="password" name="password" type="password" class="textfield" maxlength="100" size="10" tabindex="102" value="<?php echo $password;?>"/></td>
+<td>&nbsp;<input type="submit" name="login_submit" value="Sign in" tabindex="104"/></td></tr>
 </table>
 </form>
 </fieldset>

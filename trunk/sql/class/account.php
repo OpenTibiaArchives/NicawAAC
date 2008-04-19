@@ -28,6 +28,7 @@ public function __construct()
 
 public function load($id)
 	{
+		if (!is_numeric($id)) return false;
 		//load attributes from database
 		$acc = $this->myRetrieve('accounts', array('id' => $id));
 		$nicaw_acc = $this->myRetrieve('nicaw_accounts', array('account_id' => $id));
@@ -44,6 +45,8 @@ public function load($id)
 		$this->attrs['location'] = $nicaw_acc['location'];
 		$this->attrs['comment'] = $nicaw_acc['comment'];
 		$this->attrs['recovery_key'] = $nicaw_acc['recovery_key'];
+		if ($acc['premdays'] > 0) $this->attrs['premend'] = $acc['premdays']*24*3600 + time();
+		elseif ($acc['premEnd'] > 0) $this->attrs['premend'] = $acc['premEnd'];
 		//get characters of this account
 		$this->myQuery('SELECT players.id, players.name FROM players WHERE (`account_id`='.$this->quote($this->attrs['accno']).')');
 		if ($this->failed()) throw new Exception($this->getError());

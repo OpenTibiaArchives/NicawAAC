@@ -27,7 +27,7 @@ if (!is_file($cfg['dirdata'].$cfg['house_file']))
 <div class="mid">
 <div style="height: 500px; overflow: auto; margin: 10px;">
 <table>
-<tr class="color0"><td width="40%"><b>House</b></td><td width="30%"><b>Location</b></td><td width="30%"><b>Owner</b></td></tr>
+<tr class="color0"><td width="35%"><b>House</b></td><td width="25%"><b>Location</b></td><td width="25%"><b>Owner</b></td><td><b>Size</b></td><td><b>Rent</b></td></tr>
 <?php 
 $HousesXML = simplexml_load_file($cfg['dirdata'].$cfg['house_file']);
 $MySQL = new SQL();
@@ -39,7 +39,7 @@ while ($row = $MySQL->fetch_array()){
 }
 foreach ($HousesXML->house as $house){
 	$i++;
-	$list.= '<tr '.getStyle($i).'><td>'.htmlspecialchars($house['name']).'</td><td>'.htmlspecialchars($cfg['temple'][(int)$house['townid']]['name']).'</td><td>'.$houses[(int)$house['houseid']].'</td></tr>'."\r\n";
+	$list.= '<tr '.getStyle($i).'><td>'.htmlspecialchars($house['name']).'</td><td>'.htmlspecialchars($cfg['temple'][(int)$house['townid']]['name']).'</td><td>'.$houses[(int)$house['houseid']].'</td><td>'.$house['size'].'</td><td>'.$house['rent'].'</td></tr>'."\r\n";
 }
 echo $list;
 

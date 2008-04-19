@@ -1,6 +1,6 @@
-<?php 
+<?php
 /*
-    Copyright (C) 2007 - 2008  Nicaw
+    Copyright (C) 2007  Nicaw
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,11 +23,11 @@ include ("header.inc.php");
 $cfg['max_ban_time'] = 2*30*24*60*60; //2 months
 ?>
 <div id="content">
-<div class="top">Banned Players</div>
+<div class="top">Server Bans</div>
 <div class="mid">
-<?php 
+<?php
 $SQL = new SQL();
-$SQL->myQuery('SELECT name, time FROM bans, players WHERE players.id = bans.player ORDER BY time ASC');
+$SQL->myQuery('SELECT name, time FROM bans, players WHERE bans.player > 0 AND players.id = bans.player OR bans.account > 0 AND players.account_id = bans.account ORDER BY time ASC');
 if ($SQL->failed()) 
 	throw new Exception('SQL query failed:<br/>'.$SQL->getError());
 echo '<table style="width:100%">'."\n";
@@ -40,7 +40,7 @@ while ($ban = $SQL->fetch_array()){
 		$timeleft = $d.'d '.$h.'h';
 	else
 		$timeleft = $h.'h';
-	if ($ban['time']  > time() && ($ban['time'] - time() < $cfg['max_ban_time'] || $cfg['max_ban_time'] == 0)){
+	if ($ban['time'] - time() > 0 && (($ban['time'] - time()) < $cfg['max_ban_time'] || $cfg['max_ban_time'] == 0)){
 		$i++;
 		echo '<tr '.getStyle($i).'><td>'.$ban['name'].'</td><td>'.$time.'</td><td>'.$timeleft.'</td></tr>'."\n";
 	}

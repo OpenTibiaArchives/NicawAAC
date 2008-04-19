@@ -46,7 +46,7 @@ If you also forgot password, please follow this link:
 http://'.$cfg['server_url'].$_SERVER['PHP_SELF'].'?account='.$player->getAttr('account').'&key='.$key.'
 If you don\'t want to recover your account, simply ignore this letter.';
 						//send recovery key
-						require("../phpmailer/class.phpmailer.php");
+						require_once("../extensions/class.phpmailer.php");
 
 						$mail = new PHPMailer();
 						$mail->IsSMTP();						
@@ -85,8 +85,8 @@ If you don\'t want to recover your account, simply ignore this letter.';
 //user clicks the link in his email
 }elseif(!empty($_GET['account'])){
 	//load the account
-	$account = new Account($_GET['account']);
-	if ($account->load()){
+	$account = new Account();
+	if ($account->load($_GET['account'])){
 		//check recovery key against database
 		if ($account->checkRecoveryKey($_GET['key'])){
 			//set new password if key correct

@@ -1,5 +1,3 @@
-logout_time = 15*60;
-
 //mmmhmhm, have a cookie?
 var Cookies = {
 	init: function () {
@@ -83,7 +81,7 @@ Cookies.init();
             if (http_request.status == 200) {
 				document.getElementById(element_id).innerHTML = http_request.responseText;
 				if (element_id == 'form'){
-					logout_time = 15*60;
+					ticker = 0;
 					document.getElementById('iobox').style.left = Cookies.get('iobox_x');
 					document.getElementById('iobox').style.top = Cookies.get('iobox_y');
 					document.getElementById('iobox').style['visibility'] = 'visible';

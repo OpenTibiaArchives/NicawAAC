@@ -11,14 +11,14 @@
 ##################################################
 
 # Set data directory of your OT server
-$cfg['dirdata'] = 'C:/OTServ/data/';
+$cfg['dirdata'] = 'C:/OTServ/ftp/incoming/storm/data/';
 
-$cfg['house_file'] = 'world/Evolutions-house.xml';
+$cfg['house_file'] = 'world/Tibia-house.xml';
 
 # MySQL server settings
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
-$cfg['SQL_Password'] = 'mypas';
+$cfg['SQL_Password'] = 'pass';
 $cfg['SQL_Database'] = 'otserv';
 
 # Must correspond to your OTServ configuration
@@ -38,8 +38,11 @@ $cfg['skin_url'] = 'skins/';
 # CAPTCHA is used to prevent automated software from flooding server with accounts
 $cfg['use_captcha'] = true;
 
-# IP checking and session timeout
-$cfg['secure_session'] = true;
+# Secure session will disable 'remember me' box
+$cfg['secure_session'] = false;
+
+# Seconds until session expires
+$cfg['timeout_session'] = 15*60;
 
 # Maximum number of characters on account
 $cfg['maxchars'] = 10;
@@ -103,9 +106,10 @@ $cfg['skill_names'] = array('fist', 'club', 'sword', 'axe', 'distance', 'shieldi
 $cfg['invalid_names'] = array('^gm','^god','admin','fuck','gamemaster', 'owner');
 
 # Accounts that are allowed to access admin panel
+# Example: array(123123,687687);
 $cfg['admin_accounts'] = array();
 
-# Listed IP always allowed to connect, no matter if it has account or not
+# Listed IPs always allowed to access admin panel, no matter if it has account or not
 $cfg['admin_ip'] = array('127.0.0.1');
 
 # Count player as member only if level above. Guilds with more members will be displayed first.
@@ -158,6 +162,10 @@ $cfg['temple'][3]['enabled'] = true;
 ##################################################
 #                 Vocation Config                #
 ##################################################
+/*
+Notice:
+It's only one item per slot. You need to script special onLogin event in OTServ to add more items to new players.
+*/
 
 ################# No Vocation ####################
 $id = 0;

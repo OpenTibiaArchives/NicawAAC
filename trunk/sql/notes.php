@@ -23,11 +23,11 @@ include ("header.inc.php");
 <div id="content">
 <div class="top">Home</div>
 <div class="mid">
-<pre>
-<?php 
-echo htmlentities(file_get_contents("notes.inc"));
+<?php
+require_once('extensions/simple_bb_code.php');
+$bb = new Simple_BB_Code(); 
+echo $bb->parse(file_get_contents("notes.inc"));
 ?>
-</pre>
 </div>
 <div class="bot"></div>
 </div>

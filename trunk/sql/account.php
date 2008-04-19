@@ -43,7 +43,6 @@ include ("header.inc.php");
 <li onclick="ajax('form','modules/account_email.php','',true)" style="background-image: url(ico/email.png);">Change Email</li>
 <li onclick="ajax('form','modules/account_comments.php','',true)" style="background-image: url(ico/page_edit.png);">Edit Comments</li>
 <li onclick="ajax('form','modules/guild_create.php','',true)" style="background-image: url(ico/group_add.png);">Create Guild</li>
-<!--<li onclick="ajax('ajax','modules/account_logs.php','',true)" style="background-image: url(ico/book_open.png);">View Logs</li>-->
 <li onclick="window.location.href='login.php?logout&amp;redirect=account.php'" style="background-image: url(ico/resultset_previous.png);">Logout</li>
 </ul>
 </td><td>

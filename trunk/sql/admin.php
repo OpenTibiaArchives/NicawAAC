@@ -41,7 +41,7 @@ include ("header.inc.php");
 <?php
 $errors = '';
 if(!extension_loaded('gd'))
-	$errors .= '<li>GD library is not installed. It is essential for image manipulatios.</li>';
+	$errors .= '<li>GD library is not installed. It is essential for image manipulations.</li>';
 if(get_magic_quotes_gpc())
 	$errors .= '<li>Magic quotes is on! While this option may be important for other scripts, you can safely disable it for this AAC.</li>';
 if(ini_get('register_globals'))

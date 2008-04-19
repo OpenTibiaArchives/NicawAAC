@@ -62,9 +62,17 @@ else
 $cfg['server_href'] = 'http://'.$cfg['server_url'].dirname(htmlspecialchars($_SERVER['PHP_SELF'])).'/';
 
 //Anti session hijacking
-if ($cfg['secure_session'] && !empty($_SESSION['account']) && ($_SERVER['REMOTE_ADDR'] != $_SESSION['remote_ip'] || time() - $_SESSION['last_activity'] > 30*60))
+if (!empty($_SESSION['account']) && ($_SERVER['REMOTE_ADDR'] != $_SESSION['remote_ip'] || (time() - $_SESSION['last_activity'] > $cfg['timeout_session']) && empty($_COOKIE['remember'])))
 	unset($_SESSION['account']);
-	
+
+//Autologin
+if (!$cfg['secure_session'] && !empty($_COOKIE['remember']) && $_SESSION['account'] === null){
+	$account = new Account();
+	if ($account->load($_COOKIE['account']) && $_COOKIE['password'] == sha1($account->getAttr('password'))){
+		$_SESSION['account']=$account->getAttr('accno');
+		$_SESSION['remote_ip']=$_SERVER['REMOTE_ADDR'];
+	}
+}
 $_SESSION['last_activity'] = time();
 
 //Check if extensions loaded
@@ -72,5 +80,5 @@ if (!extension_loaded('simplexml'))
 	throw new Exception('SimpleXML extension is not installed');
 	
 //Set AAC version
-$cfg['aac_version'] = 'sql_3.14';
+$cfg['aac_version'] = 'sql_3.17a';
 ?>

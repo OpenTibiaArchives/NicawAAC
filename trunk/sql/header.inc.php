@@ -11,18 +11,19 @@
 <script language="javascript" type="text/javascript" src="js.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $cfg['skin_url'].$cfg['skin']?>.js"></script>
 <link rel="shortcut icon" href="favicon.ico" />
-<?php if ($cfg['secure_session'] && !empty($_SESSION['account'])){?>
+<?php if ($cfg['secure_session'] && !empty($_SESSION['account']) && empty($_COOKIE['remember'])){?>
 <script language="javascript" type="text/javascript">
 //<![CDATA[
 	function tick()
 	{
-		logout_time--;
-		if (logout_time < 0){
+		ticker++;
+		if (ticker > <?php echo $cfg['timeout_session'];?>){
 			self.window.location.href = 'login.php?logout&redirect=account.php';
 		}else{
 			setTimeout ("tick()",1000);
 		}
 	}
+	ticker = 0;
 	tick();
 //]]>
 </script>

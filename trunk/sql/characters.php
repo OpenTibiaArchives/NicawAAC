@@ -47,6 +47,9 @@ if (!empty($_GET['player_id']) && $player->load($_GET['player_id']) || !empty($_
 	if ($player->isAttr('position')){
 		echo "<b>Position: </b> ".$player->getAttr('position')."<br/>";
 	}
+	if ($player->getAttr('premend') > 0){
+		echo "<b>Premium: </b> ".ceil((time() - $player->getAttr('premend'))/(3600*24))." day(s)";
+	}
 	if ($player->getAttr('lastlogin') == 0)
 		$lastlogin = 'Never';
 	else
