@@ -10,7 +10,7 @@
 <link rel="alternate" type="application/rss+xml" title="News" href="news.php?RSS2" />
 <script language="javascript" type="text/javascript" src="js.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $cfg['skin_url'].$cfg['skin']?>.js"></script>
-<link rel="shortcut icon" href="favicon.ico" />
+<link rel="shortcut icon" href="ico/favicon.ico" />
 <?php if ($cfg['secure_session'] && !empty($_SESSION['account']) && empty($_COOKIE['remember'])){?>
 <script language="javascript" type="text/javascript">
 //<![CDATA[
