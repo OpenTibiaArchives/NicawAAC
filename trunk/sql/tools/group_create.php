@@ -93,6 +93,7 @@ $msg->addMsg('<table id="flagtable" border="1px" cellspacing="0" width="600px">
 		<input type="checkbox" value="4294967296" onclick="calcFlags()"> Talk red anonymously<br/>
 		<input type="checkbox" value="8589934592" onclick="calcFlags()"> Ignore protection-zone<br/>
 		<input type="checkbox" value="68719476736" onclick="calcFlags()"> Can not be muted<br/>
+		<input type="checkbox" value="137438953472" onclick="calcFlags()"> Is premium<br/>
 
     </td>
     <td valign="top" width="200">
