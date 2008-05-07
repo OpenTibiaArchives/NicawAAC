@@ -33,7 +33,7 @@ class Simple_BB_Code{
 	//Convert new line charactes to linebreaks?
 	var $convert_newlines = true;
 	//Parse For smilies?
-	var $parse_smilies = true;
+	var $parse_smilies = false;
 	//auto link urls(http and ftp), and email addresses?
 	var $auto_links = true;
 	//Internal Storage
