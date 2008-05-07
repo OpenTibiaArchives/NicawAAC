@@ -67,16 +67,16 @@ Cookies.init();
 //this loads html content between element_id tags. warn displays loading message.
    function ajax(element_id, script_url, get, warn) {
 
-	  http_request = ajax_init();
-	  if (!http_request){
-		window.location.href=script_url;
+	http_request = ajax_init();
+	if (!http_request){
+		window.location.href=script_url+'?'+encodeURI(get);
+	}
+	if (warn) {
+			document.getElementById(element_id).innerHTML = '<div style="z-index: 10; position: absolute; background-color: #660000; color:white;">Loading... Please wait or click <a style="color: white;" href="'+script_url+'?'+encodeURI(get)+'">here</a></div>' + document.getElementById(element_id).innerHTML;
 	}
 
       http_request.onreadystatechange = function()
         {
-		  if (warn) {
-			  document.getElementById(element_id).innerHTML = '<div style="z-index: 10; position: absolute; background-color: #660000; color:white;">Loading... Please wait or click <a style="color: white;" href="'+script_url+'?'+encodeURI(get)+'">here</a></div>' + document.getElementById(element_id).innerHTML;
-		  }
           if (http_request.readyState == 4) {
             if (http_request.status == 200) {
 				document.getElementById(element_id).innerHTML = http_request.responseText;
