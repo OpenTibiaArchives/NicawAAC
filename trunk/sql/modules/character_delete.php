@@ -31,15 +31,18 @@ if ($form->exists()){
 		if ($player->load($form->attrs['character'])){
 			//check if player really belongs to account
 			if ($player->getAttr('account') === $account->getAttr('accno')){
-				//delete the player
-				if ($player->delete()){
-					$account->logAction('Deleted character '.$player->getAttr('name'));
-					//create new message
-					$msg = new IOBox('message');
-					$msg->addMsg('Your character was deleted.');
-					$msg->addRefresh('Finish');
-					$msg->show();
-				}else $error = $player->getError();
+				//"omg, GM recover my character" protection
+				if (time() - $player->getAttr('lastlogin') > $cfg['player_delete_interval']){
+					//delete the player
+					if ($player->delete()){
+						$account->logAction('Deleted character '.$player->getAttr('name'));
+						//create new message
+						$msg = new IOBox('message');
+						$msg->addMsg('Your character was deleted.');
+						$msg->addRefresh('Finish');
+						$msg->show();
+					}else $error = $player->getError();
+				}else $error ='Your character must be inactive for '.ceil(($cfg['player_delete_interval']-time()+$player->getAttr('lastlogin'))/3600).' hour(s) before deletion.';
 			}else $error ='Player does not belong to account';
 		}else $error ='Unable to load player';
 	}else $error ='Wrong password';

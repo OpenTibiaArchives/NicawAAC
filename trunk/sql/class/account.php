@@ -105,11 +105,13 @@ public function setPassword($new)
 public function checkPassword($pass)
 	{global $cfg;
 		$pass = $pass.$cfg['password_salt'];
-		if ($cfg['password_type'] == 'md5')
+		if ($cfg['password_type'] == 'md5'){
 			$pass = md5($pass);
-		elseif ($cfg['password_type'] == 'sha1')
+		}elseif ($cfg['password_type'] == 'sha1'){
 			$pass = sha1($pass);
-		return $this->attrs['password'] == $pass && !empty($pass);
+		}elseif ($cfg['password_type'] == 'plain'){
+		}else throw new Exception('Unknow password encoding.');
+		return $this->attrs['password'] == (string)$pass && !empty($pass);
 	}
 
 public function exists()

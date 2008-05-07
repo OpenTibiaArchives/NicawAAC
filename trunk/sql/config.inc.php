@@ -19,13 +19,13 @@ $cfg['house_file'] = 'world/Tibia-house.xml';
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'pass';
-$cfg['SQL_Database'] = 'otserv';
+$cfg['SQL_Database'] = 'testdb';
 
 # Must correspond to your OTServ configuration
 # Options: plain, md5, sha1
 $cfg['password_type'] = 'plain';
 
-# Not currently supported by OTServ
+# Not currently supported by OTServ, leave empty
 $cfg['password_salt'] = '';
 
 # Skin files can be found in skins folder.
@@ -35,7 +35,7 @@ $cfg['skin'] = 'inferno';
 # In case you want to upload skins somewhere else
 $cfg['skin_url'] = 'skins/';
 
-# CAPTCHA is used to prevent automated software from flooding server with accounts
+# Captcha is used to prevent automated software from flooding server with accounts
 $cfg['use_captcha'] = true;
 
 # Secure session will disable 'remember me' box
@@ -112,6 +112,9 @@ $cfg['admin_accounts'] = array();
 # Listed IPs always allowed to access admin panel, no matter if it has account or not
 $cfg['admin_ip'] = array('127.0.0.1');
 
+# Player can only delete himself after specified time (seconds)
+$cfg['player_delete_interval'] = 24*3600;
+
 # Count player as member only if level above. Guilds with more members will be displayed first.
 $cfg['guild_level'] = 20;
 
@@ -121,8 +124,8 @@ $cfg['guild_leader_level'] = 20;
 # Please disable guild manager if your server features guild editing
 $cfg['guild_manager_enabled'] = true;
 
-# Online status update interval (minutes). Should match statustimeout in your otserv configuration
-$cfg['status_update_interval'] = 5;
+# Online status update interval (seconds). Should match statustimeout in your otserv configuration
+$cfg['status_update_interval'] = 5*60;
 
 ##################################################
 #                 Town Config                    #

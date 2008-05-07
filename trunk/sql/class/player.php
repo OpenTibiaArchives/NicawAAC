@@ -132,14 +132,14 @@ public function getStorage($id)
 
 public function getDeaths()
 	{
-		$query = "SELECT * FROM `deathlist` WHERE (`player` = '".$this->escape_string($this->attrs['id'])."') ORDER BY date DESC LIMIT 10";
+		$query = "SELECT * FROM `player_deaths` WHERE (`player_id` = '".$this->escape_string($this->attrs['id'])."') ORDER BY time DESC LIMIT 10";
 		$this->myQuery($query);
-		if ($this->failed()) return false;
+		if ($this->failed()) throw new Exception('Cannot retrieve deaths! This is only compatible with TFS.'.$this->getError());;
 		$i = 0;
 		while($a = $this->fetch_array()){
-			$list[$i]['killer'] = $a['killer'];
+			$list[$i]['killer'] = $a['killed_by'];
 			$list[$i]['level'] = $a['level'];
-			$list[$i]['date'] = $a['date'];
+			$list[$i]['date'] = $a['time'];
 			$i++;
 		}
 		return $list;

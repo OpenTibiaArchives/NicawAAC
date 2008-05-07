@@ -22,12 +22,12 @@ include ("include.inc.php");
 if (isset($_POST['login_submit'])){
 	$account = new Account();
 	if ($account->load($_POST['account'])){
-		if ($account->checkPassword($_POST['password']) || !$cfg['secure_session'] && $_POST['password'] == sha1($account->getAttr('password'))){
+		if ($account->checkPassword($_POST['password']) || !$cfg['secure_session'] && (string)$_POST['password'] == sha1($account->getAttr('password').$_SERVER['HTTP_HOST'])){
 			$_SESSION['account']=$account->getAttr('accno');
 			$_SESSION['remote_ip']=$_SERVER['REMOTE_ADDR'];
 			if (!empty($_COOKIE['remember'])){
 				setcookie('account',$account->getAttr('accno'),time() + (30*24*3600),'/');
-				setcookie('password',sha1($account->getAttr('password')),time() + (30*24*3600),'/');
+				setcookie('password',sha1($account->getAttr('password').$_SERVER['HTTP_HOST']),time() + (30*24*3600),'/');
 			}
 			if (!empty($_GET['redirect'])) {
 				header('location: '.$_GET['redirect']);

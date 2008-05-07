@@ -68,7 +68,7 @@ if (!empty($_SESSION['account']) && ($_SERVER['REMOTE_ADDR'] != $_SESSION['remot
 //Autologin
 if (!$cfg['secure_session'] && !empty($_COOKIE['remember']) && $_SESSION['account'] === null){
 	$account = new Account();
-	if ($account->load($_COOKIE['account']) && $_COOKIE['password'] == sha1($account->getAttr('password'))){
+	if ($account->load($_COOKIE['account']) && (string)$_COOKIE['password'] == sha1($account->getAttr('password').$_SERVER['HTTP_HOST'])){
 		$_SESSION['account']=$account->getAttr('accno');
 		$_SESSION['remote_ip']=$_SERVER['REMOTE_ADDR'];
 	}
@@ -80,5 +80,5 @@ if (!extension_loaded('simplexml'))
 	throw new Exception('SimpleXML extension is not installed');
 	
 //Set AAC version
-$cfg['aac_version'] = 'sql_3.17a';
+$cfg['aac_version'] = 'sql_3.18a';
 ?>
