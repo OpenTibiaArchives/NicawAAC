@@ -82,9 +82,9 @@ public function save()
 		}
 		
 		//deleted old data first
+		$this->myQuery('UPDATE players SET rank_id = 0 WHERE players.rank_id = guild_ranks.id AND guild_ranks.guild_id = '.(int)$this->attrs['id']);
 		$this->myQuery('DELETE FROM nicaw_guild_invites WHERE gid = '.(int)$this->attrs['id']);
 		$this->myQuery('DELETE FROM guild_ranks WHERE guild_id = '.(int)$this->attrs['id']);
-		$this->myQuery('UPDATE players SET rank_id = 0 WHERE players.rank_id = guild_ranks.id AND guild_ranks.guild_id = '.(int)$this->attrs['id']);
 		
 		//save ranks (case sensitive)
 		$unique_ranks = array();
