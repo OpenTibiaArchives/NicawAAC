@@ -33,12 +33,18 @@ protected function _init(){
 			return false;
 		}
 		if (!@mysql_select_db($cfg['SQL_Database'])){
-			throw new Exception('Unable to select databse: '.$cfg['SQL_Database'].'. Make sure it exists');
+			throw new Exception('Unable to select databse: '.$cfg['SQL_Database'].'. Make sure it exists.');
 			return false;
 		}
 		$this->connection = $con;
 	}
 	return true;
+}
+
+//Creates tables
+public function setup(){
+	$tables = explode(';', @file_get_contents('database.sql'));
+	foreach ($tables as $table) mysql_query($table);
 }
 
 //Perform simple SQL query
@@ -112,13 +118,14 @@ public function analyze()
 		$is_server_db = in_array('accounts',$t) && in_array('players',$t);
 		$is_svn = in_array('player_depotitems',$t) && in_array('groups',$t);
 		$is_cvs = in_array('playerstorage',$t) && in_array('skills',$t);
-		if (!$is_aac_db)
-			return 'It appears you don\'t have SQL sample imported for AAC (database.sql)';
-		elseif (!$is_server_db)
+		if (!$is_aac_db){
+			$this->setup();
+			return 'Notice: AutoSetup has attampted to create missing tables for you.';
+		}elseif (!$is_server_db){
 			return 'It appears you don\'t have SQL sample imported for OT server or it is not supported';
-		elseif ($is_cvs && !$is_svn)
+		}elseif ($is_cvs && !$is_svn){
 			return 'This AAC version does not support your server. Consider using SQL v1.5';
-		return false;
+		}return false;
 	}
 	
 public function repairTables()
