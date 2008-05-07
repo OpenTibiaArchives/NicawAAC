@@ -72,12 +72,12 @@ Cookies.init();
 		window.location.href=script_url+'?'+encodeURI(get);
 	}
 	if (warn) {
-			document.getElementById(element_id).innerHTML = '<div style="z-index: 10; position: absolute; background-color: #660000; color:white;">Loading... Please wait or click <a style="color: white;" href="'+script_url+'?'+encodeURI(get)+'">here</a></div>' + document.getElementById(element_id).innerHTML;
+		document.getElementById(element_id).innerHTML = '<div style="z-index: 10; position: absolute; background-color: #660000; color:white;">Loading... Please wait or click <a style="color: white;" href="'+script_url+'?'+encodeURI(get)+'">here</a></div>' + document.getElementById(element_id).innerHTML;
 	}
 
-      http_request.onreadystatechange = function()
-        {
-          if (http_request.readyState == 4) {
+    http_request.onreadystatechange = function()
+    {
+        if (http_request.readyState == 4) {
             if (http_request.status == 200) {
 				document.getElementById(element_id).innerHTML = http_request.responseText;
 				if (element_id == 'form'){
@@ -89,14 +89,14 @@ Cookies.init();
             }else if(warn){
               alert('Server failed to load script: \n'+script_url+'\nError: '+http_request.status);
             }
-          }
         }
-      parameters = encodeURI(get) + '&ajax=true';
-      http_request.open('POST', script_url, true);
-      http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      http_request.setRequestHeader("Content-length", parameters.length);
-      http_request.setRequestHeader("Connection", "close");
-      http_request.send(parameters);
+    }
+    parameters = encodeURI(get) + '&ajax=true';
+    http_request.open('POST', script_url, true);
+    http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http_request.setRequestHeader("Content-length", parameters.length);
+    http_request.setRequestHeader("Connection", "close");
+    http_request.send(parameters);
    }
 
 function getRef(obj){
