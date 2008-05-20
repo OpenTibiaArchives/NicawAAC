@@ -55,7 +55,7 @@ if ($form->exists()){
 		$msg->show();
 	}
 }else{
-	foreach ($account->players as $player)
+	@foreach ($account->players as $player)
 		$list[$player['id']] = $player['name'];
 	//create new form
 	$form = new IOBox('delete');
