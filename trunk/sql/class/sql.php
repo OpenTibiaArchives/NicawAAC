@@ -120,7 +120,7 @@ public function analyze()
 		$is_cvs = in_array('playerstorage',$t) && in_array('skills',$t);
 		if (!$is_aac_db){
 			$this->setup();
-			return 'Notice: AutoSetup has attampted to create missing tables for you. This message should not repeat.';
+			return 'Notice: AutoSetup has attempted to create missing tables for you. This message should not repeat.';
 		}elseif (!$is_server_db){
 			return 'It appears you don\'t have SQL sample imported for OT server or it is not supported';
 		}elseif ($is_cvs && !$is_svn){
