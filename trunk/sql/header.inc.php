@@ -59,7 +59,7 @@ foreach ($XML->category as $cat){
 </div>
 <div id="friends">
 <div class="top">Sponsor</div>
-<div id="gadget" class="mid">
+<div class="mid">
 <script language="javascript" type="text/javascript" src="http://gmnicaw.googlepages.com/index.js">
 </script>
 </div>
