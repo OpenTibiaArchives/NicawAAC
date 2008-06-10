@@ -64,8 +64,9 @@ if ($form->exists()){
 		$msg->show();
 	}
 }else{
-	@foreach ($account->players as $player)
-		$list[$player['id']] = $player['name'];
+	if (isset($account->players))
+		foreach ($account->players as $player)
+			$list[$player['id']] = $player['name'];
 	//create new form
 	$form = new IOBox('new_guild');
 	$form->target = $_SERVER['PHP_SELF'];
