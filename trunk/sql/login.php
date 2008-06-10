@@ -82,10 +82,10 @@ if (isset($_POST['login_submit'])) {
 	$password = $_COOKIE['password'];
 }
 ?>
-<td><input id="account" name="account" type="password" class="textfield" maxlength="8" size="10" tabindex="101" value="<?php echo $account;?>"/></td>
+<td><input id="account" name="account" type="password" class="textfield" maxlength="8" size="10" tabindex="101" value="<?php echo htmlspecialchars($account);?>"/></td>
 <td <?php if ($cfg['secure_session']) echo ' style="visibility: hidden"';?>>&nbsp;<input id="remember" name="remember" type="checkbox" tabindex="103" onclick="remember_toggle(this)"<?php if (!empty($_COOKIE['remember'])) echo ' checked="checked"';?>/>&nbsp;<label for="remember">Remember Me?</label></td></tr>
 <tr><td style="text-align: right"><label for="password">Password</label>&nbsp;</td>
-<td><input id="password" name="password" type="password" class="textfield" maxlength="100" size="10" tabindex="102" value="<?php echo $password;?>"/></td>
+<td><input id="password" name="password" type="password" class="textfield" maxlength="100" size="10" tabindex="102" value="<?php echo htmlspecialchars($password);?>"/></td>
 <td>&nbsp;<input type="submit" name="login_submit" value="Sign in" tabindex="104"/></td></tr>
 </table>
 </form>
