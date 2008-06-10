@@ -115,11 +115,8 @@ $cfg['admin_ip'] = array('127.0.0.1');
 # Player can only delete himself after specified time (seconds)
 $cfg['player_delete_interval'] = 24*3600;
 
-# Count player as member only if level above. Guilds with more members will be displayed first.
-$cfg['guild_level'] = 0;
-
 # Minimum level to create own guild. Cannot be lower than $cfg['guild_level']
-$cfg['guild_leader_level'] = 0;
+$cfg['guild_leader_level'] = 20;
 
 # Please disable guild manager if your server features guild editing
 $cfg['guild_manager_enabled'] = true;
