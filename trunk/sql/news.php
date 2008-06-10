@@ -51,7 +51,7 @@ include ("header.inc.php");
 <div id="content">
 <div class="top">Server News</div>
 <div class="mid">
-<a href="news.php?RSS2" style="text-decoration: none; float: right;"><img src="ico/rss.gif" title="Subscribe to RSS" alt="rss" style="vertical-align: middle;"/></a>
+<a href="news.php?RSS2" style="text-decoration: none; float: right;"><img src="ico/feed.png" title="Subscribe to RSS" alt="rss" style="vertical-align: middle;"/></a>
 <?php 
 $mysql = new SQL();
 if (isset($_GET['id']))

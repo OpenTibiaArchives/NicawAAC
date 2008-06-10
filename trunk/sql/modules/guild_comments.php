@@ -17,19 +17,20 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 include ("../include.inc.php");
+//load guild and check owner
+$guild = new Guild();
+if (!($guild->load($_REQUEST['guild_id']) && $guild->getAttr('owner_acc') == $_SESSION['account'] && !empty($_SESSION['account']))) die("Access denied.");
 
 //retrieve post data
 $form = new Form('comments');
 //check if any data was submited
 if ($form->exists()){
-	//get guild owner acc
-	$guild = new Guild();
-	//check if user is guild owner
-	if ($guild->load($_REQUEST['guild_id']) && $guild->getAttr('owner_acc') == $_SESSION['account'] && !empty($_SESSION['account']) && strlen($form->attrs['comment']) <= 300)
-		file_put_contents('../guilds/'.$guild->getAttr('id').'.txt',htmlspecialchars($form->attrs['comment']));
-	else{
+	if (strlen($form->attrs['comment']) <= 250){
+		$guild->setAttr('description', $form->attrs['comment']);
+		$guild->save();
+	}else{
 		$msg = new IOBox('comments');
-		$msg->addMsg('Cannot load this guild');
+		$msg->addMsg('Description is too long.');
 		$msg->show();
 	}
 }else{
@@ -37,8 +38,8 @@ if ($form->exists()){
 	$form = new IOBox('comments');
 	$form->target = $_SERVER['PHP_SELF'].'?guild_id='.(int)$_REQUEST['guild_id'];
 	$form->addLabel('Edit Description');
-	$form->addMsg('Max 300 symbols');
-	$form->addTextbox('comment',@file_get_contents('../guilds/'.(int)$_REQUEST['guild_id'].'.txt'));
+	$form->addMsg('Max 250 symbols');
+	$form->addTextbox('comment',htmlspecialchars($guild->getAttr('description')));
 	$form->addClose('Cancel');
 	$form->addSubmit('Save');
 	$form->show();

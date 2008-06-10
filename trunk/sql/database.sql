@@ -55,3 +55,9 @@ CREATE TABLE `nicaw_guild_invites` (
 	`pid` int(10) unsigned NOT NULL COMMENT 'player id',
 	`rank` int(10) unsigned NOT NULL
 ) ENGINE = InnoDB;
+
+CREATE TABLE `nicaw_guild_info` (
+	`id` int(10) unsigned NOT NULL COMMENT 'guild id',
+	`description` TINYTEXT NULL,
+	UNIQUE KEY `id` (`id`)
+) ENGINE = InnoDB;

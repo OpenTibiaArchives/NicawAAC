@@ -37,7 +37,7 @@ public function find($name)
 	
 public function load($id)
 	{
-		$query = 'SELECT players.account_id, guilds.* FROM players, guilds WHERE guilds.ownerid = players.id AND guilds.id = '.$this->quote($id);
+		$query = 'SELECT players.account_id, guilds.* FROM players, guilds WHERE players.id = guilds.ownerid AND guilds.id = '.$this->quote($id);
 		$this->myQuery($query);
 		if ($this->failed())
 			throw new Exception('Failed to load guild:<br/>'.$this->getError());
@@ -50,6 +50,11 @@ public function load($id)
 		$this->attrs['name'] = (string) $a['name'];
 		$this->attrs['owner_id'] = (int) $a['ownerid'];
 		$this->attrs['owner_acc'] = (string) $a['account_id'];
+		
+		$this->myQuery('SELECT * FROM nicaw_guild_info WHERE id = '.$this->attrs['id']);
+		$a = $this->fetch_array();
+		$this->attrs['description'] = (string) $a['description'];
+		
 		
 		//get invited members
 		$this->myQuery('SELECT players.id, players.name, players.guildnick, guild_ranks.name AS rank FROM players, guild_ranks, nicaw_guild_invites WHERE players.id = nicaw_guild_invites.pid AND guild_ranks.id = nicaw_guild_invites.rank AND nicaw_guild_invites.gid = '.$this->attrs['id']);
@@ -77,8 +82,10 @@ public function save()
 			if ($this->exists()) throw new Exception('Trying to insert guild which already exists.');
 			$this->myInsert('guilds', array('name' => $this->attrs['name'], 'ownerid' => $this->attrs['owner_id'], 'creationdata' => time()));
 			$this->attrs['id'] = $this->insert_id();
+			$this->myInsert('nicaw_guild_info', array('id' => $this->attrs['id']));
 		}else{
 			$this->myUpdate('guilds', array('name' => $this->attrs['name'], 'ownerid' => $this->attrs['owner_id'], 'creationdata' => time()), array('id' => $this->attrs['id']));
+			$this->myUpdate('nicaw_guild_info', array('description' => $this->attrs['description']), array('id' => $this->attrs['id']));
 		}
 		
 		//deleted old data first
@@ -208,7 +215,7 @@ public function remove()
 		$this->myQuery('UPDATE players SET rank_id = 0 WHERE players.rank_id = guild_ranks.id AND guild_ranks.guild_id = '.(int)$this->attrs['id']);
 		$this->myQuery('DELETE FROM guilds WHERE id = '.(int)$this->attrs['id']);
 		$this->myQuery('DELETE FROM nicaw_guild_invites WHERE gid = '.(int)$this->attrs['id']);
-		$this->myQuery('DELETE FROM guild_ranks WHERE guild_id = '.(int)$this->attrs['id']);	
+		$this->myQuery('DELETE FROM guild_ranks WHERE guild_id = '.(int)$this->attrs['id']);
 	}
 
 public function memberSetRank($id, $rank)

@@ -32,17 +32,21 @@ $SQL = new SQL();
 <?php 
 //-----------------------Guild list
 if (!isset($_GET['guild_id']) && !isset($_GET['guild_name'])){
-$query = 'SELECT guilds.id, guilds.name, COUNT(guilds.id) FROM guilds, guild_ranks, players WHERE guilds.id = guild_ranks.guild_id AND guild_ranks.id = players.rank_id AND players.level >= '.$cfg['guild_level'].' GROUP BY guilds.id ORDER BY COUNT(guilds.id) DESC';
+$query = 'SELECT guilds.id, guilds.name, nicaw_guild_info.description FROM guilds LEFT JOIN nicaw_guild_info ON guilds.id = nicaw_guild_info.id ORDER BY name ASC';
 $SQL->myQuery($query);
 if ($SQL->failed())
 	throw new Exception('SQL query failed:<br/>'.$SQL->getError());
 while ($a = $SQL->fetch_array()){
+if (file_exists('guilds/'.$a['id'].'.gif')) 
+	$img_path = 'guilds/'.$a['id'].'.gif';
+else
+	$img_path = 'ico/guild_default.gif';
 ?>
 <table border="1" onclick="window.location.href='guilds.php?guild_id=<?php echo urlencode($a['id'])?>'" style="cursor: pointer; width: 100%;">
-<tr><td style="width: 64px; height: 64px; padding: 10px;"><img src="guilds/<?php echo $a['id']?>.gif" alt="NO IMG" height="64" width="64"/></td>
+<tr><td style="width: 64px; height: 64px; padding: 10px;"><img src="<?php echo $img_path?>" alt="NO IMG" height="64" width="64"/></td>
 <td style="vertical-align: top;">
 <b><?php echo htmlspecialchars($a['name'])?></b><hr/>
-<?php echo @file_get_contents('guilds/'.$a['id'].'.txt')?>
+<?php echo htmlspecialchars($a['description'])?>
 </td></tr>
 </table>
 	
@@ -55,13 +59,17 @@ if (!empty($_GET['guild_id']) && !$guild->load($_GET['guild_id']))
 elseif (!empty($_GET['guild_name']) && !$guild->find($_GET['guild_name']))
 	echo 'Guild not found.';
 else{
+if (file_exists('guilds/'.$guild->getAttr('id').'.gif')) 
+	$img_path = 'guilds/'.$guild->getAttr('id').'.gif';
+else
+	$img_path = 'ico/guild_default.gif';
 ?>
-<table style="width: 100%"><tr><td style="width: 64px; height: 64px; padding: 10px;"><img src="guilds/<?php echo $guild->getAttr('id')?>.gif" alt="NO IMG" height="64" width="64"/></td><td style="text-align: center">
+<table style="width: 100%"><tr><td style="width: 64px; height: 64px; padding: 10px;"><img src="<?php echo $img_path?>" alt="Guild IMG" height="64" width="64"/></td><td style="text-align: center">
 <h1 style="display: inline"><?php echo htmlspecialchars($guild->getAttr('name'))?>
 </h1></td><td style="width: 64px; height: 64px; padding: 10px;">
-<img src="guilds/<?php echo $guild->getAttr('id')?>.gif" alt="NO IMG" height="64" width="64"/></td></tr>
+<img src="<?php echo $img_path?>" alt="Guild IMG" height="64" width="64"/></td></tr>
 </table>
-<p><?php echo @file_get_contents('guilds/'.$guild->getAttr('id').'.txt')?></p><hr/>
+<p><?php echo htmlspecialchars($guild->getAttr('description'))?></p><hr/>
 <ul class="task-menu" style="width: 200px;">
 <li style="background-image: url(ico/book_previous.png);" onclick="self.window.location.href='guilds.php'">Back</li>
 <?php 
