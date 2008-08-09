@@ -111,17 +111,21 @@ foreach ($guild->members as $a)
 foreach ($guild->invited as $a)
 	$members[$a['rank']][] = array('id' => $a['id'], 'name' => $a['name'], 'nick' => 'Invited');
 
-$i = 0;
-while ($rank = current($members)){
-	$i++;
-	$rank_name = key($members);
-	foreach ($rank as $member){
-		if (!empty($member['nick'])) $nick = ' (<i>'.htmlspecialchars($member['nick']).'</i>)';
-		else $nick = '';
-		echo '<tr '.getStyle($i).'><td>'.htmlspecialchars($rank_name).'</td><td><a href="characters.php?player_id='.$member['id'].'">'.htmlspecialchars($member['name']).'</a> '.$nick.'</td></tr>';
-		$rank_name = '';
+$i = 0;.
+if (isset($members)){
+	while ($rank = current($members)){
+		$i++;
+		$rank_name = key($members);
+		foreach ($rank as $member){
+			if (!empty($member['nick'])) $nick = ' (<i>'.htmlspecialchars($member['nick']).'</i>)';
+			else $nick = '';
+			echo '<tr '.getStyle($i).'><td>'.htmlspecialchars($rank_name).'</td><td><a href="characters.php?player_id='.$member['id'].'">'.htmlspecialchars($member['name']).'</a> '.$nick.'</td></tr>';
+			$rank_name = '';
+		}
+		next($members);
 	}
-	next($members);
+}else{
+	echo 'Oh no! This guild has no members.';
 }
 ?>
 </table>
