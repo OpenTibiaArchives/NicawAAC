@@ -10,6 +10,7 @@
 <item href="guilds.php">Guilds</item>
 <item href="bans.php">Bans</item>
 <item href="admin.php">Admin Panel</item>
+<!--<item href="spells.php">Spells</item>-->
 <!--<item href="info.php">Server Info</item>-->
 <!--<item href="voting.php">Voting</item>-->
 </category>

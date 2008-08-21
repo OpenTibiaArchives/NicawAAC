@@ -80,5 +80,5 @@ if (!extension_loaded('simplexml'))
 	throw new Exception('SimpleXML extension is not installed');
 	
 //Set AAC version
-$cfg['aac_version'] = 'sql_3.18b';
+$cfg['aac_version'] = 'sql_3.20';
 ?>

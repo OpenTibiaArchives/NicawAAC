@@ -32,7 +32,7 @@ class AAC
 	
 	public function ValidPassword($pass)
 	{
-		return strlen($pass) > 5;
+		return strlen($pass) > 5 && strlen($pass) <= 50 && ereg('^[a-zA-Z0-9~!@#%&;,:\\\^\$\.\|\?\*\+\(\)]*$',$pass);
 	}
 	
 	public function ValidAccountNumber($n)

@@ -32,22 +32,22 @@ if ($form->exists()){
 		if ($form->attrs['new']==$form->attrs['confirm']){
 			//password can't be account number
 			if ($form->attrs['new']!==$_SESSION['account']){
-			//check if old password correct
-			if ($account->checkPassword($form->attrs['old'])){
-			//change password
-			$account->setPassword($form->attrs['new']);
-			//save account
-			if ($account->save()){
-				//create new message
-				$msg = new IOBox('message');
-				$msg->addMsg('Password was successfuly changed.');
-				$msg->addClose('Finish');
-				$msg->show();
-			}else $error = 'Failed saving comments';
+				//check if old password correct
+				if ($account->checkPassword($form->attrs['old'])){
+					//change password
+					$account->setPassword($form->attrs['new']);
+					//save account
+					if ($account->save()){
+						//create new message
+						$msg = new IOBox('message');
+						$msg->addMsg('Password was successfuly changed.');
+						$msg->addClose('Finish');
+						$msg->show();
+					}else $error = 'Failed saving account';
 				}else{$error = "Old password incorrect";}
 			}else{$error = "Your password matches account number";}
 		}else{$error = "Passwords do not match";}
-	}else{$error = "Password too short";}
+	}else{$error = "Valid password contains:<ul><li>Letters A-Z</li><li>Digits 0-9</li><li>Symbols ".htmlspecialchars('~!@#%&;,:\\^$.|?*+()<"')."</li></ul>";}
 	if (!empty($error)){
 		//create new message
 		$msg = new IOBox('message');
