@@ -211,7 +211,7 @@ a:hover{
 	float: left;
 	margin-right: 20px;
 }
-#iobox {
+#form #iobox {
 	z-index: 10;
 	position: fixed;
 	/*IE position: absolute;*/
@@ -220,6 +220,6 @@ a:hover{
 	color: black;
 	cursor: move;
 }
-#iobox fieldset {
+#form #iobox fieldset {
 	cursor: default;
 }

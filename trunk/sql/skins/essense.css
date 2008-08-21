@@ -176,13 +176,13 @@ a:hover{
 #captcha-image {
 	margin-top: 5px;
 }
-#iobox{
+#form #iobox{
 	position: fixed;
 	/*IE position: absolute;*/
 	background-color: #e2e2e2;
 	border: 1px solid #000;
 	cursor: move;
 }
-#iobox fieldset {
+#form #iobox fieldset {
 	cursor: default;
 }

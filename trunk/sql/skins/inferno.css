@@ -189,14 +189,14 @@ a:hover, a:active {
 #captcha-image {
 	margin-top: 5px;
 }
-#iobox{
+#form #iobox{
 	position: fixed;
 	/*IE position: absolute;*/
 	background-color: #303322;
 	border: 1px solid #000;
 	cursor: move;
 }
-#iobox fieldset {
+#form #iobox fieldset {
 	cursor: default;
 }
 #footer {

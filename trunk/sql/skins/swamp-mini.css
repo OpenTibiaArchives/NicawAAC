@@ -202,7 +202,7 @@ a:hover{
 #friends, #status {
 	display: none;
 }
-#iobox {
+#form #iobox {
 	z-index: 10;
 	position: fixed;
 	/*IE position: absolute;*/
