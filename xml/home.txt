@@ -1,0 +1,29 @@
+                                                       ,
+  NICAW Acc v2.11                                     / \
+                                                     {   }
+                                                     p   !
+ ~SHORT TUTORIAL~                                    ; : ;
+                                                     | : |
+ 1. Open config.php in text editor                   | : |
+    of your choise.                                  l ; l
+                                                     l ; l
+ 2. Set data directory.  Use / to                    I ; I
+    separate directories, and end with /             I ; I
+                                                     I ; I
+ 3. Set your server name.                            I ; I
+                                                     d | b
+ 4. Scroll down... Set temple coordinates.           H | H
+                                                     H | H
+ ~FINAL NOTES~                                       H I H
+                                             ,;,     H I H     ,;,
+ #Text seen here can be edited in           ;H@H;    ;_H_;,   ;H@H;
+  home.txt                                  `\Y/d_,;|4H@HK|;,_b\Y/'
+                                             '\;MMMMM$@@@$MMMMM;/'
+ #Bug reports and suggestions are              "~~~*;!8@8!;*~~~"
+  welcome to gmnicaw@gmail.com                       ;888;
+                                                     ;888;
+ #Navigation menu can be edited in navigation.xml    ;888;
+                                                     ;888;
+ #This is Carlin sword on the right :)               d8@8b
+                                                     O8@8O
+                                                     T808T
