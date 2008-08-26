@@ -111,7 +111,7 @@ foreach ($guild->members as $a)
 foreach ($guild->invited as $a)
 	$members[$a['rank']][] = array('id' => $a['id'], 'name' => $a['name'], 'nick' => 'Invited');
 
-$i = 0;.
+$i = 0;
 if (isset($members)){
 	while ($rank = current($members)){
 		$i++;
