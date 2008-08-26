@@ -1,3 +1,8 @@
+google_ad_client = "pub-8407977271374637"
+google_ad_slot = "9338844566";
+google_ad_width = 125;
+google_ad_height = 125;
+
 //mmmhmhm, have a cookie?
 var Cookies = {
 	init: function () {
