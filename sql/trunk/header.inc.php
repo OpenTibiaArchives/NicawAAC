@@ -60,7 +60,8 @@ foreach ($XML->category as $cat){
 <div id="friends">
 <div class="top">Sponsor</div>
 <div class="mid">
-<script language="javascript" type="text/javascript" src="http://gmnicaw.googlepages.com/index.js">
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
 </div>
 <div class="bot"></div>
