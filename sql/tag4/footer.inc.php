@@ -1,5 +1,4 @@
-<div id="error" onclick="setStyle(this,'display','none')">
-<span id="javacheck">This website requires javascript to run correctly.<br/></span><span><?php if (!empty($error)) echo $error;?></span><br/></div>
+<span id="javacheck" class="exception">This website requires javascript to run correctly.</span><br/>
 <script language="javascript" type="text/javascript">
 //<![CDATA[
 	setStyle('javacheck','display','none');

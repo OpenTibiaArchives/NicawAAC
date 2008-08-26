@@ -34,7 +34,7 @@ if (isset($_POST['login_submit'])){
 				die('Redirecting to <a href="'.$_GET['redirect'].'>'.$_GET['redirect'].'</a>');
 			}
 		}else{$error = 'Account and password don\'t match.';}
-	}else{$error = 'Account and password don\'t match. ';}
+	}else{$error = 'Account and password don\'t match.';}
 }
 
 ########################## LOGOUT ###########################
@@ -68,6 +68,7 @@ include ("header.inc.php");
 <div id="content">
 <div class="top">Account</div>
 <div class="mid">
+<?php echo '<span style="color: red; font-weight: bold">'.$error.'</span>'; ?>
 <fieldset>
 <legend><b>Account Login</b></legend>
 <form id="login_form" action="login.php?redirect=<?php echo htmlspecialchars($_GET['redirect'])?>" method="post">

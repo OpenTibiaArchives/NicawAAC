@@ -182,8 +182,7 @@ a:hover, a:active {
 	width: 100%;
 	cursor: pointer;
 }
-#error span
-{
+#error span{
 	margin-left: 55px;
 }
 #captcha-image {
@@ -200,9 +199,7 @@ a:hover, a:active {
 	cursor: default;
 }
 #footer {
-	width: 680px;
 	height: 35px;
-	margin: auto;
 	background: #34160c url(/*$skindir*/img12.gif) no-repeat center top;
 	padding: 15px 0 0 30px;
 }
@@ -210,7 +207,6 @@ a:hover, a:active {
 	display: inline;
 	font-size: 8pt;
 }
-
 #footer span a{
 	text-decoration: none;
 }
