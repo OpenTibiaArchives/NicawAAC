@@ -170,6 +170,8 @@ public function create()
 		$d['id']			= NULL;
 		$d['name']			= $this->attrs['name'];
 		$d['account_id']	= $this->attrs['account'];
+		$d['group_id']		= $cfg['vocations'][$this->attrs['vocation']]['group'];
+		$d['rank_id']		= -1;
 		$d['vocation']		= $this->attrs['vocation'];
 		$d['sex']			= $this->attrs['sex'];
 		$d['level']			= getVocLvl($this->attrs['vocation']);
@@ -185,6 +187,7 @@ public function create()
 		$d['posx']			= $cfg['temple'][$this->attrs['city']]['x'];
 		$d['posy']			= $cfg['temple'][$this->attrs['city']]['y'];
 		$d['posz']			= $cfg['temple'][$this->attrs['city']]['z'];
+		$d['conditions']	= '';
 		
 		if (!$this->myInsert('players',$d)) throw new Exception('Player::make() Cannot insert attributes:<br/>'.$this->getError());
 		$this->attrs['id'] = $this->insert_id();
@@ -199,6 +202,7 @@ public function create()
 			$d['pid']		= key($cfg['vocations'][$this->attrs['vocation']]['equipment']);
 			$d['sid']		= $sid;
 			$d['itemtype']	= $item;
+			$d['attributes']= ''
 			
 			if (!$this->myInsert('player_items',$d)) throw new Exception('Player::make() Cannot insert items:<br/>'.$this->getError());
 			unset($d);
