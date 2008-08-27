@@ -202,7 +202,7 @@ public function create()
 			$d['pid']		= key($cfg['vocations'][$this->attrs['vocation']]['equipment']);
 			$d['sid']		= $sid;
 			$d['itemtype']	= $item;
-			$d['attributes']= ''
+			$d['attributes']= '';
 			
 			if (!$this->myInsert('player_items',$d)) throw new Exception('Player::make() Cannot insert items:<br/>'.$this->getError());
 			unset($d);
