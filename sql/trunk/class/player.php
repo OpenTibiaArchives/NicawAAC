@@ -171,7 +171,7 @@ public function create()
 		$d['name']			= $this->attrs['name'];
 		$d['account_id']	= $this->attrs['account'];
 		$d['group_id']		= $cfg['vocations'][$this->attrs['vocation']]['group'];
-		$d['rank_id']		= -1;
+		$d['rank_id']		= 0;
 		$d['vocation']		= $this->attrs['vocation'];
 		$d['sex']			= $this->attrs['sex'];
 		$d['level']			= getVocLvl($this->attrs['vocation']);
