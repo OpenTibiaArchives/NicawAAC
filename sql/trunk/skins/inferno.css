@@ -59,7 +59,7 @@ fieldset{
 }
 blockquote {
 	padding: 0 3em;
-	background: url(/*$skindir*/img05.gif) no-repeat 1em 0;
+	background: url(inferno/img05.gif) no-repeat 1em 0;
 	font-style: italic;
 }
 a {
@@ -110,13 +110,13 @@ a:hover, a:active {
 	width: 735px;
 	margin: auto;
 	padding: 0 25px;
-	background: #34160c url(/*$skindir*/img02.gif) repeat-y center top;
+	background: #34160c url(inferno/img02.gif) repeat-y center top;
 }
 #header {	
 	width: 710px;
 	height: 220px;
 	margin: auto;
-	background: #34160c url(/*$skindir*/header.jpg) no-repeat center top;
+	background: #34160c url(inferno/header.jpg) no-repeat center top;
 }
 #server_name {
 	display: none;
@@ -130,11 +130,11 @@ a:hover, a:active {
 	list-style: none;
 }
 #panel li {
-	background: url(/*$skindir*/img08.gif) repeat-x left bottom;
+	background: url(inferno/img08.gif) repeat-x left bottom;
 	padding: 5px 15px;
 }
 #panel ul a {
-	background: url(/*$skindir*/img11.gif) no-repeat left center;
+	background: url(inferno/img11.gif) no-repeat left center;
 	padding-left: 10px;
 	display: inline;
 	text-decoration: none;
@@ -146,7 +146,7 @@ a:hover, a:active {
 #panel .top {
 	height: 33px;
 	padding: 10px 0 0 20px;
-	background: url(/*$skindir*/img09.gif) repeat-x;
+	background: url(inferno/img09.gif) repeat-x;
 	color: #ceea70;
 	text-transform: lowercase;
 }
@@ -162,7 +162,7 @@ a:hover, a:active {
 	height: 33px;
 	text-align: center;
 	padding: 10px 0 0 10px;
-	background: url(/*$skindir*/img08.gif) repeat-x left bottom;
+	background: url(inferno/img08.gif) repeat-x left bottom;
 }
 #content .mid {
 	padding: 10px 20px 0 20px;
@@ -176,7 +176,7 @@ a:hover, a:active {
 	background-color: #ffffe1;
 	color: black;
 	font-weight: bold;
-	background-image: url(/*$skindir*/warning.png);
+	background-image: url(inferno/warning.png);
 	background-repeat: no-repeat;
 	height: 48px;
 	width: 100%;
@@ -200,7 +200,7 @@ a:hover, a:active {
 }
 #footer {
 	height: 35px;
-	background: #34160c url(/*$skindir*/img12.gif) no-repeat center top;
+	background: #34160c url(inferno/img12.gif) no-repeat center top;
 	padding: 15px 0 0 30px;
 }
 #footer span{

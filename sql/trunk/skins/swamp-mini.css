@@ -26,7 +26,7 @@ a {
 	color: black;
 }
 h2 {
- 	background-image: url(skins/swamp/splash.gif);
+ 	background-image: url(swamp/splash.gif);
 	background-repeat: no-repeat;
 	font: normal normal 1.5em "Georgia",serif;
     text-decoration: none;
@@ -83,7 +83,7 @@ a:hover{
 	position: relative;
 }
 #header {
-	background-image: url(skins/swamp/header.jpg);
+	background-image: url(swamp/header.jpg);
 	background-repeat: no-repeat;
 	background-position: center;
 	position: absolute;
@@ -101,7 +101,7 @@ a:hover{
 	display: none;
 }
 #panel .mid {
-	background-image: url(skins/swamp/mid.gif);
+	background-image: url(swamp/mid.gif);
 	background-repeat: repeat-y;
 	text-align: center;
 	padding: 10px;
@@ -111,7 +111,7 @@ a:hover{
 	display: none;
 }
 #navigation ul {
-	background-image: url(skins/swamp/nav-background.gif);
+	background-image: url(swamp/nav-background.gif);
 	text-align: center;
 	font-family: Verdana, Tahoma;
 	font-size: 13pt;
@@ -129,7 +129,7 @@ a:hover{
 	color: #014495;
 }
 #navigation li {
- 	background-image: url(skins/swamp/splash.gif);
+ 	background-image: url(swamp/splash.gif);
 	background-repeat: no-repeat;
 	display: inline;
 	margin-right: 5px;
@@ -140,7 +140,7 @@ a:hover{
 	margin-top: 190px;
 }
 #content .top {
-	background-image: url(skins/swamp/big-top.gif);
+	background-image: url(swamp/big-top.gif);
 	width: 626px;
 	height: 25px;
 	padding-left: 0;
@@ -150,7 +150,7 @@ a:hover{
 	font-weight: bold;
 }
 #content .mid {
-	background-image: url(skins/swamp/big-mid.gif);
+	background-image: url(swamp/big-mid.gif);
 	background-repeat: repeat-y;
 	padding-left: 20px;
 	padding-right: 20px;
@@ -160,7 +160,7 @@ a:hover{
 	min-height: 200px;
 }
 #content .bot {
-	background-image: url(skins/swamp/big-bot.gif);
+	background-image: url(swamp/big-bot.gif);
 	background-repeat: no-repeat;
 	padding: 0;
 	margin: 0;
@@ -168,7 +168,7 @@ a:hover{
 	height: 13px;
 }
 #error {
-	background-image: url(skins/swamp/error.png);
+	background-image: url(swamp/error.png);
 	background-repeat: no-repeat;
 	position: absolute;
 	font-family: Verdana;
@@ -188,7 +188,7 @@ a:hover{
 	margin-top: 5px;
 }
 #account-image {
-	background-image: url(skins/swamp/swamp_monster.gif);
+	background-image: url(swamp/swamp_monster.gif);
 	background-repeat: no-repeat;
 	padding-right: 50px;
 	width: 190px;

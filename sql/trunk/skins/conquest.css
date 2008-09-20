@@ -18,7 +18,7 @@
 
 body {
 	background-color: black;
-	background-image: url(/*$skindir*/candle.jpg);
+	background-image: url(conquest/candle.jpg);
 	background-repeat: repeat-y;
 	color: white;
 	font-family: Verdana, Tahoma;
@@ -104,7 +104,7 @@ a:hover{
 	color: white;
 }
 #header {	
-	background-image: url(/*$skindir*/header.gif);
+	background-image: url(conquest/header.gif);
 	background-repeat: no-repeat;
 	position: absolute;
 	width: 750px;
@@ -134,14 +134,14 @@ a:hover{
 	color: black;
 }
 #panel li {
-	background-image: url(/*$skindir*/list-item.jpg);
+	background-image: url(conquest/list-item.jpg);
 	background-repeat: no-repeat;
 	padding-left: 40px;
 	list-style-type: none;
 	height: 23px;
 }
 #panel .top {
-	background-image: url(/*$skindir*/top.jpg);
+	background-image: url(conquest/top.jpg);
 	background-position: bottom;
 	background-repeat: no-repeat;
 	width: 176px;
@@ -153,14 +153,14 @@ a:hover{
 	color: white;
 }
 #panel .mid {
-	background-image: url(/*$skindir*/mid.jpg);
+	background-image: url(conquest/mid.jpg);
 	background-repeat: repeat-y;
 	text-align: center;
 	padding: 10px;
 	width: 156px;
 }
 #panel .bot {
-	background-image: url(/*$skindir*/bot.jpg);
+	background-image: url(conquest/bot.jpg);
 	background-repeat: no-repeat;
 	padding: 0;
 	margin-bottom: 10px;
@@ -179,7 +179,7 @@ a:hover{
 	color: black;
 }
 #content .top {
-	background-image: url(/*$skindir*/big-top.jpg);
+	background-image: url(conquest/big-top.jpg);
 	background-repeat: no-repeat;
 	background-position: bottom;
 	width: 555px;
@@ -189,7 +189,7 @@ a:hover{
 	color: white;
 }
 #content .mid {
-	background-image: url(/*$skindir*/big-mid.jpg);
+	background-image: url(conquest/big-mid.jpg);
 	background-repeat: repeat-y;
 	padding-left: 40px;
 	padding-right: 40px;
@@ -199,7 +199,7 @@ a:hover{
 	min-height: 200px;
 }
 #content .bot {
-	background-image: url(/*$skindir*/big-bot.jpg);
+	background-image: url(conquest/big-bot.jpg);
 	background-repeat: no-repeat;
 	padding: 0;
 	margin: 0;
@@ -207,7 +207,7 @@ a:hover{
 	height: 19px;
 }
 #error {
-	background-image: url(/*$skindir*/error.png);
+	background-image: url(conquest/error.png);
 	background-repeat: no-repeat;
 	position: fixed;
 	/*Fuck IE :)*/
@@ -238,7 +238,7 @@ a:hover{
 	position: fixed;
 	/*IE position: absolute;*/
 	background-color: #e2e2e2;
-	background-image: url(/*$skindir*/big-mid.jpg);
+	background-image: url(conquest/big-mid.jpg);
 	background-position: -20px;
 	border: 1px solid #000;
 	color: black;

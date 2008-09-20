@@ -20,7 +20,7 @@ html {
 }
 body {
 	margin-bottom: 50px;
-	background: #FFFFFF url(/*$skindir*/img1.gif) repeat-x;
+	background: #FFFFFF url(essense/img1.gif) repeat-x;
 	font: normal 13px "Trebuchet MS", Arial, Helvetica, sans-serif;
 	color: #3B3B3B;
 	margin: 0;
@@ -116,7 +116,7 @@ a:hover{
 #header {	
 	width: 700px;
 	height: 150px;
-	background: #69B10A url(/*$skindir*/img2.jpg);
+	background: #69B10A url(essense/img2.jpg);
 }
 #server_name {
 	color: white;

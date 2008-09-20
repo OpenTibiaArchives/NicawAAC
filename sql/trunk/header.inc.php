@@ -5,7 +5,7 @@
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <title><?php echo $ptitle?></title>
 <link rel="stylesheet" href="default.css" type="text/css" media="screen" />
-<link rel="stylesheet" href="screen.php" type="text/css" media="screen" />
+<link rel="stylesheet" href="<?php echo $cfg['skin_url'].$cfg['skin']?>.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="print.css" type="text/css" media="print" />
 <link rel="alternate" type="application/rss+xml" title="News" href="news.php?RSS2" />
 <script language="javascript" type="text/javascript" src="js.js"></script>
