@@ -45,7 +45,7 @@ if ($form->exists()){
 	}else{
 		//check for existing name
 		$account = new Account();
-		$account->setAttr('name', $form->attrs['name']);
+		$account->setAttr('name', strtolower($form->attrs['name']));
 		if($account->existsName()){
 			$errors[] = 'account name is already used';
 			unset($_SESSION['_FORM_FEED_name']);
