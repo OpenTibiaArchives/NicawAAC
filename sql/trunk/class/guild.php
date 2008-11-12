@@ -97,13 +97,13 @@ public function save()
 		$unique_ranks = array();
 		foreach ($this->members as $member)
 			if (!array_key_exists($member['rank'], $unique_ranks)){
-				if (!$this->myInsert('guild_ranks', array('guild_id' => $this->attrs['id'], 'name' => $member['rank'], 'level' => 1)))
+				if (!$this->myInsert('guild_ranks', array('guild_id' => $this->attrs['id'], 'name' => $member['rank'], 'level' => 3)))
 					throw new Exception('Cannot save guild:<br/>'.$this->getError());
 				$unique_ranks[$member['rank']] = $this->insert_id();
 			}
 		foreach ($this->invited as $member)
 			if (!array_key_exists($member['rank'], $unique_ranks)){
-				if (!$this->myInsert('guild_ranks', array('guild_id' => $this->attrs['id'], 'name' => $member['rank'], 'level' => 1)))
+				if (!$this->myInsert('guild_ranks', array('guild_id' => $this->attrs['id'], 'name' => $member['rank'], 'level' => 3)))
 					throw new Exception('Cannot save guild:<br/>'.$this->getError());
 				$unique_ranks[$member['rank']] = $this->insert_id();
 			}
