@@ -22,29 +22,62 @@ include ("../include.inc.php");
 $form = new Form('newaccount');
 //check if any data was submited
 if ($form->exists()){
+	$errors = array();
+	
+	$_SESSION['_FORM_FEED_name'] = $form->attrs['name'];
+	$_SESSION['_FORM_FEED_email'] = $form->attrs['email'];
+	
 	//image verification
-	if ($form->validated()){
-		//email formating rules
-		if (AAC::ValidEmail($form->attrs['email'])){
+	if (!$form->validated()){
+		$errors[] = 'failed image validation';
+	}
+	
+	//email formating rules
+	if (!AAC::ValidEmail($form->attrs['email'])){
+		$errors[] = 'not a valid email address';
+		unset($_SESSION['_FORM_FEED_email']);
+	}
+	
+	//account name formating rules
+	if (!AAC::ValidAccountName($form->attrs['name'])){
+		$errors[] = 'not a valid account name';
+		unset($_SESSION['_FORM_FEED_name']);
+	}else{
+		//check for existing name
+		$account = new Account();
+		$account->setAttr('name', $form->attrs['name']);
+		if($account->existsName()){
+			$errors[] = 'account name is already used';
+			unset($_SESSION['_FORM_FEED_name']);
+		}
+	}
+		
+	if (count($errors) > 0){
+		//create new message
+		$msg = new IOBox('message');
+		$errText = 'The following error(s) occurred:<br/><ul>';
+		foreach($errors as $error) $errText.= '<li>'.ucfirst($error).'</li>';
+		$errText.= '</ul>';
+		$msg->addMsg($errText);
+		$msg->addReload('<< Back');
+		$msg->addClose('OK');
+		$msg->show();
+	}elseif (count($errors) == 0){
 
-			$account = new Account();
-			do 
-				$account->setAttr('accno', rand(100000,999999)); 
-			while ($account->exists());
-			//set account atrributes
-			$accno = $account->getAttr('accno');
-			if ($form->attrs['password'] == $form->attrs['confirm'] && AAC::ValidPassword($form->attrs['password']))
-				$password = $form->attrs['password'];
-			else
-				$password = substr(str_shuffle('qwertyuipasdfhjklzxcvbnm123456789'), 0, 6);
-			$account->setPassword($password);
-			$account->setAttr('email',$form->attrs['email']);
-			//create the account
-			$account->save();
+		//set account atrributes
+		$accno = $account->getAttr('name');
+		if ($form->attrs['password'] == $form->attrs['confirm'] && AAC::ValidPassword($form->attrs['password']))
+			$password = $form->attrs['password'];
+		else
+			$password = substr(str_shuffle('qwertyuipasdfhjklzxcvbnm123456789'), 0, 6);
+		$account->setPassword($password);
+		$account->setAttr('email',$form->attrs['email']);
+		//create the account
+		$account->save();
 
-			if ($cfg['Email_Validate']){
+		if ($cfg['Email_Validate']){
 			$body = "Here is your login information for <a href=\"http://$cfg[server_url]/\">$cfg[server_name]</a><br/>
-<b>Account number:</b> $accno<br/>
+<b>Account name:</b> $accno<br/>
 <b>Password:</b> $password<br/>
 <br/>
 Powered by <a href=\"http://nicaw.net/\">Nicaw AAC</a>";
@@ -74,36 +107,25 @@ Powered by <a href=\"http://nicaw.net/\">Nicaw AAC</a>";
 					$msg->show();
 				}else
 					$error = "Mailer Error: " . $mail->ErrorInfo;
-					
-			}else{
-				//create new message
-				$msg = new IOBox('message');
-				$msg->addMsg('Please write down your login information:');
-				$msg->addInput('account','text',$accno,50,true);
-				$msg->addInput('password','text',$password,50,true);
-				$msg->addMsg('You can now login into your account and start creating characters.');
-				$msg->addClose('Finish');
-				$msg->show();
-				$account->logAction('Created');
-			}
-		}else{ $error = "Bad email address";}
-	}else{ $error = "Image verification failed";}
-	if (!empty($error)){
-		//create new message
-		$msg = new IOBox('message');
-		$msg->addMsg($error);
-		$msg->addReload('<< Back');
-		$msg->addClose('OK');
-		$msg->show();
+		}else{
+			//create new message
+			$msg = new IOBox('message');
+			$msg->addMsg('Please write down your login information:');
+			$msg->addInput('account','text',$accno,50,true);
+			$msg->addInput('password','text',$password,50,true);
+			$msg->addMsg('You can now login into your account and start creating characters.');
+			$msg->addClose('Finish');
+			$msg->show();
+			$account->logAction('Created');
+		}
 	}
 }else{
 	//create new form
 	$form = new IOBox('newaccount');
 	$form->target = $_SERVER['PHP_SELF'];
 	$form->addLabel('Create Account');
-	$form->addInput('email');
-	$form->addInput('password','password');
-	$form->addInput('confirm','password');
+	$form->addInput('name','text',$_SESSION['_FORM_FEED_name']);
+	$form->addInput('email','text',$_SESSION['_FORM_FEED_email']);
 	$form->addCaptcha();
 	$form->addClose('Cancel');
 	$form->addSubmit('Next >>');

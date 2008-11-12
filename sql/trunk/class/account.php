@@ -25,6 +25,14 @@ public function __construct()
 	{
 		parent::__construct();
 	}
+	
+public function find($name)
+	{
+		$acc = $this->myRetrieve('accounts', array('name' => $name));
+		if ($acc === false) return false;
+		$this->load($acc['id']);
+		return true;
+	}
 
 public function load($id)
 	{
@@ -39,6 +47,7 @@ public function load($id)
 		}
 		//arranging attributes, ones on the left will be used all over the aac
 		$this->attrs['accno'] = (int) $acc['id'];
+		$this->attrs['name'] = (string) $acc['name'];
 		$this->attrs['password'] = (string) $acc['password'];
 		$this->attrs['email'] = (string) $acc['email'];
 		$this->attrs['rlname'] = $nicaw_acc['rlname'];
@@ -60,8 +69,20 @@ public function load($id)
 public function save()
 	{
 		$acc['id'] = $this->attrs['accno'];
+		$acc['name'] = $this->attrs['name'];
 		$acc['password'] = $this->attrs['password'];
 		$acc['email'] = $this->attrs['email'];
+
+		if ($this->exists()){
+			if (!$this->myUpdate('accounts',$acc, array('id' => $this->attrs['accno'])))
+				throw new Exception('Cannot save account:<br/>'.$this->getError());
+		}else{
+			if (!$this->myInsert('accounts',$acc))
+				throw new Exception('Cannot save account:<br/>'.$this->getError());
+			else
+				$this->attrs['accno'] = $this->insert_id();
+		}
+		
 		$nicaw_acc['account_id'] = $this->attrs['accno'];
 		$nicaw_acc['rlname'] = $this->attrs['rlname'];
 		$nicaw_acc['location'] = $this->attrs['location'];
@@ -70,14 +91,7 @@ public function save()
 		
 		if (!$this->myReplace('nicaw_accounts',$nicaw_acc))
 			throw new Exception('Cannot save account:<br/>'.$this->getError());
-
-		if ($this->exists()){
-			if (!$this->myUpdate('accounts',$acc, array('id' => $this->attrs['accno'])))
-				throw new Exception('Cannot save account:<br/>'.$this->getError());
-		}else{
-			if (!$this->myInsert('accounts',$acc))
-				throw new Exception('Cannot save account:<br/>'.$this->getError());
-		}
+		
 		return true;
 	}
 
@@ -118,6 +132,14 @@ public function exists()
 	{
 		$this->myQuery('SELECT * FROM `accounts` WHERE `id` = '.$this->quote($this->attrs['accno']));
 		if ($this->failed()) throw new Exception('Account::exists() cannot determine whether account exists');
+		if ($this->num_rows() > 0) return true;
+		return false;
+	}
+	
+public function existsName()
+	{
+		$this->myQuery('SELECT * FROM `accounts` WHERE `name` = '.$this->quote($this->attrs['name']));
+		if ($this->failed()) throw new Exception('Account::existsName() cannot determine whether account exists');
 		if ($this->num_rows() > 0) return true;
 		return false;
 	}

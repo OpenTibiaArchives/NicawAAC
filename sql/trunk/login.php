@@ -21,12 +21,12 @@ include ("include.inc.php");
 ########################## LOGIN ############################
 if (isset($_POST['login_submit'])){
 	$account = new Account();
-	if ($account->load($_POST['account'])){
+	if ($account->find($_POST['account'])){
 		if ($account->checkPassword($_POST['password']) || !$cfg['secure_session'] && (string)$_POST['password'] == sha1($account->getAttr('password').$_SERVER['HTTP_HOST'])){
 			$_SESSION['account']=$account->getAttr('accno');
 			$_SESSION['remote_ip']=$_SERVER['REMOTE_ADDR'];
 			if (!empty($_COOKIE['remember'])){
-				setcookie('account',$account->getAttr('accno'),time() + (30*24*3600),'/');
+				setcookie('account',$account->getAttr('name'),time() + (30*24*3600),'/');
 				setcookie('password',sha1($account->getAttr('password').$_SERVER['HTTP_HOST']),time() + (30*24*3600),'/');
 			}
 			if (!empty($_GET['redirect'])) {
@@ -83,7 +83,7 @@ if (isset($_POST['login_submit'])) {
 	$password = $_COOKIE['password'];
 }
 ?>
-<td><input id="account" name="account" type="password" class="textfield" maxlength="8" size="10" tabindex="101" value="<?php echo htmlspecialchars($account);?>"/></td>
+<td><input id="account" name="account" type="text" class="textfield" maxlength="8" size="10" tabindex="101" value="<?php echo htmlspecialchars($account);?>"/></td>
 <td <?php if ($cfg['secure_session']) echo ' style="visibility: hidden"';?>>&nbsp;<input id="remember" name="remember" type="checkbox" tabindex="103" onclick="remember_toggle(this)"<?php if (!empty($_COOKIE['remember'])) echo ' checked="checked"';?>/>&nbsp;<label for="remember">Remember Me?</label></td></tr>
 <tr><td style="text-align: right"><label for="password">Password</label>&nbsp;</td>
 <td><input id="password" name="password" type="password" class="textfield" maxlength="100" size="10" tabindex="102" value="<?php echo htmlspecialchars($password);?>"/></td>

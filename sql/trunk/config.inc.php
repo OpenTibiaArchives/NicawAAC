@@ -19,7 +19,7 @@ $cfg['house_file'] = 'world/Tibia-house.xml';
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'pass';
-$cfg['SQL_Database'] = 'otserv';
+$cfg['SQL_Database'] = 'tfsdb';
 
 # Must correspond to your OTServ configuration
 # Options: plain, md5, sha1
@@ -61,7 +61,7 @@ $cfg['server_name'] = 'Nicaw SQL';
 
 # Server ip and port for getting status. 
 # In most cases localhost should be used
-$cfg['server_ip'] = 'localhost';
+$cfg['server_ip'] = '127.0.0.1';
 $cfg['server_port'] = 7171;
 
 # Allow teleportation to temple?

@@ -40,6 +40,11 @@ class AAC
 		return is_numeric($n) && $n > 100000 && $n < 100000000;
 	}
 	
+	public function ValidAccountName($n)
+	{
+		return eregi('^[A-Z0-9_]{6,30}$',$n);
+	}
+	
 	public function ValidEmail($email)
 	{
 		return eregi('^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}$',$email);
