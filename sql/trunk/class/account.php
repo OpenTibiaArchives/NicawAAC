@@ -107,12 +107,12 @@ public function setAttr($attr,$value)
 
 public function setPassword($new)
 	{global $cfg;
+		if (empty($new)) throw new Exception('Empty password is not allowed.');
 		$new = $new.$cfg['password_salt'];
 		if ($cfg['password_type'] == 'md5')
 			$new = md5($new);
 		elseif ($cfg['password_type'] == 'sha1')
 			$new = sha1($new);
-		if (empty($new)) throw new Exception('Empty password is not allowed.');
 		$this->attrs['password'] = $new;
 	}
 
@@ -139,7 +139,7 @@ public function exists()
 public function existsName()
 	{
 		$this->myQuery('SELECT * FROM `accounts` WHERE `name` = '.$this->quote($this->attrs['name']));
-		if ($this->failed()) throw new Exception('Account::existsName() cannot determine whether account exists');
+		if ($this->failed()) throw new Exception('Account::existsName() failed. If your server doesn\'t support account names pelase use AAC release v3.20');
 		if ($this->num_rows() > 0) return true;
 		return false;
 	}
