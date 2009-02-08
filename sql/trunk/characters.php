@@ -76,9 +76,9 @@ if (!empty($_GET['player_id']) && $player->load($_GET['player_id']) || !empty($_
 		if ($deaths !== false && !empty($deaths)){
 		echo '<b>Deaths</b><br/>';
 			foreach ($deaths as $death){
-				$killer = new Player($death['killer']);
-				if ($killer->exists())
-					$name = '<a href="characters.php?char='.$death['killer'].'">'.$death['killer'].'</a>';
+				$killer = new Player();
+				if ($killer->find($death['killer']))
+					$name = '<a href="characters.php?player_name='.$death['killer'].'">'.$death['killer'].'</a>';
 				else
 					$name = $death['killer'];
 				echo '<i>'.date("jS F Y H:i:s",$death['date']).'</i> Killed at level '.$death['level'].' by '.$name.'<br/>';
