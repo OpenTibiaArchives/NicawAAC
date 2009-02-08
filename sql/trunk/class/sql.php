@@ -96,7 +96,7 @@ public function escape_string($string)
 //Quotes a value so it's safe to use in SQL statement
 public function quote($value)
   {
-    if(is_numeric($value))
+    if(is_numeric($value) && $value[0] != '0')
 	  return (int) $value;
 	else
       return '\''.$this->escape_string($value).'\'';
