@@ -26,6 +26,7 @@ if ($form->exists()){
 	
 	$_SESSION['_FORM_FEED_name'] = $form->attrs['name'];
 	$_SESSION['_FORM_FEED_email'] = $form->attrs['email'];
+	$_SESSION['_FORM_FEED_pass'] = $form->attrs['password'];
 	
 	//image verification
 	if (!$form->validated()){
@@ -51,6 +52,15 @@ if ($form->exists()){
 			unset($_SESSION['_FORM_FEED_name']);
 		}
 	}
+	
+	//password formating rules
+	if (!AAC::ValidPassword($form->attrs['password'])){
+		$errors[] = 'not a valid password';
+		unset($_SESSION['_FORM_FEED_pass']);
+	}elseif ($form->attrs['password'] != $form->attrs['confirm']){
+		$errors[] = 'passwords do not match';
+		unset($_SESSION['_FORM_FEED_pass']);
+	}
 		
 	if (count($errors) > 0){
 		//create new message
@@ -66,11 +76,7 @@ if ($form->exists()){
 
 		//set account atrributes
 		$accno = $account->getAttr('name');
-		if ($form->attrs['password'] == $form->attrs['confirm'] && AAC::ValidPassword($form->attrs['password']))
-			$password = $form->attrs['password'];
-		else
-			$password = substr(str_shuffle('qwertyuipasdfhjklzxcvbnm123456789'), 0, 6);
-		$account->setPassword($password);
+		$account->setPassword($form->attrs['password']);
 		$account->setAttr('email',$form->attrs['email']);
 		//create the account
 		$account->save();
@@ -110,22 +116,25 @@ Powered by <a href=\"http://nicaw.net/\">Nicaw AAC</a>";
 		}else{
 			//create new message
 			$msg = new IOBox('message');
-			$msg->addMsg('Please write down your login information:');
-			$msg->addInput('account','text',$accno,50,true);
-			$msg->addInput('password','text',$password,50,true);
-			$msg->addMsg('You can now login into your account and start creating characters.');
+			$msg->addMsg('Great success!<br/>You can now login into your account and start creating characters.');
 			$msg->addClose('Finish');
 			$msg->show();
 			$account->logAction('Created');
-		}
+			
+			unset($_SESSION['_FORM_FEED_name']);
+			unset($_SESSION['_FORM_FEED_email']);
+			unset($_SESSION['_FORM_FEED_pass']);
+		}   
 	}
 }else{
 	//create new form
 	$form = new IOBox('newaccount');
 	$form->target = $_SERVER['PHP_SELF'];
 	$form->addLabel('Create Account');
-	$form->addInput('name','text',$_SESSION['_FORM_FEED_name']);
-	$form->addInput('email','text',$_SESSION['_FORM_FEED_email']);
+	$form->addInput('name','text',$_SESSION['_FORM_FEED_name'],100,false,'Account name is at least 6 characters long and consists of letters A-Z, numbers 0-9 and underscores _');
+	$form->addInput('email','text',$_SESSION['_FORM_FEED_email'],100,false,'Please enter a valid email. It can be used to recover your account.');
+	$form->addInput('password','password',$_SESSION['_FORM_FEED_pass'],100,false,'Your password can consist of letters A-Z, numbers 0-9 and symbols ~!@#%&;,:\^$.|?*+()<br/>Never use the same password as in your email account.');
+	$form->addInput('confirm','password',$_SESSION['_FORM_FEED_pass'],100,false,'Retype your password.');
 	$form->addCaptcha();
 	$form->addClose('Cancel');
 	$form->addSubmit('Next >>');

@@ -44,14 +44,17 @@ public function addCaptcha(){
 		$img = 'doimg.php?'.time();
 	else
 		$img = '../doimg.php?'.time();
+	$event = ' onFocus="setStyle(getRef(\'iobox__tip\'), \'display\', \'block\'); getRef(\'iobox__tip\').innerHTML=\'<legend>TIP</legend>Enter the text as you see above. This is needed to prevent automated authorization.\'"';
 	$_SESSION['RandomText'] = substr(str_shuffle(strtolower('qwertyuipasdfhjklzxcvnm12345789')), 0, 6);
 	$this->elements[]= '<img width="250px" height="40px" src="'.$img.'" alt="Verification Image"/>';
-	$this->elements[]= '<input id="captcha" name="'.$this->name.'__captcha" type="text" maxlength="10" style="text-transform: uppercase"/>&nbsp;<label for="captcha">- Verification</label>';
+	$this->elements[]= '<input '.$event.' id="captcha" name="'.$this->name.'__captcha" type="text" maxlength="10" style="text-transform: uppercase"/>&nbsp;<label for="captcha">- Verification</label>';
 }
-public function addInput($name, $type = 'text', $value = '', $length = 100, $readonly = false){
+public function addInput($name, $type = 'text', $value = '', $length = 100, $readonly = false, $comment = ''){
 	if ($readonly) $readonly = ' readonly="readonly"';
 	else $readonly = '';
-	$this->elements[]= '<input id="'.$this->name.'__'.$name.'" name="'.$this->name.'__'.$name.'" type="'.$type.'" maxlength="'.$length.'" value="'.$value.'"'.$readonly.'/>&nbsp;<label for="'.$this->name.'__'.$name.'">- '.ucfirst($name).'</label>';
+	if (!empty($comment)) $event = ' onFocus="setStyle(getRef(\'iobox__tip\'), \'display\', \'block\'); getRef(\'iobox__tip\').innerHTML=\'<legend>TIP</legend>'.$comment.'\'"';
+	else $event = '';
+	$this->elements[]= '<input'.$event.' id="'.$this->name.'__'.$name.'" name="'.$this->name.'__'.$name.'" type="'.$type.'" maxlength="'.$length.'" value="'.$value.'"'.$readonly.'/>&nbsp;<label for="'.$this->name.'__'.$name.'">- '.ucfirst($name).'</label>';
 }
 public function addCheckBox($name, $check = false){
 	if ($check) $check = ' checked="checked"';
@@ -86,7 +89,7 @@ public function getCode(){
 		$code = '<div id="iobox" class="iobox"><fieldset>'.$this->label.'<form id="'.$this->name.'" action="'.htmlspecialchars($this->target).'" method="post">';
 	foreach ($this->elements as $element)
 		$code.= $element."<br/><div style=\"margin-top: 5px;\"></div>\r\n";
-	$code.= '<hr style="margin: 10px 2px 2px 2px; padding: 0;"/> | ';
+	$code.= '<fieldset id="iobox__tip" class="color2" style="width: 250px; padding: 4px; display: none; font-style: italic;"></fieldset><hr style="margin: 10px 2px 2px 2px; padding: 0;"/> | ';
 	foreach ($this->buttons as $button)
 		$code.= $button." | \r\n";
 	$code.= '</form></fieldset></td></tr></table>';

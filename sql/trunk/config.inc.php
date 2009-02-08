@@ -19,7 +19,7 @@ $cfg['house_file'] = 'world/Tibia-house.xml';
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'pass';
-$cfg['SQL_Database'] = 'tfsdb';
+$cfg['SQL_Database'] = 'otserv';
 
 # Must correspond to your OTServ configuration
 # Options: plain, md5, sha1
@@ -30,7 +30,7 @@ $cfg['password_salt'] = '';
 
 # Skin files can be found in skins folder.
 # Each css file represents a skin
-$cfg['skin'] = 'inferno';
+$cfg['skin'] = 'essense';
 
 # In case you want to upload skins somewhere else
 $cfg['skin_url'] = 'skins/';
