@@ -25,3 +25,6 @@
 	color: black;
 	border: 3px solid red;
 }
+#form #iobox{
+	z-index: 1;
+}
