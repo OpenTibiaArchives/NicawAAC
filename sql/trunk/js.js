@@ -199,4 +199,14 @@ function server_state()
 	ajax('server_state','status.php','',false);
 	setTimeout ("server_state()",60000);
 }
+
+function menu_toggle(node){
+	if(node.nextSibling.style['display'] == 'none'){
+		node.nextSibling.style['display'] = 'block'
+	}else{
+		node.nextSibling.style['display'] = 'none'
+	}
+
+}
+
 setTimeout ("server_state()",60000);

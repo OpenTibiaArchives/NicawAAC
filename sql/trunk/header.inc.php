@@ -41,7 +41,7 @@ if (file_exists('navigation.xml')){
 	if ($XML === false) throw new Exception('Malformed XML');
 }else{die('Unable to load navigation.xml');}
 foreach ($XML->category as $cat){
-	echo '<div class="top">'.$cat['name'].'</div><ul>'."\n";
+	echo '<div class="top" onclick="menu_toggle(this)" style="cursor: pointer;">'.$cat['name'].'</div><ul>'."\n";
 	foreach ($cat->item as $item)
 		echo '<li><a href="'.$item['href'].'">'.$item.'</a></li>'."\n";
 	echo '</ul><div class="bot"></div>'."\n";
