@@ -320,3 +320,4 @@ $cfg['vocations'][5]['name'] = 'Master Sorcerer';
 $cfg['vocations'][6]['name'] = 'Elder Druid';
 $cfg['vocations'][7]['name'] = 'Royal Paladin';
 $cfg['vocations'][8]['name'] = 'Elite Knight';
+?>

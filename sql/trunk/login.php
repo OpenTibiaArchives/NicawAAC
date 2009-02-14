@@ -18,6 +18,7 @@
 */
 include ("include.inc.php");
 
+$error = '';
 ########################## LOGIN ############################
 if (isset($_POST['login_submit'])){
 	$account = new Account();
@@ -81,6 +82,9 @@ if (isset($_POST['login_submit'])) {
 }elseif (!empty($_COOKIE['remember'])){
 	$account = $_COOKIE['account'];
 	$password = $_COOKIE['password'];
+}else{
+	$account = '';
+	$password = '';
 }
 ?>
 <td><input id="account" name="account" type="text" class="textfield" maxlength="8" size="10" tabindex="101" value="<?php echo htmlspecialchars($account);?>"/></td>

@@ -54,8 +54,8 @@ public function load($id)
 		$this->attrs['location'] = $nicaw_acc['location'];
 		$this->attrs['comment'] = $nicaw_acc['comment'];
 		$this->attrs['recovery_key'] = $nicaw_acc['recovery_key'];
-		if ($acc['premdays'] > 0) $this->attrs['premend'] = $acc['premdays']*24*3600 + time();
-		elseif ($acc['premEnd'] > 0) $this->attrs['premend'] = $acc['premEnd'];
+		if (isset($acc['premdays']) && $acc['premdays'] > 0) $this->attrs['premend'] = $acc['premdays']*24*3600 + time();
+		elseif (isset($acc['premend']) && $acc['premend'] > 0) $this->attrs['premend'] = $acc['premend'];
 		//get characters of this account
 		$this->myQuery('SELECT players.id, players.name FROM players WHERE (`account_id`='.$this->quote($this->attrs['accno']).')');
 		if ($this->failed()) throw new Exception($this->getError());

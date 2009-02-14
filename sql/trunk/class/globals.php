@@ -1,6 +1,6 @@
 <?php
 /*
-     Copyright (C) 2007 - 2008  Nicaw
+    Copyright (C) 2007 - 2009  Nicaw
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -69,7 +69,13 @@ class AAC
 	{
 		return floor(50*($lvl-1)*($lvl*$lvl-5*$lvl+12)/3);
 	}
+	
 }
+
+/*
+	this is leftover from older versions
+	TODO: clean it up
+*/
 
 function exception_handler($exception) {
 	echo '<pre style="position: absolute; top: 0px; left: 0px; background-color: white; color: black; border: 3px solid red;"><b>'.$exception->getMessage(). '<br/>'.basename($exception->getFile()).' on line: '.$exception->getLine().'</b><br/>Script was terminated because something unexpected happened. You can report this, if you think it\'s a bug.';
