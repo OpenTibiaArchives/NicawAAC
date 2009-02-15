@@ -28,6 +28,8 @@ public function __construct(){
 protected function _init(){
 	global $cfg;
 	if (!isset($this->connection)){
+		if(!extension_loaded('mysql'))
+			$throw new Exception('MySQL library is not installed. Database access is impossible.');
 	  	$con = @mysql_connect($cfg['SQL_Server'],$cfg['SQL_User'],$cfg['SQL_Password']);
 		if ($con === false){
 			throw new Exception('Unable to connect to mysql server. Please make sure it is up and running and you have correct user/password in config.inc.php.');
