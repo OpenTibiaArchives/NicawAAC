@@ -17,7 +17,8 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 class SQL{
-private $last_query, $last_error, $connection;
+private $last_query, $last_error;
+private static $connection;
 
 public function __construct(){
   $this->_init();
