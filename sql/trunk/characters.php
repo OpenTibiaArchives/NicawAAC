@@ -77,7 +77,7 @@ if (!empty($_GET['player_id']) && $player->load($_GET['player_id']) || !empty($_
 		echo '<b>Deaths</b><br/>';
 			foreach ($deaths as $death){
 				$killer = new Player();
-				if ($killer->find($death['killer']))
+				if ($killer->load($death['killer']))
 					$name = '<a href="characters.php?player_name='.$death['killer'].'">'.$death['killer'].'</a>';
 				else
 					$name = $death['killer'];
