@@ -62,19 +62,19 @@ public function load($id)
 		$this->attrs['spawn']['y'] = (int) $player['posy'];
 		$this->attrs['spawn']['z'] = (int) $player['posz'];
 		//get skills
-		$this->myQuery('SELECT * FROM `player_skills` WHERE `player_id` = '.$this->attrs['id']);
+		$this->myQuery('SELECT * FROM `player_skills` WHERE `player_id` = '.$this->quote($this->attrs['id']));
 		if ($this->failed()) throw new Exception('Cannot retrieve player skills<br/>'.$this->getError());
 		while($a = $this->fetch_array()){
 			$this->skills[$a['skillid']]['skill'] = (int)$a['value'];
 			$this->skills[$a['skillid']]['tries'] = (int)$a['count'];
 		}
 		//get storage
-		$this->myQuery('SELECT * FROM `player_storage` WHERE `player_id` = '.$this->attrs['id']);
+		$this->myQuery('SELECT * FROM `player_storage` WHERE `player_id` = '.$this->quote($this->attrs['id']));
 		if ($this->failed()) throw new Exception('Cannot retrieve player storage<br/>'.$this->gerError());
 		while($a = $this->fetch_array())
 			$this->storage[$a['key']] = (int)$a['value'];
 		//get guild stuff
-		$this->myQuery("SELECT players.guildnick, guild_ranks.level, guild_ranks.name, guilds.id, guilds.name FROM guild_ranks, players, guilds WHERE guilds.id = guild_ranks.guild_id AND players.rank_id = guild_ranks.id AND players.id = ".$this->attrs['id']);
+		$this->myQuery("SELECT players.guildnick, guild_ranks.level, guild_ranks.name, guilds.id, guilds.name FROM guild_ranks, players, guilds WHERE guilds.id = guild_ranks.guild_id AND players.rank_id = guild_ranks.id AND players.id = ".$this->quote($this->attrs['id']));
 		if (!$this->failed() && $this->num_rows() == 1){
 			$a = $this->fetch_array();
 			$this->attrs['guild_nick'] = $a[0];
@@ -132,7 +132,7 @@ public function getStorage($id)
 
 public function getDeaths()
 	{
-		$query = "SELECT * FROM `player_deaths` WHERE (`player_id` = '".$this->escape_string($this->attrs['id'])."') ORDER BY time DESC LIMIT 10";
+		$query = "SELECT * FROM `player_deaths` WHERE (`player_id` = '".$this->quote($this->attrs['id'])."') ORDER BY time DESC LIMIT 10";
 		$this->myQuery($query);
 		if ($this->failed()) throw new Exception('Cannot retrieve deaths! This is only compatible with TFS.'.$this->getError());;
 		$i = 0;
