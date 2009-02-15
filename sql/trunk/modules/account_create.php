@@ -127,6 +127,9 @@ Powered by <a href=\"http://nicaw.net/\">Nicaw AAC</a>";
 		}   
 	}
 }else{
+	isset($_SESSION['_FORM_FEED_name']) || $_SESSION['_FORM_FEED_name'] = '';
+	isset($_SESSION['_FORM_FEED_email']) || $_SESSION['_FORM_FEED_email'] = '';
+	isset($_SESSION['_FORM_FEED_pass']) || $_SESSION['_FORM_FEED_pass'] = '';
 	//create new form
 	$form = new IOBox('newaccount');
 	$form->target = $_SERVER['PHP_SELF'];
