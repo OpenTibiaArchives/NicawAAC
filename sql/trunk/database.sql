@@ -47,13 +47,16 @@ CREATE TABLE `nicaw_poll_options` (
 CREATE TABLE `nicaw_poll_votes` (
   `option_id` int(10) unsigned NOT NULL,
   `account_id` int(11) NOT NULL,
-  `ip` int(11) NOT NULL
+  `ip` int(11) NOT NULL,
+  KEY `option_id` (`option_id`)
 ) ENGINE = InnoDB;
 
 CREATE TABLE `nicaw_guild_invites` (
 	`gid` int(10) unsigned NOT NULL COMMENT 'guild id',
 	`pid` int(10) unsigned NOT NULL COMMENT 'player id',
-	`rank` int(10) unsigned NOT NULL
+	`rank` int(10) unsigned NOT NULL,
+	KEY `gid` (`gid`),
+	KEY `pid` (`pid`)
 ) ENGINE = InnoDB;
 
 CREATE TABLE `nicaw_guild_info` (
