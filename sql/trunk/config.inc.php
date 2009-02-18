@@ -11,7 +11,7 @@
 ##################################################
 
 # Set data directory of your OT server
-$cfg['dirdata'] = 'C:/OTServ/ftp/incoming/storm/data/';
+$cfg['dirdata'] = 'C:/OTServ/data/';
 
 $cfg['house_file'] = 'world/Tibia-house.xml';
 
@@ -201,7 +201,7 @@ $cfg['vocations'][$id]['level'] = 8;
 $cfg['vocations'][$id]['group'] = 1;
 $cfg['vocations'][$id]['maglevel'] = 0;
 $cfg['vocations'][$id]['health'] = 185;
-$cfg['vocations'][$id]['mana'] = 40;
+$cfg['vocations'][$id]['mana'] = 35;
 $cfg['vocations'][$id]['cap'] = 470;
 $cfg['vocations'][$id]['enabled'] = true;
 
@@ -231,7 +231,7 @@ $cfg['vocations'][$id]['level'] = 8;
 $cfg['vocations'][$id]['group'] = 1;
 $cfg['vocations'][$id]['maglevel'] = 0;
 $cfg['vocations'][$id]['health'] = 185;
-$cfg['vocations'][$id]['mana'] = 40;
+$cfg['vocations'][$id]['mana'] = 35;
 $cfg['vocations'][$id]['cap'] = 470;
 $cfg['vocations'][$id]['enabled'] = true;
 
@@ -261,7 +261,7 @@ $cfg['vocations'][$id]['level'] = 8;
 $cfg['vocations'][$id]['group'] = 1;
 $cfg['vocations'][$id]['maglevel'] = 0;
 $cfg['vocations'][$id]['health'] = 185;
-$cfg['vocations'][$id]['mana'] = 40;
+$cfg['vocations'][$id]['mana'] = 35;
 $cfg['vocations'][$id]['cap'] = 470;
 $cfg['vocations'][$id]['enabled'] = true;
 
@@ -291,7 +291,7 @@ $cfg['vocations'][$id]['level'] = 8;
 $cfg['vocations'][$id]['group'] = 1;
 $cfg['vocations'][$id]['maglevel'] = 0;
 $cfg['vocations'][$id]['health'] = 185;
-$cfg['vocations'][$id]['mana'] = 40;
+$cfg['vocations'][$id]['mana'] = 35;
 $cfg['vocations'][$id]['cap'] = 470;
 $cfg['vocations'][$id]['enabled'] = true;
 
