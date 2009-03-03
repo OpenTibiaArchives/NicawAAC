@@ -90,6 +90,8 @@ $msg->addMsg('<table id="flagtable" border="1px" cellspacing="0" width="600px">
 		<input type="checkbox" value="68719476736" onclick="calcFlags()"> Can not be muted<br/>
 		<input type="checkbox" value="137438953472" onclick="calcFlags()"> Is premium<br/>
 		<input type="checkbox" value="274877906944" onclick="calcFlags()"> Can answer rule violations<br/>
+		<input type="checkbox" value="549755813888" onclick="calcFlags()"> Can reload content<br/>
+		<input type="checkbox" value="1099511627776" onclick="calcFlags()"> Show group instead vocation<br/>
     </td>
     <td valign="top" width="200">
 		<input type="checkbox" value="1" onclick="calcFlags()"> Can not use combat<br/>
