@@ -26,8 +26,11 @@ include ("header.inc.php");
 <?php
 $SQL = new SQL();
 $SQL->myQuery('SELECT name, vocation, level FROM players WHERE online = 1 ORDER BY name ASC');
+if ($SQL->failed())
+	$SQL->myQuery('SELECT name, vocation, level FROM players WHERE lastlogin > lastlogout ORDER BY name ASC');
 if ($SQL->failed()) 
-	throw new Exception('<b>Are you using TFS server?</b><br/>SQL query failed:<br/>'.$SQL->getError());
+	throw new Exception('<b>Your server does not store information on player\'s online state</b><br/>SQL query failed:<br/>'.$SQL->getError());
+
 $i = 0;
 echo '<table><tr class="color0"><td style="width:150px"><b>Name</b></td><td style="width:150px"><b>Vocation</b></td><td style="width:60px"><b>Level</b></td></tr>';
 while ($player = $SQL->fetch_array()){
