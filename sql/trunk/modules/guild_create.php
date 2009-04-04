@@ -24,11 +24,11 @@ $account = new Account();
 $form = new Form('new_guild');
 //check if any data was submited
 if ($form->exists()){
-	$form->attrs['guild_name'] = ucfirst($form->attrs['guild_name']);
+	$form->attrs['Guild_Name'] = ucfirst($form->attrs['Guild_Name']);
 	//check for correct guild name
-	if (AAC::ValidGuildName($form->attrs['guild_name'])){
+	if (AAC::ValidGuildName($form->attrs['Guild_Name'])){
 		$new_guild = new Guild();
-		$new_guild->setAttr('name', $form->attrs['guild_name']);
+		$new_guild->setAttr('name', $form->attrs['Guild_Name']);
 		if (!$new_guild->exists()){
 			$owner = new Player();
 			//load owner character
@@ -54,7 +54,7 @@ if ($form->exists()){
 				}else $error = 'Not your character';
 			}else $error = 'Cannot load player';
 		}else $error = 'Guild exists with this name';
-	}else $error = 'Not a valid name';
+	}else $error = 'Not a valid guild name';
 	if (!empty($error)){
 		//create new message
 		$msg = new IOBox('message');
@@ -76,7 +76,7 @@ if ($form->exists()){
 		$form->addClose('Close');
 	}else{
 		$form->addMsg('Select guild name and the owner. Must have at least level '.$cfg['guild_leader_level']);
-		$form->addInput('guild name');
+		$form->addInput('Guild Name');
 		$form->addSelect('leader',$list);
 		$form->addClose('Cancel');
 		$form->addSubmit('Next >>');

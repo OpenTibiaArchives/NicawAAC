@@ -1,2 +1,2 @@
 <?xml version="1.0"?>
-<tsqp version="1.0"><serverinfo uptime="194" ip="78.61.107.50" servername="OTServ" port="7171" location="Germany" url="http://otserv.org" server="otserv" version="0.6.0_SVN" client="8.0"/><owner name="Tliff" email="otserv@tibia.de"/><players online="1" max="900" peak="1"/><monsters total="4014"/><map name="" author="" width="" height=""/><motd>Welcome to OTServ 0.6.0!</motd></tsqp>
+<tsqp version="1.0"><serverinfo uptime="1818" ip="84.55.13.19" servername="OTServ" port="7171" location="Germany" url="http://otserv.org" server="OTServ" version="0.6.2_SVN" client="8.40"/><owner name="Tliff" email="otserv@tibia.de"/><players online="1" max="900" peak="2"/><map name="" author="" width="65000" height="65000"/><motd>Welcome to OTServ!</motd></tsqp>

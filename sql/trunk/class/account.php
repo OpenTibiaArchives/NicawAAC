@@ -54,6 +54,7 @@ public function load($id)
 		$this->attrs['location'] = $nicaw_acc['location'];
 		$this->attrs['comment'] = $nicaw_acc['comment'];
 		$this->attrs['recovery_key'] = $nicaw_acc['recovery_key'];
+		$this->attrs['reveal_characters'] = (bool) $nicaw_acc['reveal_characters'];
 		if (isset($acc['premdays']) && $acc['premdays'] > 0) $this->attrs['premend'] = $acc['premdays']*24*3600 + time();
 		elseif (isset($acc['premend']) && $acc['premend'] > 0) $this->attrs['premend'] = $acc['premend'];
 		//get characters of this account
@@ -88,6 +89,7 @@ public function save()
 		$nicaw_acc['location'] = $this->attrs['location'];
 		$nicaw_acc['comment'] = $this->attrs['comment'];
 		$nicaw_acc['recovery_key'] = $this->attrs['recovery_key'];
+		$nicaw_acc['reveal_characters'] = $this->attrs['reveal_characters'];
 		
 		if (!$this->myReplace('nicaw_accounts',$nicaw_acc))
 			throw new Exception('Cannot save account:<br/>'.$this->getError());

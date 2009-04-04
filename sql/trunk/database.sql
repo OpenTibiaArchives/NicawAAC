@@ -4,6 +4,7 @@ CREATE TABLE `nicaw_accounts` (
   `location` varchar(50) NULL,
   `comment` tinytext NULL,
   `recovery_key` char(32) NULL,
+  `reveal_characters` tinyint(1) NOT NULL default '1',
   UNIQUE KEY `account_id` (`account_id`)
 ) ENGINE = InnoDB;
 

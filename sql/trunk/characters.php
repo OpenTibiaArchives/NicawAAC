@@ -75,6 +75,14 @@ if (!empty($_GET['player_id']) && $player->load($_GET['player_id']) || !empty($_
 			echo "<b>Comments</b><br/><div style=\"overflow:hidden\"><pre>".htmlspecialchars($account->getAttr('comment'))."</pre></div><br/>\n";
 		}	
 	echo '<hr/>';
+	if ($account->getAttr('reveal_characters') && isset($account->players) && count($account->players) > 1) {
+		echo '<b>Characters on the same account</b><br/><ul class="task-menu">';
+		foreach ($account->players as $player){
+			echo '<li style="background-image: url(ico/user.png);" onclick="window.location.href=\'characters.php?player_id='.htmlspecialchars($player['id']).'\'">'.htmlspecialchars($player['name']).'</li>';
+		}
+		echo '</ul><hr/>';
+	}
+
 	if ($cfg['show_deathlist']){
 		$deaths = $player->getDeaths();
 		if ($deaths !== false && !empty($deaths)){
