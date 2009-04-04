@@ -41,10 +41,23 @@ public function load($id)
 		$group = $this->myRetrieve('groups', array('id' => (int) $player['group_id']));
 		if ($group === false)
 			$this->attrs['access'] = 0;
-		else{
+		else {
 			$this->attrs['group'] = (int) $player['group_id'];
 			$this->attrs['access'] = (int) $group['access'];
 			$this->attrs['position'] = (string) $group['name'];
+		}
+		if(isset($player['online'])) {
+			if((bool) $player['online'] == true) {
+				$this->attrs['online'] = true;
+			} else {
+				$this->attrs['online'] = false;
+			}
+		} elseif(isset($player['lastlogout'])) {
+			if($player['lastlogin'] > $player['lastlogout']) {
+				$this->attrs['online'] = true;
+			} else {
+				$this->attrs['online'] = false;
+			}
 		}
 		$this->attrs['id'] = (int) $player['id'];
 		$this->attrs['name'] = (string) $player['name'];

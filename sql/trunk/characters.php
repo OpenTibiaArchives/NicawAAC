@@ -30,7 +30,11 @@ include("header.inc.php");
 <?php 
 $player = new Player();
 if (!empty($_GET['player_id']) && $player->load($_GET['player_id']) || !empty($_GET['player_name']) && $player->find($_GET['player_name'])){
-	echo '<hr/><table style="width: 100%"><tr><td><b>Name:</b> '.htmlspecialchars($player->getAttr('name'))."<br/>\n";
+	echo '<hr/><table style="width: 100%"><tr><td><b>Name:</b> '.htmlspecialchars($player->getAttr('name')).'&nbsp;';
+	if($player->getAttr('online') !== null) {
+		if($player->getAttr('online')) echo '<span style="color:green">[Online]</span>'."<br/>\n";
+		else echo '<span style="color:red">[Offline]</span>'."<br/>\n";
+	}
 	echo '<b>Level:</b> '.$player->getAttr('level')."<br/>\n";
 	echo '<b>Magic Level:</b> '.$player->getAttr('maglevel')."<br/>\n";
 	echo '<b>Vocation:</b> '.$cfg['vocations'][$player->getAttr('vocation')]['name']."<br/>\n";
