@@ -19,7 +19,9 @@
 
 class AAC
 {
-	public function ValidPlayerName($name)
+	static public $sql_connection;
+	
+	static public function ValidPlayerName($name)
 	{global $cfg;
 		foreach ($cfg['invalid_names'] as $baned_name)
 			if (eregi($baned_name,$name))
@@ -30,47 +32,47 @@ class AAC
 		&& !file_exists($cfg['dirdata'].'npc/'.$name.'.xml');
 	}
 	
-	public function ValidPassword($pass)
+	static public function ValidPassword($pass)
 	{
 		return strlen($pass) > 5 && strlen($pass) <= 50 && ereg('^[a-zA-Z0-9~!@#%&;,:\\\^\$\.\|\?\*\+\(\)]*$',$pass);
 	}
 	
-	public function ValidAccountNumber($n)
+	static public function ValidAccountNumber($n)
 	{
 		return is_numeric($n) && $n > 100000 && $n < 100000000;
 	}
 	
-	public function ValidAccountName($n)
+	static public function ValidAccountName($n)
 	{
 		return eregi('^[A-Z0-9_]{6,30}$',$n);
 	}
 	
-	public function ValidEmail($email)
+	static public function ValidEmail($email)
 	{
 		return eregi('^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}$',$email);
 	}
 	
-	public function ValidGuildName($name)
+	static public function ValidGuildName($name)
 	{
 		return preg_match("/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/",$name);
 	}
 	
-	public function ValidGuildRank($name)
+	static public function ValidGuildRank($name)
 	{
 		return preg_match("/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/",$name);
 	}
 	
-	public function ValidGuildNick($name)
+	static public function ValidGuildNick($name)
 	{
 		return preg_match("/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/",$name);
 	}
 	
-	public function getExperienceByLevel($lvl)
+	static public function getExperienceByLevel($lvl)
 	{
 		return floor(50*($lvl-1)*($lvl*$lvl-5*$lvl+12)/3);
 	}
 	
-	public function HelpLink($issue_id)
+	static public function HelpLink($issue_id)
 	{
 		return '<a href="http://aac.nicaw.net/help.php?issue='.$issue_id.'">More Info</a>';
 	}

@@ -18,7 +18,6 @@
 */
 class SQL{
 private $last_query, $last_error;
-private static $connection;
 protected $sql_tables;
 
 public function __construct(){
@@ -28,14 +27,14 @@ public function __construct(){
 //creates new connection
 protected function _init(){
 	global $cfg;
-	if (!isset($this->connection)){
+	if (!isset(AAC::$sql_connection)){
 		
 		//warn if MySQL extension is not installed
 		if(!extension_loaded('mysql'))
 			throw new Exception('MySQL library is not installed. Database access is impossible. '.AAC::HelpLink(0));
 		
-		//establish a permanent link to MySQL
-	  	$con = @mysql_pconnect($cfg['SQL_Server'],$cfg['SQL_User'],$cfg['SQL_Password']);
+		//establish a link to MySQL
+	  	$con = @mysql_connect($cfg['SQL_Server'],$cfg['SQL_User'],$cfg['SQL_Password']);
 		if ($con === false){
 			throw new Exception('Unable to connect to mysql server. Please make sure it is up and running and you have correct user/password in config.inc.php. '.AAC::HelpLink(1));
 			return false;
@@ -47,15 +46,16 @@ protected function _init(){
 			return false;
 		}
 		
-		//retrieve table list
-		$result = @mysql_query('SHOW TABLES');
-		if ($result === false) return false;
-		while ($a = mysql_fetch_array($result))
-			$this->sql_tables[] = $a[0];
-		
 		//assign the connection
-		$this->connection = $con;
+		AAC::$sql_connection = $con;
 	}
+	
+	//retrieve table list
+	$result = @mysql_query('SHOW TABLES');
+	if ($result === false) return false;
+	while ($a = mysql_fetch_array($result))
+	$this->sql_tables[] = $a[0];
+
 	return true;
 }
 
