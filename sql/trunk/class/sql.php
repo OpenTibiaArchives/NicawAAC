@@ -1,6 +1,6 @@
 <?php
 /*
-     Copyright (C) 2007 - 2008  Nicaw
+     Copyright (C) 2007 - 2009  Nicaw
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 class SQL{
 private $last_query, $last_error;
 private static $connection;
+protected $sql_tables;
 
 public function __construct(){
   $this->_init();
@@ -28,17 +29,31 @@ public function __construct(){
 protected function _init(){
 	global $cfg;
 	if (!isset($this->connection)){
+		
+		//warn if MySQL extension is not installed
 		if(!extension_loaded('mysql'))
-			throw new Exception('MySQL library is not installed. Database access is impossible.');
+			throw new Exception('MySQL library is not installed. Database access is impossible. '.AAC::HelpLink(0));
+		
+		//establish a permanent link to MySQL
 	  	$con = @mysql_pconnect($cfg['SQL_Server'],$cfg['SQL_User'],$cfg['SQL_Password']);
 		if ($con === false){
-			throw new Exception('Unable to connect to mysql server. Please make sure it is up and running and you have correct user/password in config.inc.php.');
+			throw new Exception('Unable to connect to mysql server. Please make sure it is up and running and you have correct user/password in config.inc.php. '.AAC::HelpLink(1));
 			return false;
 		}
+		
+		//select otserv database
 		if (!@mysql_select_db($cfg['SQL_Database'])){
-			throw new Exception('Unable to select databse: '.$cfg['SQL_Database'].'. Make sure it exists.');
+			throw new Exception('Unable to select databse: '.$cfg['SQL_Database'].'. Make sure it exists. '.AAC::HelpLink(2));
 			return false;
 		}
+		
+		//retrieve table list
+		$result = @mysql_query('SHOW TABLES');
+		if ($result === false) return false;
+		while ($a = mysql_fetch_array($result))
+			$this->sql_tables[] = $a[0];
+		
+		//assign the connection
 		$this->connection = $con;
 	}
 	return true;
@@ -113,21 +128,18 @@ public function getError()
 	
 public function analyze()
 	{
-		$result = @mysql_query('SHOW TABLES');
-		if ($result === false) return false;
-		while ($a = mysql_fetch_array($result))
-			$t[] = $a[0];
-		$is_aac_db = in_array('nicaw_accounts',$t);
-		$is_server_db = in_array('accounts',$t) && in_array('players',$t);
-		$is_svn = in_array('player_depotitems',$t) && in_array('groups',$t);
-		$is_cvs = in_array('playerstorage',$t) && in_array('skills',$t);
+		//determine database type, try to perform autosetup
+		$is_aac_db = in_array('nicaw_accounts',$this->sql_tables);
+		$is_server_db = in_array('accounts',$t) && in_array('players',$this->sql_tables);
+		$is_svn = in_array('player_depotitems',$t) && in_array('groups',$this->sql_tables);
+		$is_cvs = in_array('playerstorage',$t) && in_array('skills',$this->sql_tables);
 		if (!$is_aac_db){
 			$this->setup();
-			return 'Notice: AutoSetup has attempted to create missing tables for you. This message should not repeat.';
+			return 'Notice: AutoSetup has attempted to create missing tables for you. Please create MySQL tables manually from "database.sql" if you are still getting this message. '.AAC::HelpLink(3);
 		}elseif (!$is_server_db){
-			return 'It appears you don\'t have SQL sample imported for OT server or it is not supported';
+			return 'It appears you don\'t have SQL sample imported for OT server or it is not supported. '.AAC::HelpLink(4);
 		}elseif ($is_cvs && !$is_svn){
-			return 'This AAC version does not support your server. Consider using SQL v1.5';
+			return 'This AAC version does not support your server. Consider using SQL v1.5 '.AAC::HelpLink(5);
 		}return false;
 	}
 	

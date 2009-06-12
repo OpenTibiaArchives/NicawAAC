@@ -70,6 +70,11 @@ class AAC
 		return floor(50*($lvl-1)*($lvl*$lvl-5*$lvl+12)/3);
 	}
 	
+	public function HelpLink($issue_id)
+	{
+		return '<a href="http://aac.nicaw.net/help.php?issue='.$issue_id.'">More Info</a>';
+	}
+	
 }
 
 /*
