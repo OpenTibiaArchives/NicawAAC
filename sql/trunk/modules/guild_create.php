@@ -34,13 +34,13 @@ if ($form->exists()){
 			//load owner character
 			if ($owner->load($form->attrs['leader'])){
 				//check if belong to current account
-				if ($owner->getAttr('account') == $_SESSION['account']){
+				if ($owner->attrs['account'] == $_SESSION['account']){
 					//check if owner belongs to any guild
-					if (!$owner->isAttr('guild_id')){
-						if ($owner->getAttr('level') >= $cfg['guild_leader_level']){
+					if (!isset($owner->guild['guild_id'])){
+						if ($owner->attrs['level'] >= $cfg['guild_leader_level']){
 							//create guild and add owner as a leader
-							$new_guild->setAttr('owner_id', $owner->getAttr('id'));
-							$new_guild->memberJoin($owner->getAttr('id'), 3, 'Leader');
+							$new_guild->setAttr('owner_id', $owner->attrs['id']);
+							$new_guild->memberJoin($owner->attrs['id'], 3, 'Leader');
 							$new_guild->save();
 							$account->logAction('Created guild: '.$new_guild->getAttr('name'));
 							

@@ -19,7 +19,7 @@
 include ("include.inc.php");
 
 $account = new Account();
-if (!$account->load($_SESSION['account'])){
+if (!array_key_exists('account', $_SESSION) || !$account->load($_SESSION['account'])){
 	$_SESSION['account'] = '';
 	header('location: login.php?redirect=account.php');
 	die();
@@ -34,16 +34,16 @@ include ("header.inc.php");
 <tr style="vertical-align: top"><td>
 <h3>Pick a Task</h3>
 <ul class="task-menu" style="width: 200px;">
-<li onclick="ajax('form','modules/character_create.php','',true)" style="background-image: url(ico/user_add.png);">Create Character</li>
-<li onclick="ajax('form','modules/character_delete.php','',true)" style="background-image: url(ico/user_delete.png);">Delete Character</li>
+<li onclick="ajax('ajax','modules/character_create.php','',true)" style="background-image: url(ico/user_add.png);">Create Character</li>
+<li onclick="ajax('ajax','modules/character_delete.php','',true)" style="background-image: url(ico/user_delete.png);">Delete Character</li>
 <?php if ($cfg['char_repair']){?>
-<li onclick="ajax('form','modules/character_repair.php','',true)" style="background-image: url(ico/user_edit.png);">Repair Character</li>
+<li onclick="ajax('ajax','modules/character_repair.php','',true)" style="background-image: url(ico/user_edit.png);">Repair Character</li>
 <?php }?>
-<li onclick="ajax('form','modules/account_password.php','',true)" style="background-image: url(ico/key.png);">Change Password</li>
-<li onclick="ajax('form','modules/account_email.php','',true)" style="background-image: url(ico/email.png);">Change Email</li>
-<li onclick="ajax('form','modules/account_comments.php','',true)" style="background-image: url(ico/page_edit.png);">Edit Comments</li>
-<li onclick="ajax('form','modules/account_options.php','',true)" style="background-image: url(ico/wrench.png);">Account Options</li>
-<li onclick="ajax('form','modules/guild_create.php','',true)" style="background-image: url(ico/group_add.png);">Create Guild</li>
+<li onclick="ajax('ajax','modules/account_password.php','',true)" style="background-image: url(ico/key.png);">Change Password</li>
+<li onclick="ajax('ajax','modules/account_email.php','',true)" style="background-image: url(ico/email.png);">Change Email</li>
+<li onclick="ajax('ajax','modules/account_comments.php','',true)" style="background-image: url(ico/page_edit.png);">Edit Comments</li>
+<li onclick="ajax('ajax','modules/account_options.php','',true)" style="background-image: url(ico/wrench.png);">Account Options</li>
+<li onclick="ajax('ajax','modules/guild_create.php','',true)" style="background-image: url(ico/group_add.png);">Create Guild</li>
 <li onclick="window.location.href='login.php?logout&amp;redirect=account.php'" style="background-image: url(ico/resultset_previous.png);">Logout</li>
 </ul>
 </td><td>
@@ -59,8 +59,8 @@ if (isset($account->players)){
 ?>
 </td></tr>
 </table>
-</div>
 <div id="ajax"></div>
+</div>
 <div class="bot"></div>
 </div>
 <?php 

@@ -18,7 +18,7 @@
 */
 include ("../include.inc.php");
 require ('check.php');
-$SQL = new SQL();
+$SQL = AAC::$SQL;
 
 //retrieve post data
 $form = new Form('admin');

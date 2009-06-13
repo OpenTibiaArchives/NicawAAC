@@ -26,7 +26,7 @@ if ($form->exists()){
 	if (strlen($form->attrs['name']) > 1){
 		//do mysql search
 		$query =  'SELECT name FROM players WHERE `name` LIKE \'%'.$form->attrs['name'].'%\'';
-		$SQL = new SQL();
+		$SQL = AAC::$SQL;
 		$SQL->myQuery($query);
 		if ($SQL->failed() || $SQL->num_rows() == 0){
 			//create new message

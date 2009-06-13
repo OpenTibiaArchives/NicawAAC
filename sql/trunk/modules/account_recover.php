@@ -31,7 +31,7 @@ if ($form->exists()){
 		if ($player->find($form->attrs['character'])){
 			//load account
 			$account = new Account();
-			if ($account->load($player->getAttr('account'))){
+			if ($account->load($player->attrs['account'])){
 				//check for email match
 				if (strtolower($account->getAttr('email')) == strtolower($form->attrs['email']) && !empty($form->attrs['email'])){
 					//assign recovery key to account
@@ -41,9 +41,9 @@ if ($form->exists()){
 
 this email is a response for your request to recover your account on http://'.$cfg['server_url'].'/
 
-Your account number is: '.$player->getAttr('account').'
+Your account number is: '.$player->attrs['account'].'
 If you also forgot password, please follow this link:
-http://'.$cfg['server_url'].$_SERVER['PHP_SELF'].'?account='.$player->getAttr('account').'&key='.$key.'
+http://'.$cfg['server_url'].$_SERVER['PHP_SELF'].'?account='.$player->attrs['account'].'&key='.$key.'
 If you don\'t want to recover your account, simply ignore this letter.';
 						//send recovery key
 						require_once("../extensions/class.phpmailer.php");

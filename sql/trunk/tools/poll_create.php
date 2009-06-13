@@ -25,7 +25,7 @@ $form = new Form('poll');
 if ($form->exists()){
 	//make an array of options
     $options = explode("\n",trim($form->attrs['options']));
-	$sql = new SQL();
+	$sql = AAC::$SQL;
 	//store poll question
     $sql->myInsert('nicaw_polls',array('id' => null, 'minlevel' => (int)$form->attrs['level'], 'question' => $form->attrs['question'], 'startdate' => strToDate($form->attrs['startdate']), 'enddate' => strToDate($form->attrs['enddate']), 'hidden' => $form->getBool('hidden')));
     $poll_id = $sql->insert_id();

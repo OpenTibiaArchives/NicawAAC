@@ -19,7 +19,7 @@
 include ("include.inc.php");
 $ptitle="Guilds - $cfg[server_name]";
 include ("header.inc.php");
-$SQL = new SQL();
+$SQL = AAC::$SQL;
 ?>
 <div id="content">
 <div class="top">Guilds</div>

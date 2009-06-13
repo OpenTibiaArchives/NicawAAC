@@ -24,7 +24,7 @@ include ("header.inc.php");
 <div class="top">Online Players</div>
 <div class="mid">
 <?php
-$SQL = new SQL();
+$SQL = AAC::$SQL;
 $SQL->myQuery('SELECT name, vocation, level FROM players WHERE online = 1 ORDER BY name ASC');
 if ($SQL->failed())
 	$SQL->myQuery('SELECT name, vocation, level FROM players WHERE lastlogin > lastlogout ORDER BY name ASC');

@@ -102,6 +102,7 @@ if (isset($_POST['login_submit'])) {
 <?php if($cfg['Email_Recovery']){?><li onclick="ajax('form','modules/account_recover.php','',true)" style="background-image: url(ico/arrow_redo.png);">Recover Account</li><?php }?>
 </ul>
 </fieldset>
+<div id="form"></div>
 </div>
 <div class="bot"></div>
 </div>

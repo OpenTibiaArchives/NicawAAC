@@ -30,7 +30,7 @@ if (!is_file($cfg['dirdata'].$cfg['house_file']))
 <tr class="color0"><td width="35%"><b>House</b></td><td width="25%"><b>Location</b></td><td width="25%"><b>Owner</b></td><td><b>Size</b></td><td><b>Rent</b></td></tr>
 <?php 
 $HousesXML = simplexml_load_file($cfg['dirdata'].$cfg['house_file']);
-$MySQL = new SQL();
+$MySQL = AAC::$SQL;
 $MySQL->myQuery('SELECT `players`.`name`, `houses`.`id` FROM `players`, `houses` WHERE `houses`.`owner` = `players`.`id`;');
 if ($MySQL->failed())
 	throw new Exception('SQL query failed:<br/>'.$SQL->getError());

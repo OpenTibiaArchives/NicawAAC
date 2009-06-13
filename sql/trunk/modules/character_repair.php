@@ -29,13 +29,13 @@ if ($form->exists()){
 	$player = new Player();
 	if ($player->load($form->attrs['character'])){
 		//check if player really belongs to account
-		if ($player->getAttr('account') === $account->getAttr('accno')){
-			$pos = $player->getAttr('spawn');
+		if ($player->attrs['account'] === $account->getAttr('accno')){
+			$pos = $player->attrs['spawn'];
 			if ($player->repair()){
-				$account->logAction('Repaired character: '.$player->getAttr('name').', '.$pos['x'].' '.$pos['y'].' '.$pos['z']);
+				$account->logAction('Repaired character: '.$player->attrs['name'].', '.$pos['x'].' '.$pos['y'].' '.$pos['z']);
 				//create new message
 				$msg = new IOBox('message');
-				$msg->addMsg($player->getAttr('name').' was repaired.');
+				$msg->addMsg($player->attrs['name'].' was repaired.');
 				$msg->addClose('Finish');
 				$msg->show();
 			}else $error = $player->getError();

@@ -28,9 +28,9 @@ $form = new Form('join');
 //check if any data was submited
 if ($form->exists()){
 	$player = new Player();
-	if ($player->load($form->attrs['player']) && $player->getAttr('account') == $_SESSION['account']){
-		if (!$player->isAttr('guild_id')){
-			if ($guild->memberJoin($player->getAttr('id'), 1)){
+	if ($player->load($form->attrs['player']) && $player->attrs['account'] == $_SESSION['account']){
+		if (!isset($player->guild['id'])){
+			if ($guild->memberJoin($player->attrs['id'], 1)){
 				$guild->save();
 				//success
 				$msg = new IOBox('message');
@@ -38,7 +38,7 @@ if ($form->exists()){
 				$msg->addClose('OK');
 				$msg->show();
 			}else $error = 'Cannot join guild';
-		}else $error = 'You already belong to guild. Leave "'.htmlspecialchars($player->getAttr('guild_name')).'" first.';
+		}else $error = 'You already belong to guild. Leave "'.htmlspecialchars($player->attrs['guild_name']).'" first.';
 	}else $error = 'Cannot load player';
 	if (!empty($error)){
 		//create new message

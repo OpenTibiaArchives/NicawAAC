@@ -24,7 +24,7 @@ $form = new Form('addrss');
 //check if any data was submited
 if ($form->exists()){
 		//insert news
-		$sql = new SQL();
+		$sql = AAC::$SQL;
     $sql->myInsert('nicaw_news',array('id' => null, 'title' => $form->attrs['title'], 'creator' => $form->attrs['creator'], 'date' => time(), 'text' => $form->attrs['text'], 'html' => $form->getBool('html')));
     echo $sql->getError();
 }else{

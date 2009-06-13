@@ -34,23 +34,18 @@ if ($form->exists()){
 		if (count($account->players) < $cfg['maxchars']){
 			//check for valid name
 			if (AAC::ValidPlayerName($form->attrs['name'])){
-				$newplayer->setAttr('name',(string)$form->attrs['name']);
 				//player name must not exist
-				if (!$newplayer->exists()){
-					//set attributes for new player
-					$newplayer->setAttr('vocation',(int)$form->attrs['vocation']);
-					$newplayer->setAttr('account',(int)$_SESSION['account']);
-					$newplayer->setAttr('sex',(int)$form->attrs['sex']);
-					$newplayer->setAttr('city',(int)$form->attrs['residence']);
+                if (!Player::exists($form->attrs['name'])){
 					//create character and add it to account
-					if ($newplayer->create()){
-						$account->logAction('Created character: '.$form->attrs['name']);
+                    $newplayer = Player::Create($form->attrs['name'], $_SESSION['account'], (int)$form->attrs['vocation'], (int)$form->attrs['sex'], (int)$form->attrs['residence']);
+					if (isset($newplayer)){
+						$account->logAction('Created character: '.$newplayer->attrs['name']);
 						//create new message
 						$msg = new IOBox('message');
 						$msg->addMsg('Your character was successfuly created.');
 						$msg->addRefresh('Finish');
 						$msg->show();
-					}else{$error = 'Error. '.$newplayer->getError();}
+					}else{$error = 'Internal error.';}
 				}else{$error = "This name is already taken.";}
 			}else{$error = "<b>Not a valid name:</b><br/><ul><li>First letter capital</li><li>At least 4 characters, at most 25</li><li>No capital letters in midlle of word</li><li>Letters A-Z, -' and spaces</li><li>Monster names not allowed</li></ul>";}
 		}else{$error = "You can't have more than $cfg[maxchars] characters on your account";}

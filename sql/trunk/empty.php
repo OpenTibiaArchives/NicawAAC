@@ -10,4 +10,4 @@ Put your HTML content here!
 </div>
 <div class="bot"></div>
 </div>
-<?php include ("footer.inc.php");}?>
+<?php include ("footer.inc.php");?>

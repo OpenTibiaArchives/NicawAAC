@@ -33,11 +33,11 @@ if ($form->exists()){
 		if (AAC::ValidGuildRank($form->attrs['rank'])){
 			$player = new Player();
 			if ($player->find($form->attrs['player'])){
-				if ($guild->memberInvite($player->getAttr('id'), $form->attrs['rank'])){
+				if ($guild->memberInvite($player->attrs['id'], $form->attrs['rank'])){
 					$guild->save();
 					//success
 					$msg = new IOBox('message');
-					$msg->addMsg($player->getAttr('name').' was invited to your guild');
+					$msg->addMsg($player->attrs['name'].' was invited to your guild');
 					$msg->addClose('OK');
 					$msg->show();
 				}else $error = 'Cannot invite player';

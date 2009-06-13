@@ -30,12 +30,12 @@ $form = new Form('kick');
 if ($form->exists()){
 	$player = new Player();
 	if ($player->load($form->attrs['player'])){
-		if ($player->getAttr('account') != $guild->getAttr('owner_acc')){
-			if ($guild->memberLeave($player->getAttr('id'))){
+		if ($player->attrs['account'] != $guild->getAttr('owner_acc')){
+			if ($guild->memberLeave($player->attrs['id'])){
 				$guild->save();
 				//success
 				$msg = new IOBox('message');
-				$msg->addMsg('You have kicked '.htmlspecialchars($player->getAttr('name')));
+				$msg->addMsg('You have kicked '.htmlspecialchars($player->attrs['name']));
 				$msg->addRefresh('OK');
 				$msg->show();
 			}else $error = 'Cannot kick from guild';

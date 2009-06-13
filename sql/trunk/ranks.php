@@ -20,7 +20,7 @@ include ("include.inc.php");
 $ptitle="Highscores - $cfg[server_name]";
 include ("header.inc.php");
 
-$SQL = new SQL();
+$SQL = AAC::$SQL;
 ?>
 <div id="content">
 <div class="top">Highscores</div>

@@ -23,7 +23,7 @@ require ('check.php');
 $form = new Form('tablerepair');
 //check if any data was submited
 if ($form->exists() && $form->getBool('confirm')){
-	$SQL = new SQL();
+	$SQL = AAC::$SQL;
 	$SQL->repairTables();
 	//create new message
 	$form = new IOBox('tablerepair');

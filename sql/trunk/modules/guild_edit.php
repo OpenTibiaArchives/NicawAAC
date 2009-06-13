@@ -34,11 +34,11 @@ if ($fselect->exists()){
 		if ($player->load($fselect->attrs['player'])){
 			//create new form
 			$form = new IOBox('edit');
-			$form->target = $_SERVER['PHP_SELF'].'?guild_id='.$guild->getAttr('id').'&player_id='.$player->getAttr('id');
+			$form->target = $_SERVER['PHP_SELF'].'?guild_id='.$guild->getAttr('id').'&player_id='.$player->attrs['id'];
 			$form->addLabel('Edit Member');
-			$form->addMsg('Editing: '.$player->getAttr('name'));
-			$form->addInput('rank', 'text', $player->getAttr('guild_rank'));
-			$form->addInput('nick', 'text', $player->getAttr('guild_nick'));
+			$form->addMsg('Editing: '.$player->attrs['name']);
+			$form->addInput('rank', 'text', $player->attrs['guild_rank']);
+			$form->addInput('nick', 'text', $player->attrs['guild_nick']);
 			$form->addClose('Cancel');
 			$form->addSubmit('Next >>');
 			$form->show();
@@ -58,8 +58,8 @@ if ($fselect->exists()){
 		if (AAC::ValidGuildRank($fedit->attrs['rank']) && (AAC::ValidGuildNick($fedit->attrs['nick']) || empty($fedit->attrs['nick']))){
 		$player = new Player();
 			if ($player->load($_REQUEST['player_id'])){
-				$guild->memberSetRank($player->getAttr('id'), $fedit->attrs['rank']);
-				$guild->memberSetNick($player->getAttr('id'), $fedit->attrs['nick']);
+				$guild->memberSetRank($player->attrs['id'], $fedit->attrs['rank']);
+				$guild->memberSetNick($player->attrs['id'], $fedit->attrs['nick']);
 				$guild->save();
 				//success
 				$msg = new IOBox('message');

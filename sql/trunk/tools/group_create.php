@@ -18,7 +18,7 @@
 */
 include ("../include.inc.php");
 require ('check.php');
-$SQL = new SQL();
+$SQL = AAC::$SQL;
 
 //retrieve post data
 $form = new Form('groups');
@@ -51,11 +51,9 @@ if ($form->exists()){
 $msg = new IOBox('groups');
 $msg->target = $_SERVER['PHP_SELF'];
 $msg->addLabel('Create Group');
-$msg->addMsg('<table id="flagtable" border="1px" cellspacing="0" width="600px">
+$msg->addMsg('<table id="flagtable" border="1px" cellspacing="0" width="440px">
   <tr>
     <td colspan="2"><b>Privileges</b></td>
-
-    <td><b>Limitations</b></td>
   </tr>
   <tr>
     <td valign="top" width="200">
@@ -74,7 +72,7 @@ $msg->addMsg('<table id="flagtable" border="1px" cellspacing="0" width="600px">
 		<input type="checkbox" value="131072" onclick="calcFlags()"> Can edit all house rights<br/>
 		<input type="checkbox" value="262144" onclick="calcFlags()"> Can not be banned<br/>
     </td>
-    <td valign="top" width="200">
+    <td valign="top" width="240">
 		<input type="checkbox" value="524288" onclick="calcFlags()"> Can not be pushed<br/>
 		<input type="checkbox" value="1048576" onclick="calcFlags()"> Has unlimited capacity<br/>
 		<input type="checkbox" value="2097152" onclick="calcFlags()"> Can push all creatures<br/>
@@ -92,7 +90,7 @@ $msg->addMsg('<table id="flagtable" border="1px" cellspacing="0" width="600px">
 		<input type="checkbox" value="274877906944" onclick="calcFlags()"> Can answer rule violations<br/>
 		<input type="checkbox" value="549755813888" onclick="calcFlags()"> Can reload content<br/>
 		<input type="checkbox" value="1099511627776" onclick="calcFlags()"> Show group instead vocation<br/>
-    </td>
+    </td></tr><tr>
     <td valign="top" width="200">
 		<input type="checkbox" value="1" onclick="calcFlags()"> Can not use combat<br/>
 		<input type="checkbox" value="2" onclick="calcFlags()"> Can not attack players<br/>
@@ -104,9 +102,7 @@ $msg->addMsg('<table id="flagtable" border="1px" cellspacing="0" width="600px">
 		<input type="checkbox" value="134217728" onclick="calcFlags()"> Do not gain health<br/>
 		<input type="checkbox" value="268435456" onclick="calcFlags()"> Do not gain skill<br/>
 		<input type="checkbox" value="2147483648" onclick="calcFlags()"> Can not gain loot<br/>
-    </td>
-  </tr>
-</table>');
+    </td><td>');
 $msg->addInput('id','text','0');
 $msg->addInput('name','text');
 $msg->addInput('flags','text','0');
@@ -115,6 +111,7 @@ $msg->addInput('depot size','text','1000');
 $msg->addInput('vip size','text','100');
 $msg->addClose('Cancel');
 $msg->addSubmit('Save');
+$msg->addMsg('</td></tr></table>');
 $msg->show();
 }
 

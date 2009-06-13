@@ -3,6 +3,8 @@ google_ad_slot = "9338844566";
 google_ad_width = 125;
 google_ad_height = 125;
 
+redirect_event = null;
+
 //mmmhmhm, have a cookie?
 var Cookies = {
 	init: function () {
@@ -71,26 +73,37 @@ Cookies.init();
 
 //this loads html content between element_id tags. warn displays loading message.
    function ajax(element_id, script_url, get, warn) {
-
+    var redirect = function()
+    {
+        window.location = script_url+'?'+encodeURI(get);
+    }
 	http_request = ajax_init();
-	if (!http_request){
-		window.location.href=script_url+'?'+encodeURI(get);
-	}
-	if (warn) {
-		document.getElementById(element_id).innerHTML = '<div style="z-index: 10; position: absolute; background-color: #660000; color:white;">Loading... Please wait or click <a style="color: white;" href="'+script_url+'?'+encodeURI(get)+'">here</a></div>' + document.getElementById(element_id).innerHTML;
-	}
+	if (!http_request) {
+        redirect();
+        return;
+    }
+    if(redirect_event != null)
+        clearTimeout(redirect_event);
+	if (warn && element_id != null) {
+		document.getElementById(element_id).innerHTML = '<div>Loading...</div>';
+        redirect_event = setTimeout(redirect, 10000);
+    }
 
     http_request.onreadystatechange = function()
     {
         if (http_request.readyState == 4) {
             if (http_request.status == 200) {
-				document.getElementById(element_id).innerHTML = http_request.responseText;
-				if (element_id == 'form'){
-					ticker = 0;
-					document.getElementById('iobox').style.left = Cookies.get('iobox_x');
-					document.getElementById('iobox').style.top = Cookies.get('iobox_y');
-					document.getElementById('iobox').style['visibility'] = 'visible';
-				}
+                if(element_id != null) {
+                    if(redirect_event != null)
+                        clearTimeout(redirect_event);
+                    document.getElementById(element_id).innerHTML = http_request.responseText;
+                    if (element_id == 'form'){
+                        ticker = 0;
+                        document.getElementById('iobox').style.left = Cookies.get('iobox_x');
+                        document.getElementById('iobox').style.top = Cookies.get('iobox_y');
+                        document.getElementById('iobox').style['visibility'] = 'visible';
+                    }
+                }
             }else if(warn){
               alert('Server failed to load script: \n'+script_url+'\nError: '+http_request.status);
             }
@@ -148,6 +161,13 @@ function stopDrag(){
  drag_node=null;
 }
 document.onmousedown=startDrag;
+
+function iobox_mouseup(){
+    if(document.getElementById('iobox').parentNode.id == 'form') {
+        Cookies.create('iobox_x',document.getElementById('iobox').style.left,1);
+        Cookies.create('iobox_y',document.getElementById('iobox').style.top,1);
+    }
+}
 
 //retrieves input data from element childs
 function getParams(obj) {

@@ -24,7 +24,7 @@ include ("header.inc.php");
 <div class="top">Polls</div>
 <div class="mid">
 <?php 
-$sql = new SQL();
+$sql = AAC::$SQL;
 if (isset($_GET['id']))
 	$params = 'AND nicaw_polls.id = '.$sql->quote((int)$_GET['id']);
 elseif (isset($_GET['show_all']))

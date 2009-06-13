@@ -5,7 +5,7 @@ $mtime = explode(" ",$mtime);
 $mtime = $mtime[1] + $mtime[0];
 $tstart = $mtime;
 
-error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(E_ALL); //^ E_NOTICE);
 session_start();
 
 //emulate register_globals = off
@@ -81,4 +81,7 @@ if (!extension_loaded('simplexml'))
 	
 //Set AAC version
 $cfg['aac_version'] = 'sql_3.23a';
+
+//connect to SQL
+AAC::$SQL = new SQL($cfg['SQL_Server'], $cfg['SQL_User'], $cfg['SQL_Password'], $cfg['SQL_Database']);
 ?>

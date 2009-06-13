@@ -28,8 +28,8 @@ $form = new Form('leave');
 //check if any data was submited
 if ($form->exists()){
 	$player = new Player();
-	if ($player->load($form->attrs['player']) && $player->getAttr('account') == $_SESSION['account']){
-		if ($player->getAttr('id') == $guild->getAttr('owner_id')){
+	if ($player->load($form->attrs['player']) && $player->attrs['account'] == $_SESSION['account']){
+		if ($player->attrs['id'] == $guild->getAttr('owner_id')){
 			$guild->remove();
 			
 			$msg = new IOBox('message');
@@ -37,7 +37,7 @@ if ($form->exists()){
 			$msg->target = 'guilds.php';
 			$msg->addClose('OK');
 			$msg->show();
-		}elseif ($guild->memberLeave($player->getAttr('id'))){
+		}elseif ($guild->memberLeave($player->attrs['id'])){
 			$guild->save();
 			//success
 			$msg = new IOBox('message');

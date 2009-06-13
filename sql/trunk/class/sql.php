@@ -17,46 +17,46 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 class SQL{
-private $last_query, $last_error;
+private $last_query, $last_error, $last_insert_id;
 protected $sql_tables;
-
-public function __construct(){
-  $this->_init();
-}
+private $sql_connection;
 
 //creates new connection
-protected function _init(){
-	global $cfg;
-	if (!isset(AAC::$sql_connection)){
-		
-		//warn if MySQL extension is not installed
-		if(!extension_loaded('mysql'))
-			throw new Exception('MySQL library is not installed. Database access is impossible. '.AAC::HelpLink(0));
-		
-		//establish a link to MySQL
-	  	$con = @mysql_connect($cfg['SQL_Server'],$cfg['SQL_User'],$cfg['SQL_Password']);
-		if ($con === false){
-			throw new Exception('Unable to connect to mysql server. Please make sure it is up and running and you have correct user/password in config.inc.php. '.AAC::HelpLink(1));
-			return false;
-		}
-		
-		//select otserv database
-		if (!@mysql_select_db($cfg['SQL_Database'])){
-			throw new Exception('Unable to select databse: '.$cfg['SQL_Database'].'. Make sure it exists. '.AAC::HelpLink(2));
-			return false;
-		}
-		
-		//assign the connection
-		AAC::$sql_connection = $con;
-	}
-	
-	//retrieve table list
-	$result = @mysql_query('SHOW TABLES');
+public function __construct($server, $user, $password, $database){
+
+    //warn if MySQL extension is not installed
+    if(!extension_loaded('mysql'))
+        throw new Exception('MySQL library is not installed. Database access is impossible. '.AAC::HelpLink(0));
+
+    //establish a link to MySQL
+    $con = mysql_connect($server,$user,$password);
+    if ($con === false){
+        throw new Exception('Unable to connect to mysql server. Please make sure it is up and running and you have correct user/password in config.inc.php. '.AAC::HelpLink(1));
+        return false;
+    }
+
+    //select otserv database
+    if (!mysql_select_db($database)){
+        throw new Exception('Unable to select database: '.$database.'. Make sure it exists. '.AAC::HelpLink(2));
+        return false;
+    }
+
+    //retrieve table list
+	$result = mysql_query('SHOW TABLES');
 	if ($result === false) return false;
 	while ($a = mysql_fetch_array($result))
 	$this->sql_tables[] = $a[0];
 
+    //assign the connection
+    $this->sql_connection = $con;
+
 	return true;
+}
+
+public function __destruct(){
+    if(is_resource($this->last_query))
+        mysql_free_result($this->last_query);
+    mysql_close($this->sql_connection);
 }
 
 //Creates tables
@@ -67,7 +67,10 @@ public function setup(){
 
 //Perform simple SQL query
 public function myQuery($q){
-	$this->last_query = @mysql_query($q);
+    if(is_resource($this->last_query))
+        mysql_free_result($this->last_query);
+	$this->last_query = mysql_query($q, $this->sql_connection);
+    $this->last_insert_id = mysql_insert_id();
 	if ($this->last_query === false){
 		$this->last_error = 'Error #'.mysql_errno()."\n".$q."\n" . mysql_error() . "\n";
 		$analysis = $this->analyze();
@@ -86,14 +89,17 @@ public function failed(){
 //Returns current array with data values
 public function fetch_array(){
     if (!$this->failed())
-      return mysql_fetch_array($this->last_query);
+        if (isset($this->last_query))
+            return mysql_fetch_array($this->last_query);
+        else
+            throw new Exception('Attempt to fetch a null query.');
     else
       throw new Exception('Attempt to fetch failed query'."\n".$this->last_error);
 }
 
 //Returns the last insert id
 public function insert_id(){
-      return mysql_insert_id();
+      return $this->last_insert_id;
 }
   
 //Returns the number of rows affected
@@ -130,9 +136,9 @@ public function analyze()
 	{
 		//determine database type, try to perform autosetup
 		$is_aac_db = in_array('nicaw_accounts',$this->sql_tables);
-		$is_server_db = in_array('accounts',$t) && in_array('players',$this->sql_tables);
-		$is_svn = in_array('player_depotitems',$t) && in_array('groups',$this->sql_tables);
-		$is_cvs = in_array('playerstorage',$t) && in_array('skills',$this->sql_tables);
+		$is_server_db = in_array('accounts',$this->sql_tables) && in_array('players',$this->sql_tables);
+		$is_svn = in_array('player_depotitems',$this->sql_tables) && in_array('groups',$this->sql_tables);
+		$is_cvs = in_array('playerstorage',$this->sql_tables) && in_array('skills',$this->sql_tables);
 		if (!$is_aac_db){
 			$this->setup();
 			return 'Notice: AutoSetup has attempted to create missing tables for you. Please create MySQL tables manually from "database.sql" if you are still getting this message. '.AAC::HelpLink(3);
@@ -145,11 +151,8 @@ public function analyze()
 	
 public function repairTables()
 	{
-		$result = mysql_query('SHOW TABLES');
-		while ($a = mysql_fetch_array($result))
-			$tables[] = $a[0];
-		if (isset($tables))
-			foreach($tables as $table)
+		if (isset($this->sql_tables))
+			foreach($this->sql_tables as $table)
 				mysql_query('REPAIR TABLE '.$table);
 		return $return;
 	}

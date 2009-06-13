@@ -16,19 +16,19 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-class Account extends SQL
+class Account
 {
-private $attrs;
+private $attrs, $sql;
 public $players;
 
 public function __construct()
 	{
-		parent::__construct();
+		$this->sql = AAC::$SQL;
 	}
 	
 public function find($name)
 	{
-		$acc = $this->myRetrieve('accounts', array('name' => $name));
+		$acc = $this->sql->myRetrieve('accounts', array('name' => $name));
 		if ($acc === false) return false;
 		$this->load($acc['id']);
 		return true;
@@ -38,11 +38,11 @@ public function load($id)
 	{
 		if (!is_numeric($id)) return false;
 		//load attributes from database
-		$acc = $this->myRetrieve('accounts', array('id' => $id));
-		$nicaw_acc = $this->myRetrieve('nicaw_accounts', array('account_id' => $id));
+		$acc = $this->sql->myRetrieve('accounts', array('id' => $id));
+		$nicaw_acc = $this->sql->myRetrieve('nicaw_accounts', array('account_id' => $id));
 		if ($acc === false){
 			if ($this->exists())
-				throw new Exception('Cannot load existing account:<br/>'.$this->getError());
+				throw new Exception('Cannot load existing account:<br/>'.$this->sql->getError());
 			return false;
 		}
 		//arranging attributes, ones on the left will be used all over the aac
@@ -58,9 +58,9 @@ public function load($id)
 		if (isset($acc['premdays']) && $acc['premdays'] > 0) $this->attrs['premend'] = $acc['premdays']*24*3600 + time();
 		elseif (isset($acc['premend']) && $acc['premend'] > 0) $this->attrs['premend'] = $acc['premend'];
 		//get characters of this account
-		$this->myQuery('SELECT players.id, players.name FROM players WHERE (`account_id`='.$this->quote($this->attrs['accno']).')');
-		if ($this->failed()) throw new Exception($this->getError());
-		while ($a = $this->fetch_array()){
+		$this->sql->myQuery('SELECT players.id, players.name FROM players WHERE (`account_id`='.$this->sql->quote($this->attrs['accno']).')');
+		if ($this->sql->failed()) throw new Exception($this->sql->getError());
+		while ($a = $this->sql->fetch_array()){
 			$this->players[] = array('name' => $a['name'], 'id' => $a['id']);
 		}
 		//good, now we have all attributes stored in object
@@ -75,11 +75,11 @@ public function save()
 		$acc['email'] = $this->attrs['email'];
 
 		if ($this->exists()){
-			if (!$this->myUpdate('accounts',$acc, array('id' => $this->attrs['accno'])))
-				throw new Exception('Cannot save account:<br/>'.$this->getError());
+			if (!$this->sql->myUpdate('accounts',$acc, array('id' => $this->attrs['accno'])))
+				throw new Exception('Cannot save account:<br/>'.$this->sql->getError());
 		}else{
-			if (!$this->myInsert('accounts',$acc))
-				throw new Exception('Cannot save account:<br/>'.$this->getError());
+			if (!$this->sql->myInsert('accounts',$acc))
+				throw new Exception('Cannot save account:<br/>'.$this->sql->getError());
 			else
 				$this->attrs['accno'] = $this->insert_id();
 		}
@@ -91,8 +91,8 @@ public function save()
 		$nicaw_acc['recovery_key'] = $this->attrs['recovery_key'];
 		$nicaw_acc['reveal_characters'] = $this->attrs['reveal_characters'];
 		
-		if (!$this->myReplace('nicaw_accounts',$nicaw_acc))
-			throw new Exception('Cannot save account:<br/>'.$this->getError());
+		if (!$this->sql->myReplace('nicaw_accounts',$nicaw_acc))
+			throw new Exception('Cannot save account:<br/>'.$this->sql->getError());
 		
 		return true;
 	}
@@ -132,25 +132,25 @@ public function checkPassword($pass)
 
 public function exists()
 	{
-		$this->myQuery('SELECT * FROM `accounts` WHERE `id` = '.$this->quote($this->attrs['accno']));
-		if ($this->failed()) throw new Exception('Account::exists() cannot determine whether account exists');
-		if ($this->num_rows() > 0) return true;
+		$this->sql->myQuery('SELECT * FROM `accounts` WHERE `id` = '.$this->sql->quote($this->attrs['accno']));
+		if ($this->sql->failed()) throw new Exception('Account::exists() cannot determine whether account exists');
+		if ($this->sql->num_rows() > 0) return true;
 		return false;
 	}
 	
 public function existsName()
 	{
-		$this->myQuery('SELECT * FROM `accounts` WHERE `name` = '.$this->quote($this->attrs['name']));
-		if ($this->failed()) throw new Exception('Account::existsName() failed. If your server doesn\'t support account names pelase use AAC release v3.20');
+		$this->sql->myQuery('SELECT * FROM `accounts` WHERE `name` = '.$this->sql->quote($this->attrs['name']));
+		if ($this->sql->failed()) throw new Exception('Account::existsName() failed. If your server doesn\'t support account names pelase use AAC release v3.20');
 		if ($this->num_rows() > 0) return true;
 		return false;
 	}
 
 public function logAction($action)
 	{
-		$this->myQuery('INSERT INTO `nicaw_account_logs` (id, ip, account_id, date, action) VALUES(NULL, INET_ATON('.$this->quote($_SERVER['REMOTE_ADDR']).'), '.$this->quote($this->attrs['accno']).', UNIX_TIMESTAMP(NOW()), '.$this->quote($action).')');
-		if ($this->failed())
-			throw new Exception($this->getError());
+		$this->sql->myQuery('INSERT INTO `nicaw_account_logs` (id, ip, account_id, date, action) VALUES(NULL, INET_ATON('.$this->sql->quote($_SERVER['REMOTE_ADDR']).'), '.$this->sql->quote($this->attrs['accno']).', UNIX_TIMESTAMP(NOW()), '.$this->sql->quote($action).')');
+		if ($this->sql->failed())
+			throw new Exception($this->sql->getError());
 	}
 	
 public function removeRecoveryKey()
@@ -172,17 +172,17 @@ public function checkRecoveryKey($key)
 
 public function vote($option)
 	{
-		$this->myQuery('INSERT INTO `nicaw_poll_votes` (option_id, ip, account_id) VALUES('.$this->quote($option).', INET_ATON('.$this->quote($_SERVER['REMOTE_ADDR']).'), '.$this->quote($this->attrs['accno']).')');
-		if ($this->failed())
-			throw new Exception($this->getError());
+		$this->sql->myQuery('INSERT INTO `nicaw_poll_votes` (option_id, ip, account_id) VALUES('.$this->sql->quote($option).', INET_ATON('.$this->sql->quote($_SERVER['REMOTE_ADDR']).'), '.$this->sql->quote($this->attrs['accno']).')');
+		if ($this->sql->failed())
+			throw new Exception($this->sql->getError());
 	}
 	
 public function getMaxLevel()
 	{
-		$this->myQuery('SELECT MAX(level) AS maxlevel FROM `players` WHERE `account_id` = '.$this->quote($this->attrs['accno']));
-		if ($this->failed())
+		$this->sql->myQuery('SELECT MAX(level) AS maxlevel FROM `players` WHERE `account_id` = '.$this->sql->quote($this->attrs['accno']));
+		if ($this->sql->failed())
 			throw new Exception($this->getError);
-		$row = $this->fetch_array();
+		$row = $this->sql->fetch_array();
 		return (int) $row['maxlevel'];
 	}
 
@@ -190,24 +190,24 @@ public function canVote($option)
 	{
 		$query = 'SELECT nicaw_polls.id FROM nicaw_polls, nicaw_poll_options
 WHERE nicaw_polls.id = nicaw_poll_options.poll_id
-AND nicaw_poll_options.id = '.$this->quote($option).'
-AND '.$this->quote($this->getMaxLevel()).' > minlevel
+AND nicaw_poll_options.id = '.$this->sql->quote($option).'
+AND '.$this->sql->quote($this->getMaxLevel()).' > minlevel
 AND nicaw_polls.startdate < UNIX_TIMESTAMP(NOW())
 AND nicaw_polls.enddate > UNIX_TIMESTAMP(NOW())';
-		$this->myQuery($query);
-		if ($this->failed())
+		$this->sql->myQuery($query);
+		if ($this->sql->failed())
 			throw new Exception($this->getError);
 		if ($this->num_rows() == 0) return false;
 		if ($this->num_rows() > 1) throw new Exception('Unexpected SQL answer.');
-		$a = $this->fetch_array();
+		$a = $this->sql->fetch_array();
 		$poll_id = $a['id'];
 		$query = 'SELECT * FROM nicaw_poll_votes, nicaw_poll_options
-WHERE nicaw_poll_options.poll_id = '.$this->quote($poll_id).'
+WHERE nicaw_poll_options.poll_id = '.$this->sql->quote($poll_id).'
 AND nicaw_poll_options.id = nicaw_poll_votes.option_id
-AND (account_id = '.$this->quote($this->attrs['accno']).' OR ip = INET_ATON('.$this->quote($_SERVER['REMOTE_ADDR']).')
+AND (account_id = '.$this->sql->quote($this->attrs['accno']).' OR ip = INET_ATON('.$this->sql->quote($_SERVER['REMOTE_ADDR']).')
 )';
-		$this->myQuery($query);
-		if ($this->failed())
+		$this->sql->myQuery($query);
+		if ($this->sql->failed())
 			throw new Exception($this->getError);
 		if ($this->num_rows() == 0) return true;
 		elseif ($this->num_rows() == 1) return false;
