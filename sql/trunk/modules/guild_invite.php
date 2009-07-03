@@ -17,53 +17,34 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 include ("../include.inc.php");
+
 //load account if loged in
 $account = new Account();
-($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
-//load guild
-$guild = new Guild();
-if (!$guild->load($_REQUEST['guild_id'])) throw new Exception('Unable to load guild.');
-if ($guild->attrs['owner_acc'] != $_SESSION['account']) die('Not your guild');
-//retrieve post data
-$form = new Form('invite');
-//check if any data was submited
-if ($form->exists()){
-	if (count($guild->invited) <= 20){
-        $player = new Player();
-        if ($player->find($form->attrs['player'])){
-            echo $form->attrs['rank'];
-            if ($guild->playerInvite($player, $form->attrs['rank'])){
-                //success
-                $msg = new IOBox('message');
-                $msg->addMsg($player->attrs['name'].' was invited to your guild');
-                $msg->addClose('OK');
-                $msg->show();
-            }else $error = 'Cannot invite player';
-        }else $error = 'Cannot find this player';
-	}else $error = 'You are not allowed to invite more players.<br/>Remove old invites first.';
-	if (!empty($error)){
-		//create new message
-		$msg = new IOBox('message');
-		$msg->addMsg($error);
-		$msg->addClose('OK');
-		$msg->show();
-	}
-}else{
-    if (isset($guild->ranks))
-		while ($rank = current($guild->ranks)) {
-            $list[key($guild->ranks)] = $rank['name'];
-            next($guild->ranks);
-        }
-    $list = array_reverse($list, true);
-	//create new form
-	$form = new IOBox('invite');
-	$form->target = $_SERVER['PHP_SELF'].'?guild_id='.(int)$_REQUEST['guild_id'];
-	$form->addLabel('Invite Member');
-	$form->addMsg('Enter the name and rank of player you want to invite');
-	$form->addInput('player');
-	$form->addSelect('rank',$list);
-	$form->addClose('Cancel');
-	$form->addSubmit('Next >>');
-	$form->show();
+if ($account->load($_SESSION['account'])) {
+    //load guild
+    $guild = new Guild();
+    if (isset($_REQUEST['guild_id']) && $guild->load($_REQUEST['guild_id'])) {
+        //check if user has rights to invite
+        if ($guild->canInvite($_SESSION['account'])) {
+            if (count($guild->invited) <= 20) {
+                $player = new Player();
+                if ($player->find($_REQUEST['player_name'])) {
+                    if ($guild->playerInvite($player)) {
+                        //success
+                    }else $error = 'Cannot invite player';
+                }else $error = 'Cannot find this player';
+            }else $error = 'Too many invited players';
+        }else $error = 'You do not have permission';
+    }else $error = 'Cannot load guild';
+}else $error = 'You are not logged in';
+
+$responseXML = new SimpleXMLElement('<response/>');
+if (empty($error)) {
+    $responseXML->addChild('error', 0);
+    $responseXML->addChild('player', $player->attrs['name']);
+} else {
+    $responseXML->addChild('error', 1);
+    $responseXML->addChild('message', $error);
 }
+echo $responseXML->asXML();
 ?>

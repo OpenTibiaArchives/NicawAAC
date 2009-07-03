@@ -46,7 +46,7 @@ If you also forgot password, please follow this link:
 http://'.$cfg['server_url'].$_SERVER['PHP_SELF'].'?account='.$player->attrs['account'].'&key='.$key.'
 If you don\'t want to recover your account, simply ignore this letter.';
 						//send recovery key
-						require_once("../extensions/class.phpmailer.php");
+						require_once("../class/class.phpmailer.php");
 
 						$mail = new PHPMailer();
 						$mail->IsSMTP();						

@@ -198,9 +198,71 @@ function input_clear(node)
 
 setTimeout ('server_state()',60000);
 
+function parseXML(txt) {
+    try //Internet Explorer
+    {
+        xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+        xmlDoc.async="false";
+        xmlDoc.loadXML(txt);
+        return xmlDoc;
+    }
+    catch(e)
+    {
+        parser=new DOMParser();
+        xmlDoc=parser.parseFromString(txt,"text/xml");
+        return xmlDoc;
+    }
+}
+
 var Guild = {
-    parseInvite : function(table_id) {
-        document.getElementById(table_id).innerHTML +=
-        '<tr><td>name</tr></td>';
+    requestInvite: function(table_id, button_id, player_name, guild_id) {
+        document.getElementById(button_id).disabled = true;
+        new Ajax.Request('modules/guild_invite.php', {
+            method: 'post',
+            parameters: {
+                table_id: table_id,
+                button_id: button_id,
+                player_name: player_name,
+                guild_id: guild_id
+            },
+            onSuccess: this.callbackInvite,
+            onFailure: function() {alert('AJAX failed.')},
+            onComplete: function(transport) {
+                var param = transport.request.options.parameters;
+                document.getElementById(param.button_id).disabled = false;
+            }
+        });
+    },
+    callbackInvite : function(transport) {
+        var param = transport.request.options.parameters;
+        var XML = parseXML(transport.responseText);
+        if (XML.getElementsByTagName('error')[0].childNodes[0].nodeValue == 0) {
+            var player_name = XML.getElementsByTagName('player')[0].childNodes[0].nodeValue;
+            var row = document.createElement('tr');
+            row.innerHTML = '<td>' + player_name + '</td>';
+            var node = document.getElementById(param.table_id);
+            node.insertBefore(row, node.childNodes.item(0));
+        } else {
+            alert(XML.getElementsByTagName('message')[0].childNodes[0].nodeValue);
+        }
+    },
+    requestKick : function(node_id, player_name) {
+        if (confirm('Are you sure you want to remove ['+player_name+'] from the guild?')) {
+            new Ajax.Request('modules/guild_invite.php', {
+                method: 'post',
+                parameters: {
+                    table_id: table_id,
+                    button_id: button_id,
+                    player_name: player_name,
+                    guild_id: guild_id
+                },
+                onSuccess: this.callbackInvite,
+                onFailure: function() {alert('AJAX failed.')},
+                onComplete: function(transport) {
+                    var param = transport.request.options.parameters;
+                    document.getElementById(param.button_id).disabled = false;
+                }
+            });
+        }
     }
 }

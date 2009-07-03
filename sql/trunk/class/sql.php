@@ -65,7 +65,7 @@ public function __destruct(){
 
 //Creates tables
 public function setup(){
-	$tables = explode(';', @file_get_contents('database.sql'));
+	$tables = explode(';', file_get_contents('documents/shema.mysql'));
 	foreach ($tables as $table) mysql_query($table);
 }
 

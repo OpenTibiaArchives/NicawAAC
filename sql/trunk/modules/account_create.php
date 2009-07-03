@@ -88,7 +88,7 @@ if ($form->exists()){
 <br/>
 Powered by <a href=\"http://nicaw.net/\">Nicaw AAC</a>";
 			//send the email
-			require_once("../extensions/class.phpmailer.php");
+			require_once("../class/class.phpmailer.php");
 
 			$mail = new PHPMailer();
 			$mail->IsSMTP();
