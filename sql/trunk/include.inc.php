@@ -51,6 +51,9 @@ require ('class/iobox.php');
 //set custom exception handler
 set_exception_handler('exception_handler');
 
+//connect to SQL
+AAC::$SQL = new SQL($cfg['SQL_Server'], $cfg['SQL_User'], $cfg['SQL_Password'], $cfg['SQL_Database']);
+
 //just make sure GD extension is loaded before using CAPTCHA
 $cfg['use_captha'] = $cfg['use_captcha'] && extension_loaded('gd');
 
@@ -66,7 +69,7 @@ if (!empty($_SESSION['account']) && ($_SERVER['REMOTE_ADDR'] != $_SESSION['remot
 	unset($_SESSION['account']);
 
 //Autologin
-if (!$cfg['secure_session'] && !empty($_COOKIE['remember']) && $_SESSION['account'] === null){
+if (!$cfg['secure_session'] && !empty($_COOKIE['remember']) && !array_key_exists('account',$_SESSION)){
 	$account = new Account();
 	if ($account->load($_COOKIE['account']) && (string)$_COOKIE['password'] == sha1($account->getAttr('password').$_SERVER['HTTP_HOST'])){
 		$_SESSION['account']=$account->getAttr('accno');
@@ -81,7 +84,4 @@ if (!extension_loaded('simplexml'))
 	
 //Set AAC version
 $cfg['aac_version'] = 'sql_3.23a';
-
-//connect to SQL
-AAC::$SQL = new SQL($cfg['SQL_Server'], $cfg['SQL_User'], $cfg['SQL_Password'], $cfg['SQL_Database']);
 ?>

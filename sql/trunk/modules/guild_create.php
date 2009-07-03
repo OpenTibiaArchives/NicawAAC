@@ -27,9 +27,7 @@ if ($form->exists()){
 	$form->attrs['Guild_Name'] = ucfirst($form->attrs['Guild_Name']);
 	//check for correct guild name
 	if (AAC::ValidGuildName($form->attrs['Guild_Name'])){
-		$new_guild = new Guild();
-		$new_guild->setAttr('name', $form->attrs['Guild_Name']);
-		if (!$new_guild->exists()){
+		if (!Guild::exists($form->attrs['Guild_Name'])){
 			$owner = new Player();
 			//load owner character
 			if ($owner->load($form->attrs['leader'])){
@@ -39,10 +37,9 @@ if ($form->exists()){
 					if (!isset($owner->guild['guild_id'])){
 						if ($owner->attrs['level'] >= $cfg['guild_leader_level']){
 							//create guild and add owner as a leader
-							$new_guild->setAttr('owner_id', $owner->attrs['id']);
-							$new_guild->memberJoin($owner->attrs['id'], 3, 'Leader');
-							$new_guild->save();
-							$account->logAction('Created guild: '.$new_guild->getAttr('name'));
+							$new_guild = Guild::Create($form->attrs['Guild_Name'], $owner->attrs['id']);
+							$new_guild->playerJoin($owner, 1);
+							$account->logAction('Created guild: '.$new_guild->attrs['name']);
 							
 							//success
 							$msg = new IOBox('message');

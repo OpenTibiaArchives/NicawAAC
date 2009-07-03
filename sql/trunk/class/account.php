@@ -181,7 +181,7 @@ public function getMaxLevel()
 	{
 		$this->sql->myQuery('SELECT MAX(level) AS maxlevel FROM `players` WHERE `account_id` = '.$this->sql->quote($this->attrs['accno']));
 		if ($this->sql->failed())
-			throw new Exception($this->getError);
+			throw new Exception($this->sql->getError);
 		$row = $this->sql->fetch_array();
 		return (int) $row['maxlevel'];
 	}
@@ -196,7 +196,7 @@ AND nicaw_polls.startdate < UNIX_TIMESTAMP(NOW())
 AND nicaw_polls.enddate > UNIX_TIMESTAMP(NOW())';
 		$this->sql->myQuery($query);
 		if ($this->sql->failed())
-			throw new Exception($this->getError);
+			throw new Exception($this->sql->getError);
 		if ($this->num_rows() == 0) return false;
 		if ($this->num_rows() > 1) throw new Exception('Unexpected SQL answer.');
 		$a = $this->sql->fetch_array();
@@ -208,7 +208,7 @@ AND (account_id = '.$this->sql->quote($this->attrs['accno']).' OR ip = INET_ATON
 )';
 		$this->sql->myQuery($query);
 		if ($this->sql->failed())
-			throw new Exception($this->getError);
+			throw new Exception($this->sql->getError);
 		if ($this->num_rows() == 0) return true;
 		elseif ($this->num_rows() == 1) return false;
 		else throw new Exception('Unexpected SQL answer.');

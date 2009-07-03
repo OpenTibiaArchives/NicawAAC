@@ -21,6 +21,7 @@ class Guild
 private $attrs, $sql;
 public $members = array();
 public $invited = array();
+public $ranks = array();
 
 public function __construct()
 	{
@@ -35,25 +36,16 @@ public function find($name)
 		return true;
 	}
 
-private function deeper_array_search($needle, $haystack, $attribute)
-{
-	while ($v = current($haystack)){
-		if ($v[$attribute] == $needle)
-			return key($haystack);
-		next($haystack);
-	}
-	return false;
-}
-
 private function load_members()
     {
         if(empty($this->attrs['id'])) return false;
-        $this->sql->myQuery('SELECT players.name, players.guildnick, players.id, guild_ranks.name AS rank FROM guild_ranks, players WHERE players.rank_id = guild_ranks.id AND guild_ranks.guild_id = '.$this->quote($this->attrs['id']));
+        $this->sql->myQuery('SELECT players.name, players.guildnick, players.id, guild_ranks.id AS rank FROM guild_ranks, players WHERE players.rank_id = guild_ranks.id AND guild_ranks.guild_id = '.$this->sql->quote($this->attrs['id']));
 		if ($this->sql->failed())
-			throw new Exception('Failed to load guild members:<br/>'.$this->getError());
+			throw new Exception('Failed to load guild members:<br/>'.$this->sql->getError());
 
-		while ($a = $this->sql->fetch_array())
-			$this->members[] = array('id' => $a['id'], 'name' => $a['name'], 'rank' => $a['rank'], 'nick' => $a['guildnick']);
+		while ($a = $this->sql->fetch_array()) {
+			$this->members[$a['id']] = array('name' => $a['name'], 'rank' => $a['rank'], 'nick' => $a['guildnick']);
+        }
 
         return true;
     }
@@ -61,25 +53,25 @@ private function load_members()
 private function load_invited()
     {
         if(empty($this->attrs['id'])) return false;
-        $this->sql->myQuery('SELECT players.id, players.name, players.guildnick, guild_ranks.name AS rank FROM players, guild_ranks, nicaw_guild_invites WHERE players.id = nicaw_guild_invites.pid AND guild_ranks.id = nicaw_guild_invites.rank AND nicaw_guild_invites.gid = '.$this->quote($this->attrs['id']));
+        $this->sql->myQuery('SELECT players.id, players.name, players.guildnick, guild_ranks.name AS rank FROM players, guild_ranks, nicaw_guild_invites WHERE players.id = nicaw_guild_invites.pid AND guild_ranks.id = nicaw_guild_invites.rank AND nicaw_guild_invites.gid = '.$this->sql->quote($this->attrs['id']));
 		if ($this->sql->failed())
-			throw new Exception('Failed to load invited members:<br/>'.$this->getError());
+			throw new Exception('Failed to load invited members:<br/>'.$this->sql->getError());
 
 		while ($a = $this->sql->fetch_array())
-			$this->invited[] = array('id' => $a['id'], 'name' => $a['name'], 'rank' => $a['rank']);
+			$this->invited[$a['id']] = array('name' => $a['name'], 'rank' => $a['rank']);
 
         return true;
     }
 	
 public function load($id)
 	{
-		$query = 'SELECT players.account_id, guilds.* FROM players, guilds WHERE players.id = guilds.ownerid AND guilds.id = '.$this->quote($id);
+		$query = 'SELECT players.account_id, guilds.* FROM players, guilds WHERE players.id = guilds.ownerid AND guilds.id = '.$this->sql->quote($id);
 		$this->sql->myQuery($query);
 		if ($this->sql->failed())
-			throw new Exception('Failed to load guild:<br/>'.$this->getError());
-		if ($this->num_rows() > 1)
-			throw new Exception('Unexpected SQL answer. More than one guild exists:<br/>'.$this->getError());
-		if ($this->num_rows() == 0)
+			throw new Exception('Failed to load guild:<br/>'.$this->sql->getError());
+		if ($this->sql->num_rows() > 1)
+			throw new Exception('Unexpected SQL answer. More than one guild exists:<br/>'.$this->sql->getError());
+		if ($this->sql->num_rows() == 0)
 			return false;
 		$a = $this->sql->fetch_array();
 		$this->attrs['id'] = (int) $a['id'];
@@ -87,12 +79,54 @@ public function load($id)
 		$this->attrs['owner_id'] = (int) $a['ownerid'];
 		$this->attrs['owner_acc'] = (string) $a['account_id'];
 		
-		$this->sql->myQuery('SELECT * FROM nicaw_guild_info WHERE id = '.$this->attrs['id']);
+		$this->sql->myQuery('SELECT * FROM nicaw_guild_info WHERE id = '.$this->sql->quote($this->attrs['id']));
 		$a = $this->sql->fetch_array();
 		$this->attrs['description'] = (string) $a['description'];
+
+        $this->sql->myQuery('SELECT id, name, level FROM guild_ranks WHERE guild_id = '.$this->sql->quote($this->attrs['id'].' ORDER BY level'));
+        while ($a = $this->sql->fetch_array()) {
+            $this->ranks[$a['id']] = array('name' => $a['name'], 'level' => $a['level']);
+        }
 		
 		return true;
 	}
+
+public function setDescription($text)
+    {
+        if(empty($this->attrs['id'])) throw new Exception('Guild is not loaded, cannot call setDescription().');
+
+        if(!$this->sql->myUpdate('nicaw_guild_info',
+            array('description' => $text), array('id' => $this->attrs['id'])))
+                return false;
+
+        $this->attrs['description'] = $text;
+        return true;
+    }
+
+public function setOwner($player)
+    {
+        if(empty($this->attrs['id'])) throw new Exception('Guild is not loaded, cannot call setOwner().');
+
+        if(!$this->sql->myUpdate('guilds',
+            array('ownerid' => $player->attrs['id']), array('id' => $this->attrs['id'])))
+                return false;
+
+        $this->attrs['owner_id'] = $player->attrs['id'];
+		$this->attrs['owner_acc'] = $player->attrs['account'];
+        return true;
+    }
+
+public function setName($name)
+    {
+        if(empty($this->attrs['id'])) throw new Exception('Guild is not loaded, cannot call setName().');
+
+        if(!$this->sql->myUpdate('guilds',
+            array('name' => $name), array('id' => $this->attrs['id'])))
+                return false;
+
+        $this->atrrs['name'] = $name;
+        return true;
+    }
 
 public function __get($attr)
 	{
@@ -100,6 +134,8 @@ public function __get($attr)
 			throw new Exception('Attempt to get attribute of guild that is not loaded.');
 		if($attr == 'attrs') {
 			return $this->attrs;
+        }elseif($attr == 'ranks') {
+			return $this->ranks;
 		}elseif($attr == 'members') {
 			if(empty($this->members)) $this->load_members();
 			return $this->members;
@@ -110,163 +146,166 @@ public function __get($attr)
 			throw new Exception('Undefined property: '.$attr);
 		}
 	}
-	
-public function save()
-	{global $cfg;
-		if (!$cfg['guild_manager_enabled']) return false;
-		if (!isset($this->attrs['id'])){
-			if ($this->exists()) throw new Exception('Trying to insert guild which already exists.');
-			$this->sql->myInsert('guilds', array('name' => $this->attrs['name'], 'ownerid' => $this->attrs['owner_id'], 'creationdata' => time()));
-			$this->attrs['id'] = $this->insert_id();
-			$this->sql->myInsert('nicaw_guild_info', array('id' => $this->attrs['id']));
-		}else{
-			$this->sql->myUpdate('guilds', array('name' => $this->attrs['name'], 'ownerid' => $this->attrs['owner_id'], 'creationdata' => time()), array('id' => $this->attrs['id']));
-			$this->sql->myUpdate('nicaw_guild_info', array('description' => $this->attrs['description']), array('id' => $this->attrs['id']));
-		}
-		
-		//deleted old data first
-		$this->sql->myQuery('UPDATE players SET rank_id = 0 WHERE players.rank_id = guild_ranks.id AND guild_ranks.guild_id = '.$this->quote($this->attrs['id']));
-		$this->sql->myQuery('DELETE FROM nicaw_guild_invites WHERE gid = '.$this->quote($this->attrs['id']));
-		$this->sql->myQuery('DELETE FROM guild_ranks WHERE guild_id = '.$this->quote($this->attrs['id']));
-		
-		//save ranks (case sensitive)
-		$unique_ranks = array();
-		foreach ($this->members as $member)
-			if (!array_key_exists($member['rank'], $unique_ranks)){
-				if (!$this->sql->myInsert('guild_ranks', array('guild_id' => $this->attrs['id'], 'name' => $member['rank'], 'level' => 3)))
-					throw new Exception('Cannot save guild:<br/>'.$this->getError());
-				$unique_ranks[$member['rank']] = $this->insert_id();
-			}
-		foreach ($this->invited as $member)
-			if (!array_key_exists($member['rank'], $unique_ranks)){
-				if (!$this->sql->myInsert('guild_ranks', array('guild_id' => $this->attrs['id'], 'name' => $member['rank'], 'level' => 1)))
-					throw new Exception('Cannot save guild:<br/>'.$this->getError());
-				$unique_ranks[$member['rank']] = $this->insert_id();
-			}
-		
-		//save/update players
-		foreach ($this->invited as $member){
-			if (!$this->sql->myInsert('nicaw_guild_invites', array('gid' => $this->attrs['id'], 'pid' => $member['id'], 'rank' => $unique_ranks[$member['rank']])))
-				throw new Exception('Cannot save guild:<br/>'.$this->getError());
-		}
-		foreach ($this->members as $member){
-			if (!$this->sql->myUpdate('players', array('rank_id' => $unique_ranks[$member['rank']], 'guildnick' => $member['nick']), array('id' =>  $member['id'])))
-				throw new Exception('Cannot save guild:<br/>'.$this->getError());
-		} 
-		//phew, saving done
-		return true;
+
+public function addRank($name, $level) {
+    $d['name'] = (string) $name;
+    $d['level'] = (int) $level;
+    $d['guild_id'] = $this->attrs['id'];
+
+    if(!$this->sql->myInsert('guild_ranks', $d)) return false;
+
+    $this->ranks[$this->sql->insert_id()] = array('name' => $d['name'], 'level' => $d['level']);
+    return $this->sql->insert_id();
+}
+
+public function getRankID($name) {
+    foreach($this->ranks as $rank) {
+        if(strcasecmp($rank['name'], $name) == 0) return $rank['id'];
+    }
+    return false;
+}
+
+public function isRankUsed($id) {
+    foreach($this->__get('members') as $member) {
+        if($member['rank'] == $id) return true;
+    }
+    return false;
+}
+
+public function removeRank($id) {
+    if($this->isRankUsed($id)) return false;
+    if(isset($this->ranks[$id])) {
+        unset($this->ranks[$id]);
+        $this->sql->myDelete('guild_ranks', array('id' => $id));
+        return true;
+    }
+        else return false;
+}
+
+public function setRank($id, $name, $level) {
+    if(isset($this->ranks[$id])) {
+        $d['name'] = (string) $name;
+        $d['level'] = (int) $level;
+
+        if(!$this->sql->myUpdate('guild_ranks', $d, array('id' => $id))) return false;
+
+        $this->ranks[$id] = array('name' => $name, 'level' => $level);
+    }
+        else return false;
+}
+
+public function isRank($id)
+	{
+        return array_key_exists($id, $this->ranks);
 	}
 
-	
 public function isInvited($id)
 	{
-		return $this->deeper_array_search($id, $this->invited, 'id') !== false;
+        return array_key_exists($id, $this->__get('invited'));
 	}
-	
+
 public function isMember($id)
 	{
-		return $this->deeper_array_search($id, $this->members, 'id') !== false;
+		return array_key_exists($id, $this->__get('members'));
 	}
 	
-public function memberInvite($id, $rank)
+public function playerInvite($player, $rank_id)
 	{
 		//player is already a member - do nothing
-		if ($this->isMember($id) || $this->isInvited($id))
+		if ($this->isMember($player->attrs['id']) || $this->isInvited($player->attrs['id']))
 			return false;
-		$this->sql->myQuery('SELECT name FROM players WHERE id = '.$this->quote($id));
-		if ($this->sql->failed())
-			throw new Exception($this->getError());
-		if ($this->num_rows() != 1)
-			throw new Exception('Cannot retrieve player name');
-		$a = $this->sql->fetch_array();
-		$this->invited[] = array('id' => $id, 'name' => $a['name'], 'rank' => $rank);
+        //does rank exist?
+        if (!$this->isRank($rank_id)) return false;
+
+        if(!$this->sql->myInsert('nicaw_guild_invites',                 
+                array('gid' => $this->attrs['id'], 'pid' => $player->attrs['id'], 'rank' => $rank_id)))
+                    return false;
+
+		$this->invited[$player->attrs['id']] = array('name' => $player->attrs['name'], 'rank' => $rank_id);
 		return true;
 	}
+
+private function unInvite($pid)
+{
+    return $this->sql->myDelete('nicaw_guild_invites',
+                array('gid' => $this->attrs['id'], 'pid' => $pid), 1);
+}
 	
-public function memberJoin($id, $level, $rank = null)
+public function playerJoin($player, $rank_id = null)
 	{
-		
-		if ($this->isInvited($id)){
-			$invite_key = deeper_array_search($id, $this->invited, 'id');
-			$this->members[] = $this->invited[$invite_key];
-			unset($this->invited[$invite_key]);
+		//player is not already a member, but invited
+		if ($this->isMember($player->attrs['id'])) return false;
+
+        if ($rank_id == null) {
+            $player->setAttr('rank_id', $this->invited[$player->attrs['id']]['rank']);
+        } else {
+            if (!$this->isRank($rank_id)) throw new Exception('Rank does not exist.');
+            $player->setAttr('rank_id', $rank_id);
+        }
+        if(!$player->save()) return false;
+
+        if($this->isInvited($player->attrs['id'])) {
+            if(!$this->unInvite($player->attrs['id'])) throw new Exception('Cant uninvite.'.$this->sql->getError());
+            $this->members[$player->attrs['id']] = $this->invited[$player->attrs['id']];
+            unset($this->invited[$player->attrs['id']]);
+        } else {
+            $this->members[$player->attrs['id']] = array('name' => $player->attrs['name'], 'rank' => $rank_id);
+        }
+
+        return true;
+	}
+	
+public function playerLeave($player)
+	{
+		if ($this->isMember($player->attrs['id'])){
+			$player->setAttr('rank_id', 0);
+            $player->setAttr('guildnick', '');
+            if(!$player->save()) return false;
+            unset($this->members[$player->attrs['id']]);
 			return true;
-		}elseif (!$this->isMember($id) && $rank != null){
-			$this->sql->myQuery('SELECT name FROM players WHERE id = '.$this->quote($id));
-			if ($this->sql->failed())
-				throw new Exception($this->getError());
-			if ($this->num_rows() != 1)
-				throw new Exception('Cannot retrieve player name');
-			$a = $this->sql->fetch_array();
-			$this->members[] = array('id' => $id, 'name' => $a['name'], 'rank' => $rank, 'level' => $level, 'nick' => '');
+		}elseif ($this->isInvited($player->attrs['id'])){
+			if(!$this->unInvite($player->attrs['id'])) return false;
+            unset($this->invited[$player->attrs['id']]);
 			return true;
 		}
 		return false;
 	}
-	
-public function memberLeave($id)
+
+public static function exists($name)
 	{
-		if ($this->isMember($id)){
-			$key = deeper_array_search($id, $this->members, 'id');
-			unset($this->members[$key]);
-			return true;
-		}elseif ($this->isInvited($id)){
-			$key = deeper_array_search($id, $this->invited, 'id');
-			unset($this->invited[$key]);
-			return true;
-		}
+        $SQL = AAC::$SQL;
+		$SQL->myQuery('SELECT * FROM `guilds` WHERE `name` = '.$SQL->quote($name));
+		if ($SQL->failed()) throw new Exception('Guild::exists() cannot determine whether guild exists');
+		if ($SQL->num_rows() > 0) return true;
 		return false;
 	}
 
-public function getAttr($attr)
-	{
-		return $this->attrs[$attr];
-	}
+public static function Create($guild_name, $owner_id)
+    {
+        $d['name'] = $guild_name;
+        $d['ownerid'] = $owner_id;
+        
+        $SQL = AAC::$SQL;
+        if(!$SQL->myInsert('guilds', $d)) throw new Exception('SQL failed in Guild:Create'.$SQL->getError());
 
-public function setAttr($attr,$value)
-	{
-		$this->attrs[$attr] = $value;
-	}
+        $guild = new Guild();
+        if(!$guild->load($SQL->insert_id()))
+            throw new Exception('Guild did not load');
 
-public function exists()
-	{
-		$this->sql->myQuery('SELECT * FROM `guilds` WHERE `name` = '.$this->quote($this->attrs['name']));
-		if ($this->sql->failed()) throw new Exception('Guild::exists() cannot determine whether guild exists');
-		if ($this->num_rows() > 0) return true;
-		return false;
-	}
+        if(!$SQL->myReplace('nicaw_guild_info',
+            array('description' => '', 'id' => $SQL->insert_id())))
+                throw new Exception('SQL failed in Guild:Create'.$SQL->getError());
 
-public function countInvited()
-	{
-		return count($this->invited);
-	}
+        return $guild;
+    }
 
-public function countMember()
-	{
-		return count($this->members);
-	}
-	
 public function remove()
 	{
-		$this->sql->myQuery('UPDATE players SET rank_id = 0 WHERE players.rank_id = guild_ranks.id AND guild_ranks.guild_id = '.$this->quote($this->attrs['id']));
-		$this->sql->myQuery('DELETE FROM guilds WHERE id = '.$this->quote($this->attrs['id']));
-		$this->sql->myQuery('DELETE FROM nicaw_guild_info WHERE id = '.$this->quote($this->attrs['id']));
-		$this->sql->myQuery('DELETE FROM nicaw_guild_invites WHERE gid = '.$this->quote($this->attrs['id']));
-		$this->sql->myQuery('DELETE FROM guild_ranks WHERE guild_id = '.$this->quote($this->attrs['id']));
-	}
-
-public function memberSetRank($id, $rank)
-	{
-		$key = deeper_array_search($id, $this->members, 'id');
-		if ($key === false) throw new Exception('Member not found');
-		$this->members[$key]['rank'] = $rank;
-	}
-	
-public function memberSetNick($id, $nick)
-	{
-		$key = deeper_array_search($id, $this->members, 'id');
-		if ($key === false) throw new Exception('Member not found');
-		$this->members[$key]['nick'] = $nick;
+		$this->sql->myQuery('UPDATE players SET rank_id = 0, guildnick = \'\' WHERE players.rank_id = guild_ranks.id AND guild_ranks.guild_id = '.$this->sql->quote($this->attrs['id']));
+		$this->sql->myQuery('DELETE FROM guilds WHERE id = '.$this->sql->quote($this->attrs['id']));
+		$this->sql->myQuery('DELETE FROM nicaw_guild_info WHERE id = '.$this->sql->quote($this->attrs['id']));
+		$this->sql->myQuery('DELETE FROM nicaw_guild_invites WHERE gid = '.$this->sql->quote($this->attrs['id']));
+		$this->sql->myQuery('DELETE FROM guild_ranks WHERE guild_id = '.$this->sql->quote($this->attrs['id']));
 	}
 }
 ?>

@@ -19,18 +19,18 @@
 include ("../include.inc.php");
 //load guild and check owner
 $guild = new Guild();
-if (!($guild->load($_REQUEST['guild_id']) && $guild->getAttr('owner_acc') == $_SESSION['account'] && !empty($_SESSION['account']))) die("Access denied.");
+if (!($guild->load($_REQUEST['guild_id']) && $guild->attrs['owner_acc'] == $_SESSION['account'] && !empty($_SESSION['account']))) die("Access denied.");
 
 //retrieve post data
 $form = new Form('comments');
 //check if any data was submited
 if ($form->exists()){
 	if (strlen($form->attrs['comment']) <= 250){
-		$guild->setAttr('description', $form->attrs['comment']);
-		$guild->save();
+		$guild->setDescription($form->attrs['comment']);
 	}else{
 		$msg = new IOBox('comments');
 		$msg->addMsg('Description is too long.');
+        $msg->addClose('OK');
 		$msg->show();
 	}
 }else{
@@ -39,7 +39,7 @@ if ($form->exists()){
 	$form->target = $_SERVER['PHP_SELF'].'?guild_id='.(int)$_REQUEST['guild_id'];
 	$form->addLabel('Edit Description');
 	$form->addMsg('Max 250 symbols');
-	$form->addTextbox('comment',htmlspecialchars($guild->getAttr('description')));
+	$form->addTextbox('comment',htmlspecialchars($guild->attrs['description']));
 	$form->addClose('Cancel');
 	$form->addSubmit('Save');
 	$form->show();

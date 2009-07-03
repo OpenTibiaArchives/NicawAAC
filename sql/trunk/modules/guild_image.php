@@ -20,7 +20,7 @@ include ("../include.inc.php");
 $guild = new Guild();
 if (isset($_POST['image_submit'])){
 	//check if user is guild owner
-	if (!($guild->load($_REQUEST['guild_id']) && $guild->getAttr('owner_acc') == $_SESSION['account'] && !empty($_SESSION['account']))){
+	if (!($guild->load($_REQUEST['guild_id']) && $guild->attrs['owner_acc'] == $_SESSION['account'] && !empty($_SESSION['account']))){
 		$msg = new IOBox('msg');
 		$msg->addMsg('Please login. Cannot load guild or it\'s not yours.');
 		$msg->addClose('OK');
@@ -52,7 +52,7 @@ if (isset($_POST['image_submit'])){
 				$_x = $x/$y*64;
 			}
 			imagecopyresampled($_im, $im, (64-$_x)/2, (64-$_y)/2, 0, 0, $_x, $_y, $x, $y);
-			imagegif($_im, '../guilds/'.$guild->getAttr('id').'.gif');
+			imagegif($_im, '../guilds/'.$guild->attrs['id'].'.gif');
 		}
 	}else die('Image too big');
 	header('location: '.$_SERVER['HTTP_REFERER']);
@@ -62,7 +62,9 @@ if (isset($_POST['image_submit'])){
 <fieldset><legend>Upload Image</legend>
 <form method="post" action="modules/guild_image.php?guild_id=<?php echo (int)$_REQUEST['guild_id']; ?>" enctype="multipart/form-data">
 <input type="file" name="image">
-<input type="Submit" name="image_submit" value="Upload"><br/>
-Supported type *.GIF 64x64 100KB
+<input type="Submit" name="image_submit" value="Upload">
+<input onclick="setStyle('iobox','visibility','hidden')" type="button" value="Close"/>
+<br/>
+Supported type *.GIF *.JPEG *.PNG 64x64 100KB
 </form></fieldset></div>
 <?php } ?>

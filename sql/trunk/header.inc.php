@@ -49,6 +49,17 @@ foreach ($XML->category as $cat){
 ?>
 </div>
 <div id="status">
+<?php
+if(!empty($_SESSION['account'])) {
+    $account = new Account();
+    $account->load($_SESSION['account']);
+    echo '<div class="top">Account</div>';
+    echo '<div class="mid">';
+    echo 'Logged in as: <b>'.$account->getAttr('name').'</b><br/>';
+    echo '<button onclick="window.location.href=\'login.php?logout&amp;redirect=account.php\'">Logout</button>';
+    echo '</div><div class="bot"></div>';
+}
+?>
 <div class="top">Status</div>
 <div class="mid">
 <div id="server_state">

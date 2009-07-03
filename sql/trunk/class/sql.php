@@ -53,6 +53,10 @@ public function __construct($server, $user, $password, $database){
 	return true;
 }
 
+public function isTable($mixed) {
+    return in_array($mixed, $this->sql_tables);
+}
+
 public function __destruct(){
     if(is_resource($this->last_query))
         mysql_free_result($this->last_query);

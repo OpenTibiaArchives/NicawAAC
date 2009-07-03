@@ -83,15 +83,19 @@ if (!empty($_GET['player_id']) && $player->load($_GET['player_id']) || !empty($_
 	}
 
 	if ($cfg['show_deathlist']){
-		if (!empty($player->deaths)){
-		echo '<b>Deaths</b><br/>';
+		if ($player->deaths){
+            echo '<b>Deaths</b><br/>';
+            $prevdate = 0;
 			foreach ($player->deaths as $death){
-				$killer = new Player();
-				if ($killer->find($death['killer']) || $killer->load($death['killer']))
-					$name = '<a href="characters.php?player_name='.$killer->attrs['name'].'">'.$killer->attrs['name'].'</a>';
+				if ($death['killer_id'])
+					$name = '<a href="characters.php?player_id='.$death['killer_id'].'">'.$death['killer_name'].'</a>';
 				else
-					$name = $death['killer'];
-				echo '<i>'.date("jS F Y H:i:s",$death['date']).'</i> Killed at level '.$death['level'].' by '.$name.'<br/>';
+					$name = $death['killer_name'];
+                if($prevdate == $death['date'])
+                    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and by '.$name.'<br/>';
+                else
+                    echo '<i>'.date("jS F Y H:i:s",$death['date']).'</i> Killed at level '.$death['victim_level'].' by '.$name.'<br/>';
+                $prevdate = $death['date'];
 			}
 		}
 	}

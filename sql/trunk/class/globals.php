@@ -85,7 +85,11 @@ class AAC
 */
 
 function exception_handler($exception) {
-	echo '<pre style="position: absolute; top: 0px; left: 0px; background-color: white; color: black; border: 3px solid red;"><b>'.$exception->getMessage(). '<br/>'.basename($exception->getFile()).' on line: '.$exception->getLine().'</b><br/>Script was terminated because something unexpected happened. You can report this, if you think it\'s a bug.';
+	echo '<pre style="position: absolute; top: 0px; left: 0px; background-color: white; color: black; border: 3px solid red;"><b>'.$exception->getMessage(). '<br/>'.basename($exception->getFile()).' on line: '.$exception->getLine().'</b><br/>Script was terminated because something unexpected happened. You can report this, if you think it\'s a bug.<br/>';
+    if($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
+        echo '<br/><b>Debug Backtrace:</b><br/>';
+        print_R(debug_backtrace());
+    }
 }
 
 function strToDate($str){

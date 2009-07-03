@@ -36,16 +36,53 @@ public function find($name)
 private function load_deaths()
 	{
 		if(empty($this->attrs['id'])) return false;
-		$query = "SELECT * FROM `player_deaths` WHERE (`player_id` = '".$this->sql->quote($this->attrs['id'])."') ORDER BY time DESC LIMIT 10";
-		$this->sql->myQuery($query);
-		if ($this->sql->failed()) throw new Exception('Cannot retrieve deaths! This is only compatible with TFS.'.$this->getError());;
+        if($this->sql->isTable('player_killers')) {
+            $query = '
+SELECT DISTINCT name AS killer_name, id AS killer_id, date, level AS victim_level FROM
+((SELECT players.name, players.id, player_killers.kill_id
+FROM players, player_killers
+WHERE players.id = player_killers.player_id)
+UNION
+(SELECT name, NULL AS id, kill_id
+FROM environment_killers)) AS t1,
+(SELECT killers.id AS kill_id, date, level, death_id FROM
+killers, player_deaths
+WHERE killers.death_id = player_deaths.id
+AND player_deaths.player_id = '.$this->sql->quote($this->attrs['id']).'
+ORDER BY date DESC, death_id, final_hit DESC
+LIMIT 10) AS t2
+WHERE t1.kill_id = t2.kill_id
+';
+        $this->sql->myQuery($query);
+		if ($this->sql->failed()) throw new Exception('Cannot retrieve deaths! This is only compatible with TFS.'.$this->sql->getError());;
 		$i = 0;
 		while($a = $this->sql->fetch_array()){
-			$this->deaths[$i]['killer'] = $a['killed_by'];
-			$this->deaths[$i]['level'] = $a['level'];
-			$this->deaths[$i]['date'] = $a['time'];
+			$this->deaths[$i]['killer_name'] = $a['killer_name'];
+            $this->deaths[$i]['killer_id'] = $a['killer_id'];
+			$this->deaths[$i]['victim_level'] = $a['victim_level'];
+			$this->deaths[$i]['date'] = $a['date'];
 			$i++;
 		}
+        } elseif($this->sql->isTable('player_deaths')) {
+            $query = "SELECT * FROM `player_deaths` WHERE (`player_id` = '".$this->sql->quote($this->attrs['id'])."') ORDER BY time DESC LIMIT 10";
+            $this->sql->myQuery($query);
+            if ($this->sql->failed()) throw new Exception('Cannot retrieve deaths! This is only compatible with TFS.'.$this->sql->getError());;
+            $i = 0;
+            while($a = $this->sql->fetch_array()){
+                $killer = new Player();
+                if ($killer->find($a['killed_by']) || $a->load($death['killed_by'])) {
+                    $this->deaths[$i]['killer_name'] = $killer->attrs['name'];
+                    $this->deaths[$i]['killer_id'] = $killer->attrs['id'];
+                } else {
+                    $this->deaths[$i]['killer_name'] = $a['killed_by'];
+                    $this->deaths[$i]['killer_id'] = null;
+                }
+                $this->deaths[$i]['victim_level'] = $a['level'];
+                $this->deaths[$i]['date'] = $a['time'];
+                $i++;
+            }
+        } else return false;
+
 		return true;
 	}
 
@@ -53,7 +90,7 @@ private function load_skills()
 	{
 		if(empty($this->attrs['id'])) return false;
 		$this->sql->myQuery('SELECT * FROM `player_skills` WHERE `player_id` = '.$this->sql->quote($this->attrs['id']));
-		if ($this->sql->failed()) throw new Exception('Cannot retrieve player skills<br/>'.$this->getError());
+		if ($this->sql->failed()) throw new Exception('Cannot retrieve player skills<br/>'.$this->sql->getError());
 		while($a = $this->sql->fetch_array()){
 			$this->skills[$a['skillid']]['skill'] = (int)$a['value'];
 			$this->skills[$a['skillid']]['tries'] = (int)$a['count'];
@@ -65,7 +102,7 @@ private function load_storage()
 	{
 		if(empty($this->attrs['id'])) return false;
 		$this->sql->myQuery('SELECT * FROM `player_storage` WHERE `player_id` = '.$this->sql->quote($this->attrs['id']));
-		if ($this->sql->failed()) throw new Exception('Cannot retrieve player storage<br/>'.$this->gerError());
+		if ($this->sql->failed()) throw new Exception('Cannot retrieve player storage<br/>'.$this->sql->getError());
 		while($a = $this->sql->fetch_array())
 			$this->storage[$a['key']] = (int)$a['value'];
 		return true;
@@ -139,6 +176,7 @@ public function load($id)
 		$this->attrs['spawn']['x'] = (int) $player['posx'];
 		$this->attrs['spawn']['y'] = (int) $player['posy'];
 		$this->attrs['spawn']['z'] = (int) $player['posz'];
+        $this->attrs['guildnick'] = (string) $player['guildnick'];
 
 		return true;
 	}
@@ -160,6 +198,7 @@ public function save()
 		$d['sex'] = $this->attrs['sex'];
 		$d['redskulltime'] = $this->attrs['redskulltime'];
 		$d['rank_id'] = $this->attrs['rank_id'];
+        $d['guildnick'] = $this->attrs['guildnick'];
 		
 		return $this->sql->myUpdate('players', $d, array('id' => $this->attrs['id']));
 	}
@@ -298,7 +337,7 @@ public function repair()
 			'posx' => $cfg['temple'][$this->attrs['city']]['x'],
 			'posy' => $cfg['temple'][$this->attrs['city']]['y'],
 			'posz' => $cfg['temple'][$this->attrs['city']]['z']
-			/*, 'experience' => $exp*/), array('id' => $this->attrs['id']))) throw new Exception($this->getError());
+			/*, 'experience' => $exp*/), array('id' => $this->attrs['id']))) throw new Exception($this->sql->getError());
 	}
 }
 ?>

@@ -71,33 +71,35 @@ Cookies.init();
 		return http_request;
 	}
 
+    function redirect(url, get)
+    {
+        window.location = url+'?'+encodeURI(get);
+    }
+
 //this loads html content between element_id tags. warn displays loading message.
    function ajax(element_id, script_url, get, warn) {
-    var redirect = function()
-    {
-        window.location = script_url+'?'+encodeURI(get);
-    }
+
 	http_request = ajax_init();
 	if (!http_request) {
-        redirect();
+        redirect(script_url, get);
         return;
     }
     if(redirect_event != null)
         clearTimeout(redirect_event);
 	if (warn && element_id != null) {
-		document.getElementById(element_id).innerHTML = '<div>Loading...</div>';
-        redirect_event = setTimeout(redirect, 10000);
+		document.getElementById(element_id).innerHTML = '<div style="position: absolute; background-color: #990000; color: white;">Loading...</div>';
+        redirect_event = setTimeout('redirect(script_url, get)', 10000);
     }
 
     http_request.onreadystatechange = function()
     {
         if (http_request.readyState == 4) {
             if (http_request.status == 200) {
-                if(element_id != null) {
+                if(http_request.destination != null) {
                     if(redirect_event != null)
                         clearTimeout(redirect_event);
-                    document.getElementById(element_id).innerHTML = http_request.responseText;
-                    if (element_id == 'form'){
+                    document.getElementById(http_request.destination).innerHTML = http_request.responseText;
+                    if (http_request.destination == 'form'){
                         ticker = 0;
                         document.getElementById('iobox').style.left = Cookies.get('iobox_x');
                         document.getElementById('iobox').style.top = Cookies.get('iobox_y');
@@ -110,6 +112,7 @@ Cookies.init();
         }
     }
     parameters = encodeURI(get) + '&ajax=true';
+    http_request.destination = element_id;
     http_request.open('POST', script_url, true);
     http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     http_request.setRequestHeader("Content-length", parameters.length);
@@ -229,4 +232,12 @@ function menu_toggle(node){
 
 }
 
-setTimeout ("server_state()",60000);
+function input_clear(node)
+    {
+        if(node.style.fontStyle == 'italic') {
+            node.value = '';
+            node.style.fontStyle='normal';
+        }
+    }
+
+setTimeout ('server_state()',60000);

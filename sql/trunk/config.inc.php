@@ -19,7 +19,7 @@ $cfg['house_file'] = 'world/Tibia-house.xml';
 $cfg['SQL_Server'] = 'localhost';
 $cfg['SQL_User'] = 'root';
 $cfg['SQL_Password'] = 'pass';
-$cfg['SQL_Database'] = 'otserv';
+$cfg['SQL_Database'] = 'otserv2';
 
 # Must correspond to your OTServ configuration
 # Options: plain, md5, sha1
@@ -96,7 +96,7 @@ $cfg['SMTP_From'] = 'user@gmail.com';
 $cfg['show_skills'] = true;
 
 # Whether to show deathlist in character search, DevLand only
-$cfg['show_deathlist'] = false;
+$cfg['show_deathlist'] = true;
 
 $cfg['skill_names'] = array('fist', 'club', 'sword', 'axe', 'distance', 'shielding', 'fishing');
 

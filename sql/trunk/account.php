@@ -59,6 +59,15 @@ if (isset($account->players)){
 ?>
 </td></tr>
 </table>
+<?php
+if($account->getAttr('premend') > time()) {
+    echo '<b>Premium status:</b> You have ';
+    $days = ceil(($account->getAttr('premend') - time())/(3600*24));
+    if($days <= 5) echo '<b style="color: red">';
+        else echo '<b>';
+    echo $days.'</b> day(s) left';
+}
+?>
 <div id="ajax"></div>
 </div>
 <div class="bot"></div>

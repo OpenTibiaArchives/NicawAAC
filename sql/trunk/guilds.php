@@ -59,23 +59,24 @@ if (!empty($_GET['guild_id']) && !$guild->load($_GET['guild_id']))
 elseif (!empty($_GET['guild_name']) && !$guild->find($_GET['guild_name']))
 	echo 'Guild not found.';
 else{
-if (file_exists('guilds/'.$guild->getAttr('id').'.gif')) 
-	$img_path = 'guilds/'.$guild->getAttr('id').'.gif';
+if (file_exists('guilds/'.$guild->attrs['id'].'.gif'))
+	$img_path = 'guilds/'.$guild->attrs['id'].'.gif';
 else
 	$img_path = 'ico/guild_default.gif';
 ?>
 <table style="width: 100%"><tr><td style="width: 64px; height: 64px; padding: 10px;"><img src="<?php echo $img_path?>" alt="Guild IMG" height="64" width="64"/></td><td style="text-align: center">
-<h1 style="display: inline"><?php echo htmlspecialchars($guild->getAttr('name'))?>
+<h1 style="display: inline"><?php echo htmlspecialchars($guild->attrs['name'])?>
 </h1></td><td style="width: 64px; height: 64px; padding: 10px;">
 <img src="<?php echo $img_path?>" alt="Guild IMG" height="64" width="64"/></td></tr>
 </table>
-<p><?php echo htmlspecialchars($guild->getAttr('description'))?></p><hr/>
+<p><?php echo htmlspecialchars($guild->attrs['description'])?></p><hr/>
 <ul class="task-menu" style="width: 200px;">
 <li style="background-image: url(ico/book_previous.png);" onclick="self.window.location.href='guilds.php'">Back</li>
 <?php 
 if (!empty($_SESSION['account'])){
 	$account = new Account();
 	if (!$account->load($_SESSION['account'])) die('Cannot load account');
+    $is_owner = $guild->attrs['owner_acc'] == $_SESSION['account'];
 	$invited = false;
 	$member = false;
 	foreach ($account->players as $player){
@@ -84,18 +85,18 @@ if (!empty($_SESSION['account'])){
 		if ($guild->isMember($player['id']))
 			$member = true;
 	}
-	if ($guild->getAttr('owner_acc') == $_SESSION['account']){?>
-<li style="background-image: url(ico/user_go.png);" onclick="ajax('form','modules/guild_invite.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Invite Player</li>
-<li style="background-image: url(ico/group_delete.png);" onclick="ajax('form','modules/guild_kick.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Kick Member</li>
-<li style="background-image: url(ico/user_edit.png);" onclick="ajax('form','modules/guild_edit.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Edit Member</li>
-<li style="background-image: url(ico/image_add.png);" onclick="ajax('form','modules/guild_image.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Upload Image</li>
-<li style="background-image: url(ico/page_edit.png);" onclick="ajax('form','modules/guild_comments.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Edit Description</li>
+	if ($is_owner){?>
+<li style="background-image: url(ico/user_go.png);" onclick="ajax('form','modules/guild_invite.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Invite Player</li>
+<li style="background-image: url(ico/group_delete.png);" onclick="ajax('form','modules/guild_kick.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Kick Member</li>
+<li style="background-image: url(ico/user_edit.png);" onclick="ajax('form','modules/guild_edit.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Edit Member</li>
+<li style="background-image: url(ico/image_add.png);" onclick="ajax('form','modules/guild_image.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Upload Image</li>
+<li style="background-image: url(ico/page_edit.png);" onclick="ajax('form','modules/guild_comments.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Edit Description</li>
 <?php 	}
 	if ($invited){?>
-<li style="background-image: url(ico/user_red.png);" onclick="ajax('form','modules/guild_join.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Join Guild</li>
+<li style="background-image: url(ico/user_red.png);" onclick="ajax('form','modules/guild_join.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Join Guild</li>
 <?php 	}
 	if ($member){?>
-<li style="background-image: url(ico/user_delete.png);" onclick="ajax('form','modules/guild_leave.php','guild_id=<?php echo $guild->getAttr('id')?>',true)">Leave Guild</li>
+<li style="background-image: url(ico/user_delete.png);" onclick="ajax('form','modules/guild_leave.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Leave Guild</li>
 <?php 	}?>
 <li style="background-image: url(ico/resultset_previous.png);" onclick="self.window.location.href='login.php?logout&amp;redirect=account.php'">Logout</li>
 <?php }else{?>
@@ -104,32 +105,42 @@ if (!empty($_SESSION['account'])){
 </ul><hr/>
 <h2 style="display: inline">Guild Members</h2>
 <table style="width: 100%">
-<tr class="color0"><td style="width: 30%"><b>Rank</b></td><td style="width: 70%"><b>Name and Title</b></td></tr>
-<?php 
-foreach ($guild->members as $a)
-	$members[$a['rank']][] = array('id' => $a['id'], 'name' => $a['name'], 'nick' => $a['nick']);
-foreach ($guild->invited as $a)
-	$members[$a['rank']][] = array('id' => $a['id'], 'name' => $a['name'], 'nick' => 'Invited');
+<?php
+echo '<tr class="color0">';
+echo '<td style="width: 25%"><b>Rank</b></td>';
+echo '<td style="width: 35%"><b>Name</b></td>';
+echo '<td style="width: 25%"><b>Title</b></td>';
+echo '<td><b>Edit</b></td>';
+echo '</tr>';
 
 $i = 0;
-if (isset($members)){
-	while ($rank = current($members)){
-		$i++;
-		$rank_name = key($members);
-		foreach ($rank as $member){
-			if (!empty($member['nick'])) $nick = ' (<i>'.htmlspecialchars($member['nick']).'</i>)';
-			else $nick = '';
-			echo '<tr '.getStyle($i).'><td>'.htmlspecialchars($rank_name).'</td><td><a href="characters.php?player_id='.$member['id'].'">'.htmlspecialchars($member['name']).'</a> '.$nick.'</td></tr>';
-			$rank_name = '';
-		}
-		next($members);
-	}
-}else{
-	echo 'Oh no! This guild has no members.';
+while ($rank = current($guild->ranks)) {
+    $i++;
+    while ($player = current($guild->members)) {
+
+        echo '<tr '.getStyle($i).'><td>'
+        .htmlspecialchars($rank['name']).'</td><td><a href="characters.php?player_id='
+        .key($guild->members).'">'.htmlspecialchars($player['name']).'</a></td><td>'
+        .htmlspecialchars($player['nick']).'</td></tr>';
+        $rank_name = '';
+
+        next($guild->members);
+    }
+    next($guild->ranks);
 }
-?>
-</table>
-<?php }
+
+
+echo '</table><h2 style="display: inline">Invited Players</h2>';
+echo '<table style="width: 100%">';
+echo '<tr class="color0"><td><b>Name</b></td></tr>';
+
+$i = 0;
+foreach ($guild->invited as $a)
+	echo '<tr class="'.getStyle($i++).'"><td>'.$a['name'].'</td></tr>';
+
+echo '</tr></table>';
+
+}
 }?>
 </div>
 <div class="bot"></div>

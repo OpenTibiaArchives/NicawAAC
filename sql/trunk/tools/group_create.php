@@ -90,6 +90,12 @@ $msg->addMsg('<table id="flagtable" border="1px" cellspacing="0" width="440px">
 		<input type="checkbox" value="274877906944" onclick="calcFlags()"> Can answer rule violations<br/>
 		<input type="checkbox" value="549755813888" onclick="calcFlags()"> Can reload content<br/>
 		<input type="checkbox" value="1099511627776" onclick="calcFlags()"> Show group instead vocation<br/>
+        <input type="checkbox" value="2199023255552" onclick="calcFlags()"> Has infinite stamina<br/>
+        <input type="checkbox" value="4398046511104" onclick="calcFlags()"> PlayerFlag_CannotMoveItems<br/>
+        <input type="checkbox" value="8796093022208" onclick="calcFlags()"> PlayerFlag_CannotMoveCreatures<br/>
+        <input type="checkbox" value="17592186044416" onclick="calcFlags()"> PlayerFlag_CanReportBugs<br/>
+        <input type="checkbox" value="35184372088832" onclick="calcFlags()"> PlayerFlag_CanSeeSpecialDescription<br/>
+        <input type="checkbox" value="70368744177664" onclick="calcFlags()"> PlayerFlag_CannotBeSeen<br/>
     </td></tr><tr>
     <td valign="top" width="200">
 		<input type="checkbox" value="1" onclick="calcFlags()"> Can not use combat<br/>
