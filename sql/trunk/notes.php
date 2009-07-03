@@ -24,7 +24,7 @@ include ("header.inc.php");
 <div class="top">Home</div>
 <div class="mid">
 <?php
-require_once('extensions/simple_bb_code.php');
+require_once('class/simple_bb_code.php');
 $bb = new Simple_BB_Code(); 
 echo $bb->parse(file_get_contents("notes.inc"));
 ?>

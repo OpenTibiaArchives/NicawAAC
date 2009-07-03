@@ -56,9 +56,9 @@ imagefill($IMGVER_IMAGE, 0, 0, $IMGVER_COLOR_BACK);
 
 // Since our Text had 6 chars (we defined this not to be longer)
 // we now write the 6 random chars in our picture
-// For those who don´t know: You can access the third character
+// For those who donï¿½t know: You can access the third character
 //in a string easily by typing $myString[2];
-imagestring($IMGVER_IMAGE, imageloadfont ("font.gdf"), 0, rand(0,8), strtoupper($_SESSION['RandomText']) ,$IMGVER_COLOR_TEXT);
+imagestring($IMGVER_IMAGE, imageloadfont ("resource/font1.gdf"), 0, rand(0,8), strtoupper($_SESSION['RandomText']) ,$IMGVER_COLOR_TEXT);
 
 
 //Now we send the picture to the Browser

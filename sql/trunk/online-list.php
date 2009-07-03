@@ -21,25 +21,30 @@ $ptitle="Online Players - $cfg[server_name]";
 include ("header.inc.php");
 ?>
 <div id="content">
-<div class="top">Online Players</div>
-<div class="mid">
-<?php
-$SQL = AAC::$SQL;
-$SQL->myQuery('SELECT name, vocation, level FROM players WHERE online = 1 ORDER BY name ASC');
-if ($SQL->failed())
-	$SQL->myQuery('SELECT name, vocation, level FROM players WHERE lastlogin > lastlogout ORDER BY name ASC');
-if ($SQL->failed()) 
-	throw new Exception('<b>Your server does not store information on player\'s online state</b><br/>SQL query failed:<br/>'.$SQL->getError());
+    <div class="top">Online Players</div>
+    <div class="mid">
+        <?php
+        $SQL = AAC::$SQL;
+        $SQL->myQuery('SELECT name, vocation, level FROM players WHERE online = 1 ORDER BY name ASC');
+        if ($SQL->failed())
+            $SQL->myQuery('SELECT name, vocation, level FROM players WHERE lastlogin > lastlogout ORDER BY name ASC');
+        if ($SQL->failed())
+            throw new Exception('<b>Your server does not store information on players online state</b><br/>SQL query failed:<br/>'.$SQL->getError());
 
-$i = 0;
-echo '<table><tr class="color0"><td style="width:150px"><b>Name</b></td><td style="width:150px"><b>Vocation</b></td><td style="width:60px"><b>Level</b></td></tr>';
-while ($player = $SQL->fetch_array()){
-	$i++;
-	echo '<tr '.getStyle($i).'><td><a href="characters.php?player_name='.urlencode($player['name']).'">'.htmlspecialchars($player['name']).'</a></td><td>'.htmlspecialchars($cfg['vocations'][$player['vocation']]['name']).'</td><td>'.$player['level'].'</td></tr>'."\n";
-}
-?>
-</table>
-</div>
-<div class="bot"></div>
+        if ($SQL->num_rows() == 0) {
+            echo 'Nobody is online :-O';
+        } else {
+
+            $i = 0;
+            echo '<table><tr class="color0"><td style="width:150px"><b>Name</b></td><td style="width:150px"><b>Vocation</b></td><td style="width:60px"><b>Level</b></td></tr>';
+            while ($player = $SQL->fetch_array()) {
+                $i++;
+                echo '<tr '.getStyle($i).'><td><a href="characters.php?player_name='.urlencode($player['name']).'">'.htmlspecialchars($player['name']).'</a></td><td>'.htmlspecialchars($cfg['vocations'][$player['vocation']]['name']).'</td><td>'.$player['level'].'</td></tr>'."\n";
+            }
+        }
+        ?>
+        </table>
+    </div>
+    <div class="bot"></div>
 </div>
 <?php include ("footer.inc.php");?>

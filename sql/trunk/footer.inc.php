@@ -4,7 +4,7 @@
 	setStyle('javacheck','display','none');
 //]]>
 </script>
-<div id="footer" class="clearer">&nbsp;<span>Powered by <a href="http://nicaw.net/">Nicaw AAC</a> &copy; 2007 under <a href="LICENCE.TXT">GPL</a></span></div>
+<div id="footer" class="clearer">&nbsp;<span>Powered by <a href="http://nicaw.net/">Nicaw AAC</a> &copy; 2007 under <a href="documents/LICENCE.TXT">GPL</a></span></div>
 </div>
 <?php 
 //Get current time as we did at start

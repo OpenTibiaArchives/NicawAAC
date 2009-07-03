@@ -36,7 +36,7 @@ while ($a = $mysql->fetch_array()){
   if ((bool)(int)$a['html']){
     echo '<content:encoded>'.htmlspecialchars($a['text']).'</content:encoded>';
   }else{
-    require_once('extensions/simple_bb_code.php');
+    require_once('class/simple_bb_code.php');
     $bb = new Simple_BB_Code();
     echo '<content:encoded>'.htmlspecialchars($bb->parse($a['text'])).'</content:encoded>';
   }
@@ -51,7 +51,7 @@ include ("header.inc.php");
 <div id="content">
 <div class="top">Server News</div>
 <div class="mid">
-<a href="news.php?RSS2" style="text-decoration: none; float: right;"><img src="ico/feed.png" title="Subscribe to RSS" alt="rss" style="vertical-align: middle;"/></a>
+<a href="news.php?RSS2" style="text-decoration: none; float: right;"><img src="resource/feed.png" title="Subscribe to RSS" alt="rss" style="vertical-align: middle;"/></a>
 <?php 
 $mysql = AAC::$SQL;
 if (isset($_GET['id']))
@@ -68,7 +68,7 @@ while ($a = $mysql->fetch_array()){
   if ((bool)(int)$a['html']){
     echo $a['text'];
   }else{
-    require_once('extensions/simple_bb_code.php');
+    require_once('class/simple_bb_code.php');
     $bb = new Simple_BB_Code();
     echo $bb->parse($a['text']);
   }

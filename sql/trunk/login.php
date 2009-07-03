@@ -23,7 +23,7 @@ $error = '';
 if (isset($_POST['login_submit'])){
 	$account = new Account();
 	if ($account->find($_POST['account'])){
-		if ($account->checkPassword($_POST['password']) || !$cfg['secure_session'] && (string)$_POST['password'] == sha1($account->attrs['password'].$_SERVER['HTTP_HOST'])]{
+		if ($account->checkPassword($_POST['password']) || !$cfg['secure_session'] && (string)$_POST['password'] == sha1($account->attrs['password'].$_SERVER['HTTP_HOST'])){
 			$_SESSION['account']=$account->attrs['accno'];
 			$_SESSION['remote_ip']=$_SERVER['REMOTE_ADDR'];
 			if (!empty($_COOKIE['remember'])){
@@ -98,8 +98,8 @@ if (isset($_POST['login_submit'])) {
 <fieldset>
 <legend>More Options</legend>
 <ul class="task-menu" style="width: 200px;">
-<li onclick="ajax('form','modules/account_create.php','',true)" style="background-image: url(ico/vcard_add.png);">New Account</li>
-<?php if($cfg['Email_Recovery']){?><li onclick="ajax('form','modules/account_recover.php','',true)" style="background-image: url(ico/arrow_redo.png);">Recover Account</li><?php }?>
+<li onclick="ajax('form','modules/account_create.php','',true)" style="background-image: url(resource/vcard_add.png);">New Account</li>
+<?php if($cfg['Email_Recovery']){?><li onclick="ajax('form','modules/account_recover.php','',true)" style="background-image: url(resource/arrow_redo.png);">Recover Account</li><?php }?>
 </ul>
 </fieldset>
 <div id="form"></div>

@@ -11,7 +11,7 @@
 <script language="javascript" type="text/javascript" src="javascript/prototype.js"></script>
 <script language="javascript" type="text/javascript" src="javascript/main.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $cfg['skin_url'].$cfg['skin']?>.js"></script>
-<link rel="shortcut icon" href="ico/favicon.ico" />
+<link rel="shortcut icon" href="resource/favicon.ico" />
 <?php if ($cfg['secure_session'] && !empty($_SESSION['account']) && empty($_COOKIE['remember'])){?>
 <script language="javascript" type="text/javascript">
 //<![CDATA[
@@ -50,19 +50,16 @@ foreach ($XML->category as $cat){
 ?>
 </div>
 <div id="status">
+<div class="top">Status</div>
+<div class="mid">
 <?php
 if(!empty($_SESSION['account'])) {
     $account = new Account();
     $account->load($_SESSION['account']);
-    echo '<div class="top">Account</div>';
-    echo '<div class="mid">';
     echo 'Logged in as: <b>'.$account->attrs['name'].'</b><br/>';
-    echo '<button onclick="window.location.href=\'login.php?logout&amp;redirect=account.php\'">Logout</button>';
-    echo '</div><div class="bot"></div>';
+    echo '<button onclick="window.location.href=\'login.php?logout&amp;redirect=account.php\'">Logout</button><hr/>';
 }
 ?>
-<div class="top">Status</div>
-<div class="mid">
 <div id="server_state">
 <?php include('status.php');?>
 </div>

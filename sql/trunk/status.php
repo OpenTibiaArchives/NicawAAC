@@ -43,11 +43,11 @@ $infoXML = simplexml_load_string($info);
 	$up = $up - $m*60;
 	if ($h < 10) {$h = "0".$h;}
 	if ($m < 10) {$m = "0".$m;}
-	echo "<span class=\"online\">Online</span><br/>\n";
+	echo "<span class=\"online\">Server Online</span><br/>\n";
 	echo "<span class=\"players\">Players: <b>$online/$max</b></span><br/>\n";
 	//echo "<span class=\"monsters\">Monsters: <b>".$infoXML->monsters['total']."</b></span><br/>\n";
 	echo "<span class=\"uptime\">Uptime: <b>$h:$m</b></span><br/>\n";
 } else {
-	echo "<span class=\"offline\">Offline</span>\n";
+	echo "<span class=\"offline\">Server Offline</span>\n";
 }
 ?>

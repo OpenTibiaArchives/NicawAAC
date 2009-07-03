@@ -1,4 +1,4 @@
-<?php 
+<?php
 //page generation time
 $mtime = microtime();
 $mtime = explode(" ",$mtime);
