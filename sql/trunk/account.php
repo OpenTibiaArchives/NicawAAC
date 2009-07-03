@@ -48,7 +48,7 @@ include ("header.inc.php");
 </ul>
 </td><td>
 <?php 
-if (isset($account->players)){
+if ($account->players){
 	echo '<h3>Characters</h3>'."\n";
 	echo '<ul class="task-menu">';
 	foreach ($account->players as $player){
@@ -56,13 +56,21 @@ if (isset($account->players)){
 	}
 	echo '</ul>';
 }
+if ($account->guilds){
+	echo '<h3>Guilds</h3>'."\n";
+	echo '<ul class="task-menu">';
+	foreach ($account->guilds as $guild){
+		echo '<li style="background-image: url(ico/group.png);" onclick="window.location.href=\'guilds.php?guild_id='.htmlspecialchars($guild['id']).'\'">'.htmlspecialchars($guild['name']).'</li>';
+	}
+	echo '</ul>';
+}
 ?>
 </td></tr>
 </table>
 <?php
-if($account->getAttr('premend') > time()) {
+if($account->attrs['premend'] > time()) {
     echo '<b>Premium status:</b> You have ';
-    $days = ceil(($account->getAttr('premend') - time())/(3600*24));
+    $days = ceil(($account->attrs['premend'] - time())/(3600*24));
     if($days <= 5) echo '<b style="color: red">';
         else echo '<b>';
     echo $days.'</b> day(s) left';

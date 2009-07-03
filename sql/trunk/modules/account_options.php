@@ -40,7 +40,7 @@ if ($form->exists()){
 	$form = new IOBox('email');
 	$form->target = $_SERVER['PHP_SELF'];
 	$form->addLabel('Account Options');
-	$form->addCheckBox('Hide Characters', !$account->getAttr('reveal_characters'));
+	$form->addCheckBox('Hide Characters', !$account->attrs['reveal_characters']);
 	$form->addClose('Cancel');
 	$form->addSubmit('Save');
 	$form->show();

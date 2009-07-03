@@ -23,7 +23,7 @@ $account = new Account();
 //load guild
 $guild = new Guild();
 if (!$guild->load($_REQUEST['guild_id'])) throw new Exception('Unable to load guild.');
-if ($guild->getAttr('owner_acc') != $_SESSION['account']) die('Not your guild');
+if ($guild->attrs['owner_acc'] != $_SESSION['account']) die('Not your guild');
 //retrieve post data
 $fselect = new Form('edit_select');
 $fedit = new Form('edit');
@@ -34,7 +34,7 @@ if ($fselect->exists()){
 		if ($player->load($fselect->attrs['player'])){
 			//create new form
 			$form = new IOBox('edit');
-			$form->target = $_SERVER['PHP_SELF'].'?guild_id='.$guild->getAttr('id').'&player_id='.$player->attrs['id'];
+			$form->target = $_SERVER['PHP_SELF'].'?guild_id='.$guild->attrs['id'].'&player_id='.$player->attrs['id'];
 			$form->addLabel('Edit Member');
 			$form->addMsg('Editing: '.$player->attrs['name']);
 			$form->addInput('rank', 'text', $player->attrs['guild_rank']);
@@ -84,7 +84,7 @@ if ($fselect->exists()){
 
 	//create new form
 	$form = new IOBox('edit_select');
-	$form->target = $_SERVER['PHP_SELF'].'?guild_id='.$guild->getAttr('id');
+	$form->target = $_SERVER['PHP_SELF'].'?guild_id='.$guild->attrs['id'];
 	$form->addLabel('Edit Member');
 	$form->addMsg('Select the character to edit.');
 	$form->addSelect('player', $list);

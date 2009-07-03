@@ -23,14 +23,14 @@ $account = new Account();
 //load guild
 $guild = new Guild();
 if (!$guild->load($_REQUEST['guild_id'])) throw new Exception('Unable to load guild.');
-if ($guild->getAttr('owner_acc') != $_SESSION['account']) die('Not your guild');
+if ($guild->attrs['owner_acc'] != $_SESSION['account']) die('Not your guild');
 //retrieve post data
 $form = new Form('kick');
 //check if any data was submited
 if ($form->exists()){
 	$player = new Player();
 	if ($player->load($form->attrs['player'])){
-		if ($player->attrs['account'] != $guild->getAttr('owner_acc')){
+		if ($player->attrs['account'] != $guild->attrs['owner_acc']){
 			if ($guild->memberLeave($player->attrs['id'])){
 				$guild->save();
 				//success

@@ -29,7 +29,7 @@ $form = new Form('leave');
 if ($form->exists()){
 	$player = new Player();
 	if ($player->load($form->attrs['player']) && $player->attrs['account'] == $_SESSION['account']){
-		if ($player->attrs['id'] == $guild->getAttr('owner_id')){
+		if ($player->attrs['id'] == $guild->attrs['owner_id']){
 			$guild->remove();
 			
 			$msg = new IOBox('message');
@@ -41,7 +41,7 @@ if ($form->exists()){
 			$guild->save();
 			//success
 			$msg = new IOBox('message');
-			$msg->addMsg('You have left '.htmlspecialchars($guild->getAttr('name')));
+			$msg->addMsg('You have left '.htmlspecialchars($guild->attrs['name']));
 			$msg->addRefresh('OK');
 			$msg->show();
 		}else $error = 'Cannot leave guild';
@@ -64,7 +64,7 @@ if ($form->exists()){
 	$form = new IOBox('leave');
 	$form->target = $_SERVER['PHP_SELF'].'?guild_id='.urlencode($_REQUEST['guild_id']);
 	$form->addLabel('Leave Guild');
-	if ($account->getAttr('accno') == $guild->getAttr('owner_acc'))
+	if ($account->attrs['accno'] == $guild->attrs['owner_acc'])
 		$form->addMsg('If you leave with owner character guild will get disbanded!');
 	$form->addMsg('Select the character to leave.');
 	$form->addSelect('player', $list);

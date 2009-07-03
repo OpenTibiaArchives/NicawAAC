@@ -40,7 +40,7 @@ if ($form->exists()){
 	$form = new IOBox('comments');
 	$form->target = $_SERVER['PHP_SELF'];
 	$form->addLabel('Edit Comments');
-	$form->addTextbox('comment',htmlspecialchars($account->getAttr('comment')));
+	$form->addTextbox('comment',htmlspecialchars($account->attrs['comment']));
 	$form->addClose('Cancel');
 	$form->addSubmit('Save');
 	$form->show();

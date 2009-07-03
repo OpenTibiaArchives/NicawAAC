@@ -68,7 +68,7 @@ public function addSubmit($text){
 	$this->buttons[]= '<input style="width: 100px; height: 25px;" type="submit" name="'.$this->name.'__'.$this->name.'" value="'.$text.'"/>';
 }
 public function addReload($text){
-	$this->buttons[]= '<input style="width: 100px; height: 25px;" onclick="setStyle(\'iobox\',\'visibility\',\'hidden\'); ajax(document.getElementById(\'iobox\').parentNode.id,\''.htmlspecialchars($_SERVER['PHP_SELF']).'\',\'\',true);" type="button" name="'.$this->name.'__'.$this->name.'" value="'.$text.'"/>';
+	$this->buttons[]= '<input style="width: 100px; height: 25px;" onclick="setStyle(\'iobox\',\'visibility\',\'hidden\'); ajax(\'iobox\').parentNode.id,\''.htmlspecialchars($_SERVER['PHP_SELF']).'\',\'\',true);" type="button" name="'.$this->name.'__'.$this->name.'" value="'.$text.'"/>';
 }
 public function addRefresh($text){
 	$this->buttons[]= '<input onclick="location.reload(false)" type="button" style="width: 100px; height: 25px;" value="'.$text.'"/>';

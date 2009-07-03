@@ -23,12 +23,12 @@ $error = '';
 if (isset($_POST['login_submit'])){
 	$account = new Account();
 	if ($account->find($_POST['account'])){
-		if ($account->checkPassword($_POST['password']) || !$cfg['secure_session'] && (string)$_POST['password'] == sha1($account->getAttr('password').$_SERVER['HTTP_HOST'])){
-			$_SESSION['account']=$account->getAttr('accno');
+		if ($account->checkPassword($_POST['password']) || !$cfg['secure_session'] && (string)$_POST['password'] == sha1($account->attrs['password'].$_SERVER['HTTP_HOST'])]{
+			$_SESSION['account']=$account->attrs['accno'];
 			$_SESSION['remote_ip']=$_SERVER['REMOTE_ADDR'];
 			if (!empty($_COOKIE['remember'])){
-				setcookie('account',$account->getAttr('name'),time() + (30*24*3600),'/');
-				setcookie('password',sha1($account->getAttr('password').$_SERVER['HTTP_HOST']),time() + (30*24*3600),'/');
+				setcookie('account',$account->attrs['name'],time() + (30*24*3600),'/');
+				setcookie('password',sha1($account->attrs['password'].$_SERVER['HTTP_HOST']),time() + (30*24*3600),'/');
 			}
 			if (!empty($_GET['redirect'])) {
 				header('location: '.$_GET['redirect']);

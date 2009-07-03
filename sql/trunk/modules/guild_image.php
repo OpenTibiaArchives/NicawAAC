@@ -31,8 +31,8 @@ if (isset($_POST['image_submit'])){
 		if ($_FILES['image']['error'] != 0) throw new Exception('Unknown error');
 		if (!is_uploaded_file($_FILES['image']['tmp_name'])) throw new Exception('File is not uploaded via HTTP POST');
 		if ($_FILES['image']['type'] == 'image/gif'){
-			@unlink('guilds/'.$guild->getAttr('id').'.gif');
-			copy($_FILES['image']['tmp_name'],'../guilds/'.$guild->getAttr('id').'.gif');
+			@unlink('guilds/'.$guild->attrs['id'].'.gif');
+			copy($_FILES['image']['tmp_name'],'../guilds/'.$guild->attrs['id'].'.gif');
 		}elseif (extension_loaded('gd')){
 			if ($_FILES['image']['type'] == 'image/png')
 				$im = @imagecreatefrompng($_FILES['image']['tmp_name']);

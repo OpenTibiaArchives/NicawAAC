@@ -29,7 +29,7 @@ if ($form->exists()){
 	if (AAC::ValidEmail($form->attrs['email'])){
 		//check if password match
 		if ($account->checkPassword($form->attrs['password'])){
-			$account->logAction($account->getAttr('email').' changed to '.$form->attrs['email']);
+			$account->logAction($account->attrs['email'].' changed to '.$form->attrs['email']);
 			$account->setAttr('email',$form->attrs['email']);
 			if ($account->save()){
 				//create new message
@@ -54,7 +54,7 @@ if ($form->exists()){
 	$form->target = $_SERVER['PHP_SELF'];
 	$form->addLabel('Change Email');
 	$form->addInput('password','password');
-	$form->addInput('email','text',$account->getAttr('email'));
+	$form->addInput('email','text',$account->attrs['email']);
 	$form->addClose('Cancel');
 	$form->addSubmit('Next >>');
 	$form->show();

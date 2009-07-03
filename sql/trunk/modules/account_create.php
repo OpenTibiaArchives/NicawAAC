@@ -75,7 +75,7 @@ if ($form->exists()){
 	}elseif (count($errors) == 0){
 
 		//set account atrributes
-		$accno = $account->getAttr('name');
+		$accno = $account->attrs['name'];
 		$account->setPassword($form->attrs['password']);
 		$account->setAttr('email',$form->attrs['email']);
 		//create the account

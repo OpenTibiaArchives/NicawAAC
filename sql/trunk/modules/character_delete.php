@@ -30,7 +30,7 @@ if ($form->exists()){
 		$player = new Player();
 		if ($player->load($form->attrs['character'])){
 			//check if player really belongs to account
-			if ($player->attrs['account'] === $account->getAttr('accno')){
+			if ($player->attrs['account'] === $account->attrs['accno']){
 				//"omg, GM recover my character" protection
 				if (time() - $player->attrs['lastlogin'] > $cfg['player_delete_interval']){
 					//delete the player
@@ -55,7 +55,7 @@ if ($form->exists()){
 		$msg->show();
 	}
 }else{
-	if (isset($account->players))
+	if ($account->players)
 		foreach ($account->players as $player)
 			$list[$player['id']] = $player['name'];
 	//create new form

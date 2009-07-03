@@ -61,7 +61,7 @@ if ($form->exists()){
 		$msg->show();
 	}
 }else{
-	if (isset($account->players))
+	if ($account->players)
 		foreach ($account->players as $player)
 			$list[$player['id']] = $player['name'];
 	//create new form

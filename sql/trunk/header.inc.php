@@ -8,7 +8,8 @@
 <link rel="stylesheet" href="<?php echo $cfg['skin_url'].$cfg['skin']?>.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="print.css" type="text/css" media="print" />
 <link rel="alternate" type="application/rss+xml" title="News" href="news.php?RSS2" />
-<script language="javascript" type="text/javascript" src="js.js"></script>
+<script language="javascript" type="text/javascript" src="javascript/prototype.js"></script>
+<script language="javascript" type="text/javascript" src="javascript/main.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $cfg['skin_url'].$cfg['skin']?>.js"></script>
 <link rel="shortcut icon" href="ico/favicon.ico" />
 <?php if ($cfg['secure_session'] && !empty($_SESSION['account']) && empty($_COOKIE['remember'])){?>
@@ -55,7 +56,7 @@ if(!empty($_SESSION['account'])) {
     $account->load($_SESSION['account']);
     echo '<div class="top">Account</div>';
     echo '<div class="mid">';
-    echo 'Logged in as: <b>'.$account->getAttr('name').'</b><br/>';
+    echo 'Logged in as: <b>'.$account->attrs['name'].'</b><br/>';
     echo '<button onclick="window.location.href=\'login.php?logout&amp;redirect=account.php\'">Logout</button>';
     echo '</div><div class="bot"></div>';
 }

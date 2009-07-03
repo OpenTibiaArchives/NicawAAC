@@ -29,7 +29,7 @@ if ($form->exists()){
 	$player = new Player();
 	if ($player->load($form->attrs['character'])){
 		//check if player really belongs to account
-		if ($player->attrs['account'] === $account->getAttr('accno')){
+		if ($player->attrs['account'] === $account->attrs['accno']){
 			$pos = $player->attrs['spawn'];
 			if ($player->repair()){
 				$account->logAction('Repaired character: '.$player->attrs['name'].', '.$pos['x'].' '.$pos['y'].' '.$pos['z']);
@@ -50,7 +50,7 @@ if ($form->exists()){
 		$msg->show();
 	}
 }else{
-	if (isset($account->players))
+	if ($account->players)
 		foreach ($account->players as $player)
 			$list[$player['id']] = $player['name'];
 	//create new form

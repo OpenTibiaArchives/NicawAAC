@@ -34,7 +34,7 @@ if ($form->exists()){
 				$guild->save();
 				//success
 				$msg = new IOBox('message');
-				$msg->addMsg('You have joined '.htmlspecialchars($guild->getAttr('name')));
+				$msg->addMsg('You have joined '.htmlspecialchars($guild->attrs['name']));
 				$msg->addClose('OK');
 				$msg->show();
 			}else $error = 'Cannot join guild';

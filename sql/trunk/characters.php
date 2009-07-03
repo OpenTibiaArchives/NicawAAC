@@ -52,8 +52,8 @@ if (!empty($_GET['player_id']) && $player->load($_GET['player_id']) || !empty($_
 	if (isset($player->attrs['position'])){
 		echo "<b>Position: </b> ".$player->attrs['position']."<br/>";
 	}
-	if ($account->getAttr('premend') > time()){
-		echo "<b>Premium: </b> ".ceil(($account->getAttr('premend') - time())/(3600*24))." day(s)<br/>";
+	if ($account->attrs['premend'] > time()){
+		echo "<b>Premium: </b> ".ceil(($account->attrs['premend'] - time())/(3600*24))." day(s)<br/>";
 	}
 	if ($player->attrs['lastlogin'] == 0)
 		$lastlogin = 'Never';
@@ -70,11 +70,11 @@ if (!empty($_GET['player_id']) && $player->load($_GET['player_id']) || !empty($_
 		echo '</td></tr>';
 	}
 	echo '</table>';
-    if (strlen($account->getAttr('comment'))>0){
-        echo "<b>Comments</b><br/><div style=\"overflow:hidden\"><pre>".htmlspecialchars($account->getAttr('comment'))."</pre></div><br/>\n";
+    if (strlen($account->attrs['comment'])>0){
+        echo "<b>Comments</b><br/><div style=\"overflow:hidden\"><pre>".htmlspecialchars($account->attrs['comment'])."</pre></div><br/>\n";
     }
 	echo '<hr/>';
-	if ($account->getAttr('reveal_characters') && isset($account->players) && count($account->players) > 1) {
+	if ($account->attrs['reveal_characters'] && $account->players && count($account->players) > 1) {
 		echo '<b>Characters on the same account</b><br/><ul class="task-menu">';
 		foreach ($account->players as $player){
 			echo '<li style="background-image: url(ico/user.png);" onclick="window.location.href=\'characters.php?player_id='.htmlspecialchars($player['id']).'\'">'.htmlspecialchars($player['name']).'</li>';

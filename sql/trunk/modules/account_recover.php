@@ -33,7 +33,7 @@ if ($form->exists()){
 			$account = new Account();
 			if ($account->load($player->attrs['account'])){
 				//check for email match
-				if (strtolower($account->getAttr('email')) == strtolower($form->attrs['email']) && !empty($form->attrs['email'])){
+				if (strtolower($account->attrs['email']) == strtolower($form->attrs['email']) && !empty($form->attrs['email'])){
 					//assign recovery key to account
 					$key = $account->addRecoveryKey();
 					if ($account->save()){
@@ -57,7 +57,7 @@ If you don\'t want to recover your account, simply ignore this letter.';
 						$mail->Password = $cfg['SMTP_Password'];
 
 						$mail->From = $cfg['SMTP_From'];
-						$mail->AddAddress($account->getAttr('email'));
+						$mail->AddAddress($account->attrs['email']);
 
 						$mail->Subject = $cfg['server_name'].' - Lost Account';
 						$mail->Body    = $body;
@@ -94,7 +94,7 @@ If you don\'t want to recover your account, simply ignore this letter.';
 			$account->setPassword($password);
 			//show the password
 			$msg = new IOBox('message');
-			$msg->addMsg('A new password has been set for you!<br/>Account: <b>'.$account->getAttr('accno').'</b><br/>Password: <b>'.$password.'</b>');
+			$msg->addMsg('A new password has been set for you!<br/>Account: <b>'.$account->attrs['accno'].'</b><br/>Password: <b>'.$password.'</b>');
 			$msg->addClose('Finish');
 			$msg->show();
 			//save password, remove recovery key
