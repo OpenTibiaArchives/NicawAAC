@@ -145,7 +145,7 @@ $SQL = AAC::$SQL;
                     }
 
                     if($is_owner) {
-                        echo '<tr><td colspan="4"><input type="text" id="new_rank_name" value="rank name" style="font-style: italic" onclick="input_clear(this)"/>&nbsp;<img style="cursor: pointer" src="resource/add.png" alt="+" id="rank_button" onclick="Guild.requestAddRank($(\'invite_name\').value, '.$guild->attrs['id'].')" /></td></tr>';
+                        echo '<tr><td colspan="4"><input type="text" id="new_rank_name" value="rank name" style="font-style: italic" onclick="input_clear(this)"/>&nbsp;<img style="cursor: pointer" src="resource/add.png" alt="+" id="rank_button" onclick="Guild.requestAddRank('.$guild->attrs['id'].', $(\'new_rank_name\').value)" /></td></tr>';
                     }
 
 

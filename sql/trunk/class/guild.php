@@ -78,7 +78,7 @@ class Guild {
         $a = $this->sql->fetch_array();
         $this->attrs['description'] = (string) $a['description'];
 
-        $this->sql->myQuery('SELECT id, name, level FROM guild_ranks WHERE guild_id = '.$this->sql->quote($this->attrs['id'].' ORDER BY level'));
+        $this->sql->myQuery('SELECT id, name, level FROM guild_ranks WHERE guild_id = '.$this->sql->quote($this->attrs['id']).' ORDER BY level');
         while ($a = $this->sql->fetch_array()) {
             $this->ranks[$a['id']] = array('id' => $a['id'], 'name' => $a['name'], 'level' => $a['level']);
         }
@@ -138,7 +138,12 @@ class Guild {
         }
     }
 
-    public function addRank($name, $level) {
+    public function addRank($name, $level = null) {
+
+        if ($level == null) {
+            $level = $this->ranks[$this->getMinMaxRankId(true)]['level'] + 1;
+        }
+
         $d['name'] = (string) $name;
         $d['level'] = (int) $level;
         $d['guild_id'] = $this->attrs['id'];
@@ -200,11 +205,13 @@ class Guild {
         return array_key_exists($id, $this->__get('members'));
     }
 
-    public function getLowestRankId() {
+    public function getMinMaxRankId($param) {
+        if ($param) $str = 'MAX';
+            else $str = 'MIN';
         $query =
         'SELECT id FROM guild_ranks '.
         'WHERE level = '.
-        '(SELECT MIN(level) FROM guild_ranks '.
+        '(SELECT '.$str.'(level) FROM guild_ranks '.
         'WHERE guild_id = '.
         $this->sql->quote($this->attrs['id']).
         ') AND guild_id = '.
@@ -246,7 +253,7 @@ class Guild {
             if (array_key_exists($player->attrs['id'], $this->invited))
                 $rank_id = $this->invited[$player->attrs['id']]['rank'];
         if (!$this->isRank($rank_id))
-            $rank_id = $this->getLowestRankId();
+            $rank_id = $this->getMinMaxRankId(false);
         if (!$this->isRank($rank_id))
             throw new Exception('Cannot find rank for the player.');
 

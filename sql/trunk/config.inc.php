@@ -28,14 +28,29 @@ $cfg['password_type'] = 'plain';
 # Not currently supported by OTServ, leave empty
 $cfg['password_salt'] = '';
 
-# Skin files can be found in skins folder.
-# Each css file represents a skin
+/*
+ * Look skins/ to find out which skins you have
+ * Available skins:
+ * default.css - First skin ever created, white
+ * swamp.css - Green skin with swamp theme
+ * swamp-mini.css - Same as swamp.css, but with compact menu
+ * dark.css - Dark version of default.css
+ * conquest.css - Customized skin, renaissance theme
+ * essense.css - Clean skin with green/blue motives
+ * inferno.css - Darker skin with menu on the right
+ * Need more? Look http://otfans.net/ and
+ * http://sourceforge.net/projects/nicaw-acc/files/
+ */
 $cfg['skin'] = 'essense';
 
 # In case you want to upload skins somewhere else
 $cfg['skin_url'] = 'skins/';
 
-# Captcha is used to prevent automated software from flooding server with accounts
+/*
+ * Captcha is used to prevent automated software from
+ * flooding server with accounts
+ * GD2 PHP extension is required
+ */
 $cfg['use_captcha'] = true;
 
 # Secure session will disable 'remember me' box
@@ -164,7 +179,8 @@ $cfg['temple'][3]['enabled'] = true;
 /*
 Notice:
 It's only one item per slot. You need to script special onLogin
-event in OTServ to add more items to new players.
+event in OTServ to add more items to new players. Look http://otfans.net/
+for more information.
 */
 
 ################# No Vocation ####################
@@ -254,7 +270,7 @@ $cfg['vocations'][$id]['equipment'][6] = 2530;
 $cfg['vocations'][$id]['equipment'][7] = 2468;
 $cfg['vocations'][$id]['equipment'][8] = 2643;
 
-################# Palladin #######################
+################# Paladin #######################
 $id = 3;
 $cfg['vocations'][$id]['name'] = 'Paladin';
 $cfg['vocations'][$id]['level'] = 8;

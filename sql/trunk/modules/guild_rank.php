@@ -21,6 +21,7 @@ include ("../include.inc.php");
 /*
  * REQUIRED POST DATA
  * guild_id
+ * rank_id
  * rank_name
  */
 
@@ -31,14 +32,23 @@ if (isset($_SESSION['account']) && $account->load($_SESSION['account'])) {
     $guild = new Guild();
     if (isset($_POST['guild_id']) && $guild->load($_POST['guild_id'])) {
         if ($guild->attrs['owner_acc'] == $account->attrs['accno']) {
-            if ($guild->isRank($_POST['rank_id'])) {
-                $_POST['rank_name'] = ucfirst($_POST['rank_name']);
-                if (AAC::ValidGuildRank($_POST['rank_name'])) {
-                    if ($guild->setRank($_POST['rank_id'], $_POST['rank_name'])) {
+            $_POST['rank_name'] = ucfirst($_POST['rank_name']);
+            if (AAC::ValidGuildRank($_POST['rank_name'])) {
+                if (isset($_POST['rank_id'])) {
+                //rename rank
+                    if ($guild->isRank($_POST['rank_id'])) {
+                        if ($guild->setRank($_POST['rank_id'], $_POST['rank_name'])) {
+                            $rank_id = $_POST['rank_id'];
+                        }else $error = 'Renaming failed';
+                    }else $error = 'Rank does not exist';
+                } else {
+                //create rank
+                    $rank_id = $guild->addRank($_POST['rank_name']);
+                    if ($rank_id) {
                         //success
-                    }else $error = 'Renaming failed';
-                }else $error = 'Not a valid rank name';
-            }else $error = 'Rank does not exist';
+                    }else $error = 'Cannot add rank';
+                }
+            }else $error = 'Not a valid rank name';
         }else $error = 'You do not have permission';
     }else $error = 'Cannot load guild';
 }else $error = 'You are not logged in';
@@ -46,7 +56,7 @@ if (isset($_SESSION['account']) && $account->load($_SESSION['account'])) {
 $responseXML = new SimpleXMLElement('<response/>');
 if (empty($error)) {
     $responseXML->addChild('error', 0);
-    $responseXML->addChild('name', $guild->ranks[$_POST['rank_id']]['name']);
+    $responseXML->addChild('name', $guild->ranks[$rank_id]['name']);
 } else {
     $responseXML->addChild('error', 1);
     $responseXML->addChild('message', $error);

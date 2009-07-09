@@ -220,7 +220,7 @@ var Guild = {
     },
     requestAddRank: function(guild_id, rank_name) {
         $('rank_button').style['visibility'] = 'hidden';
-        new Ajax.Request('modules/guild_rank_add.php', {
+        new Ajax.Request('modules/guild_rank.php', {
             method: 'post',
             parameters: {
                 rank_name: rank_name,
@@ -236,6 +236,7 @@ var Guild = {
     callbackAddRank : function(transport) {
         var param = transport.request.options.parameters;
         var XML = parseXML(transport.responseText);
+        alert(transport.responseText);
         if (XML.getElementsByTagName('error')[0].childNodes[0].nodeValue == 0) {
             location.reload(false);
         } else {
