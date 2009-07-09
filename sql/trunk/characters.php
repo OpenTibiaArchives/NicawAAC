@@ -40,8 +40,8 @@ include("header.inc.php");
             echo '<b>Magic Level:</b> '.$player->attrs['maglevel']."<br/>\n";
             echo '<b>Vocation:</b> '.$cfg['vocations'][$player->attrs['vocation']]['name']."<br/>\n";
 
-            if (isset($player->guild['name'])) {
-                echo '<b>Guild:</b> '.$player->attrs['guild_rank'].' of <a href="guilds.php?guild_id='.$player->attrs['guild_id'].'">'.htmlspecialchars($player->attrs['guild_name']).'</a><br/>'."\n";
+            if ($player->guild) {
+                echo '<b>Guild:</b> '.$player->guild['guild_rank_name'].' of <a href="guilds.php?guild_id='.$player->guild['guild_id'].'">'.htmlspecialchars($player->guild['guild_name']).'</a><br/>'."\n";
             }
 
             $gender = Array('Female','Male');
@@ -84,7 +84,7 @@ include("header.inc.php");
 
             if ($cfg['show_deathlist']) {
                 if ($player->deaths) {
-                    echo '<b>Deaths</b><br/>';
+                    echo '<b>Latest Deaths</b><br/>';
                     $prevdate = 0;
                     foreach ($player->deaths as $death) {
                         if ($death['killer_id'])

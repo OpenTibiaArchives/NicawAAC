@@ -74,19 +74,20 @@ $cfg['Email_Validate'] = false;
 # Allow email based account recovery?
 $cfg['Email_Recovery'] = false;
 
-# Enable extension=php_openssl.dll in php.ini in order to use gmail
+# SMTP server configuration, use this to send emails
+$cfg['SMTP_Host'] = '127.0.0.1';
+$cfg['SMTP_Port'] = 25;
+$cfg['SMTP_Auth'] = false;
+$cfg['SMTP_User'] = 'user@gmail.com';
+$cfg['SMTP_Password'] = 'user';
+$cfg['SMTP_From'] = 'mail@nicaw.net';
+
+/*
+# Example configuration for gmail
+# Don't forget to enable extension=php_openssl.dll in php.ini
 $cfg['SMTP_Host'] = 'ssl://smtp.gmail.com';
 $cfg['SMTP_Port'] = 465;
 $cfg['SMTP_Auth'] = true;
-$cfg['SMTP_User'] = 'user@gmail.com';
-$cfg['SMTP_Password'] = 'user';
-$cfg['SMTP_From'] = 'user@gmail.com';
-
-# Example configuration for mercury
-/*
-$cfg['SMTP_Host'] = 'localhost';
-$cfg['SMTP_Port'] = 25;
-$cfg['SMTP_Auth'] = false;
 $cfg['SMTP_User'] = 'user@gmail.com';
 $cfg['SMTP_Password'] = 'user';
 $cfg['SMTP_From'] = 'user@gmail.com';
@@ -95,24 +96,22 @@ $cfg['SMTP_From'] = 'user@gmail.com';
 # Whether to show skills in character search
 $cfg['show_skills'] = true;
 
-# Whether to show deathlist in character search, DevLand only
+# Whether to show deathlist in character search
 $cfg['show_deathlist'] = true;
 
 $cfg['skill_names'] = array('fist', 'club', 'sword', 'axe', 'distance', 'shielding', 'fishing');
-
-# Name formating was moved to globals.php
 
 # Banned names
 $cfg['invalid_names'] = array('^gm','^god','admin','fuck','gamemaster', 'owner');
 
 # Accounts that are allowed to access admin panel
-# Example: array(123123,687687);
+# Example: array('account1', 'account2');
 $cfg['admin_accounts'] = array();
 
 # Listed IPs always allowed to access admin panel, no matter if it has account or not
 $cfg['admin_ip'] = array('127.0.0.1');
 
-# Player can only delete himself after specified time (seconds)
+# Player can only delete himself after specified inactivitiy time (seconds)
 $cfg['player_delete_interval'] = 24*3600;
 
 # Minimum level to create own guild. Cannot be lower than $cfg['guild_level']
@@ -164,7 +163,8 @@ $cfg['temple'][3]['enabled'] = true;
 ##################################################
 /*
 Notice:
-It's only one item per slot. You need to script special onLogin event in OTServ to add more items to new players.
+It's only one item per slot. You need to script special onLogin
+event in OTServ to add more items to new players.
 */
 
 ################# No Vocation ####################

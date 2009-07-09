@@ -71,7 +71,7 @@ if (!empty($_SESSION['account']) && ($_SERVER['REMOTE_ADDR'] != $_SESSION['remot
 //Autologin
 if (!$cfg['secure_session'] && !empty($_COOKIE['remember']) && !array_key_exists('account',$_SESSION)){
 	$account = new Account();
-	if ($account->load($_COOKIE['account']) && (string)$_COOKIE['password'] == sha1($account->attrs['password'].$_SERVER['HTTP_HOST'])){
+	if ($account->load($_COOKIE['account']) && (string)$_COOKIE['password'] == sha1($account->attrs['accno'].$account->attrs['password'].$_SERVER['HTTP_HOST'])){
 		$_SESSION['account']=$account->attrs['accno'];
 		$_SESSION['remote_ip']=$_SERVER['REMOTE_ADDR'];
 	}

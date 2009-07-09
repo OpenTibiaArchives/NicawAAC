@@ -63,7 +63,7 @@ if (isset($_POST['image_submit'])){
 <form method="post" action="modules/guild_image.php?guild_id=<?php echo (int)$_REQUEST['guild_id']; ?>" enctype="multipart/form-data">
 <input type="file" name="image">
 <input type="Submit" name="image_submit" value="Upload">
-<input onclick="setStyle('iobox','visibility','hidden')" type="button" value="Close"/>
+<input onclick="$('iobox').style['visibility'] = 'hidden'" type="button" value="Close"/>
 <br/>
 Supported type *.GIF *.JPEG *.PNG 64x64 100KB
 </form></fieldset></div>

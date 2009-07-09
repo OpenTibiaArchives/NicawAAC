@@ -16,130 +16,109 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
+header("Content-type: text/xml");
+
 include ("../include.inc.php");
 
-//retrieve post data
-$form = new Form('newaccount');
-//check if any data was submited
-if ($form->exists()){
-	$errors = array();
-	
-	$_SESSION['_FORM_FEED_name'] = $form->attrs['name'];
-	$_SESSION['_FORM_FEED_email'] = $form->attrs['email'];
-	$_SESSION['_FORM_FEED_pass'] = $form->attrs['password'];
-	
-	//image verification
-	if (!$form->validated()){
-		$errors[] = 'failed image validation';
-	}
-	
-	//email formating rules
-	if (!AAC::ValidEmail($form->attrs['email'])){
-		$errors[] = 'not a valid email address';
-		unset($_SESSION['_FORM_FEED_email']);
-	}
-	
-	//account name formating rules
-	if (!AAC::ValidAccountName($form->attrs['name'])){
-		$errors[] = 'not a valid account name';
-		unset($_SESSION['_FORM_FEED_name']);
-	}else{
-		//check for existing name
-		$account = new Account();
-		$account->setAttr('name', strtolower($form->attrs['name']));
-		if($account->existsName()){
-			$errors[] = 'account name is already used';
-			unset($_SESSION['_FORM_FEED_name']);
-		}
-	}
-	
-	//password formating rules
-	if (!AAC::ValidPassword($form->attrs['password'])){
-		$errors[] = 'not a valid password';
-		unset($_SESSION['_FORM_FEED_pass']);
-	}elseif ($form->attrs['password'] != $form->attrs['confirm']){
-		$errors[] = 'passwords do not match';
-		unset($_SESSION['_FORM_FEED_pass']);
-	}
-		
-	if (count($errors) > 0){
-		//create new message
-		$msg = new IOBox('message');
-		$errText = 'The following error(s) occurred:<br/><ul>';
-		foreach($errors as $error) $errText.= '<li>'.ucfirst($error).'</li>';
-		$errText.= '</ul>';
-		$msg->addMsg($errText);
-		$msg->addReload('<< Back');
-		$msg->addClose('OK');
-		$msg->show();
-	}elseif (count($errors) == 0){
+$errors = array();
+$account = new Account();
 
-		//set account atrributes
-		$accno = $account->attrs['name'];
-		$account->setPassword($form->attrs['password']);
-		$account->setAttr('email',$form->attrs['email']);
-		//create the account
-		$account->save();
+if ($cfg['use_captcha'] && isset($_POST['submit'])) {
+    if (empty($_SESSION['RandomText']) || empty($_POST['captcha']) || strtolower($_POST['captcha']) !== $_SESSION['RandomText']) {
+        $errors['captcha'] = 'image verification not passed';
+    }
+    $_SESSION['RandomText'] = null;
+}
 
-		if ($cfg['Email_Validate']){
-			$body = "Here is your login information for <a href=\"http://$cfg[server_url]/\">$cfg[server_name]</a><br/>
-<b>Account name:</b> $accno<br/>
+//email formating rules
+if (empty($_POST['email'])) {
+    $errors['email'] = 'empty email address';
+}elseif (!AAC::ValidEmail($_POST['email'])) {
+    $errors['email'] = 'not a valid email address';
+}else {
+    $email = $_POST['email'];
+}
+
+//account name formating rules
+if (empty($_POST['accname'])) {
+    $errors['accname'] = 'empty account name';
+}elseif (!AAC::ValidAccountName($_POST['accname'])) {
+    $errors['accname'] = 'not a valid account name';
+}else {
+//check for existing name
+    if($account->existsName(strtolower($_POST['accname']))) {
+        $errors['accname'] = 'account name is already used';
+    } else {
+        $accname = strtolower($_POST['accname']);
+    }
+}
+
+//password formating rules
+if ($cfg['Email_Validate']) {
+    $password = substr(str_shuffle(strtolower('qwertyuipasdfhjklzxcvnm12345789')), 0, 8);
+} else {
+    if (empty($_POST['password'])) {
+        $errors['password'] = 'empty password';
+    }elseif (!AAC::ValidPassword($_POST['password'])) {
+        $errors['password'] = 'not a valid password';
+    }elseif (isset($_POST['accname']) && strtolower($_POST['password']) == strtolower($_POST['accname'])) {
+        $errors['password'] = 'password cannot match account name';
+    }elseif (empty($_POST['confirm'])){
+        $errors['confirm'] = 'empty password';
+    }elseif ($_POST['password'] != $_POST['confirm']) {
+        $errors['confirm'] = 'passwords do not match';
+    }else {
+        $password = $_POST['password'];
+    }
+}
+
+$responseXML = new SimpleXMLElement('<response/>');
+if (count($errors) > 0) {
+    while ($error = current($errors)) {
+        $err = $responseXML->addChild('error', $error);
+        $err->addAttribute('id', key($errors));
+        next($errors);
+    }
+}elseif (count($errors) == 0 && isset($_POST['submit'])) {
+
+    //create the account
+    $account = Account::Create($accname, $password, $email, substr($_POST['rlname'], 0, 50), substr($_POST['location'], 0, 50));
+
+    if ($cfg['Email_Validate']) {
+        $body = "Here is your login information for <a href=\"http://$cfg[server_url]/\">$cfg[server_name]</a><br/>
+<b>Account name:</b> $accname<br/>
 <b>Password:</b> $password<br/>
 <br/>
 Powered by <a href=\"http://nicaw.net/\">Nicaw AAC</a>";
-			//send the email
-			require_once("../class/class.phpmailer.php");
+        //send the email
+        require_once("../class/class.phpmailer.php");
 
-			$mail = new PHPMailer();
-			$mail->IsSMTP();
-			$mail->IsHTML(true);				
-			$mail->Host = $cfg['SMTP_Host'];
-			$mail->Port = $cfg['SMTP_Port'];
-			$mail->SMTPAuth = $cfg['SMTP_Auth'];
-			$mail->Username = $cfg['SMTP_User'];
-			$mail->Password = $cfg['SMTP_Password'];
+        $mail = new PHPMailer();
+        $mail->IsSMTP();
+        $mail->IsHTML(true);
+        $mail->Host = $cfg['SMTP_Host'];
+        $mail->Port = $cfg['SMTP_Port'];
+        $mail->SMTPAuth = $cfg['SMTP_Auth'];
+        $mail->Username = $cfg['SMTP_User'];
+        $mail->Password = $cfg['SMTP_Password'];
 
-			$mail->From = $cfg['SMTP_From'];
-			$mail->AddAddress($form->attrs['email']);
+        $mail->From = $cfg['SMTP_From'];
+        $mail->AddAddress($email);
 
-			$mail->Subject = $cfg['server_name'].' - Login Details';
-			$mail->Body    = $body;
+        $mail->Subject = $cfg['server_name'].' - Login Details';
+        $mail->Body    = $body;
 
-			if ($mail->Send()){
-					//create new message
-					$msg = new IOBox('message');
-					$msg->addMsg('Your login details were emailed to '.$form->attrs['email']);
-					$msg->addClose('Finish');
-					$msg->show();
-				}else
-					$error = "Mailer Error: " . $mail->ErrorInfo;
-		}else{
-			//create new message
-			$msg = new IOBox('message');
-			$msg->addMsg('Great success!<br/>You can now login into your account and start creating characters.');
-			$msg->addClose('Finish');
-			$msg->show();
-			$account->logAction('Created');
-			
-			unset($_SESSION['_FORM_FEED_name']);
-			unset($_SESSION['_FORM_FEED_email']);
-			unset($_SESSION['_FORM_FEED_pass']);
-		}   
-	}
-}else{
-	isset($_SESSION['_FORM_FEED_name']) || $_SESSION['_FORM_FEED_name'] = '';
-	isset($_SESSION['_FORM_FEED_email']) || $_SESSION['_FORM_FEED_email'] = '';
-	isset($_SESSION['_FORM_FEED_pass']) || $_SESSION['_FORM_FEED_pass'] = '';
-	//create new form
-	$form = new IOBox('newaccount');
-	$form->target = $_SERVER['PHP_SELF'];
-	$form->addLabel('Create Account');
-	$form->addInput('name','text',$_SESSION['_FORM_FEED_name'],100,false,'Account name is at least 6 characters long and consists of letters A-Z, numbers 0-9 and underscores _');
-	$form->addInput('email','text',$_SESSION['_FORM_FEED_email'],100,false,'Please enter a valid email. It can be used to recover your account.');
-	$form->addInput('password','password',$_SESSION['_FORM_FEED_pass'],100,false,'Your password can consist of letters A-Z, numbers 0-9 and symbols ~!@#%&;,:\^$.|?*+()<br/>Never use the same password as in your email account.');
-	$form->addInput('confirm','password',$_SESSION['_FORM_FEED_pass'],100,false,'Retype your password.');
-	$form->addCaptcha();
-	$form->addClose('Cancel');
-	$form->addSubmit('Next >>');
-	$form->show();
-}?>
+        if ($mail->Send()) {
+        //create new message
+            $responseXML->addChild('success', 'Your login details were emailed to '.htmlspecialchars($_POST['email']));
+        }else {
+            $responseXML->addChild('success', 'Contact administrator to get your password. Mailer Error: '.$mail->ErrorInfo);
+        }
+    }else {
+    //create new message
+        $responseXML->addChild('success', 'Account created!');
+        $account->logAction('Created');
+    }
+}
+echo $responseXML->asXML();
+?>

@@ -68,13 +68,13 @@ public function addSubmit($text){
 	$this->buttons[]= '<input style="width: 100px; height: 25px;" type="submit" name="'.$this->name.'__'.$this->name.'" value="'.$text.'"/>';
 }
 public function addReload($text){
-	$this->buttons[]= '<input style="width: 100px; height: 25px;" onclick="setStyle(\'iobox\',\'visibility\',\'hidden\'); ajax(\'iobox\').parentNode.id,\''.htmlspecialchars($_SERVER['PHP_SELF']).'\',\'\',true);" type="button" name="'.$this->name.'__'.$this->name.'" value="'.$text.'"/>';
+	$this->buttons[]= '<input style="width: 100px; height: 25px;" onclick="$(\'iobox\').style[\'visibility\'] = \'hidden\'; ajax($(\'iobox\').parentNode.id,\''.htmlspecialchars($_SERVER['PHP_SELF']).'\',\'\',true);" type="button" name="'.$this->name.'__'.$this->name.'" value="'.$text.'"/>';
 }
 public function addRefresh($text){
 	$this->buttons[]= '<input onclick="location.reload(false)" type="button" style="width: 100px; height: 25px;" value="'.$text.'"/>';
 }
 public function addClose($text){
-	$this->buttons[]= '<input style="width: 100px; height: 25px;" onclick="setStyle(\'iobox\',\'visibility\',\'hidden\')" type="button" value="'.$text.'"/>';
+	$this->buttons[]= '<input style="width: 100px; height: 25px;" onclick="$(\'iobox\').style[\'visibility\'] = \'hidden\'" type="button" value="'.$text.'"/>';
 }
 public function addCode($code){
 	$this->elements[]= $code;

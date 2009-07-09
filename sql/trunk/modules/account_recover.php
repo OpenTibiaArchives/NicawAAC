@@ -41,7 +41,7 @@ if ($form->exists()){
 
 this email is a response for your request to recover your account on http://'.$cfg['server_url'].'/
 
-Your account number is: '.$player->attrs['account'].'
+Your account number is: '.$account->attrs['name'].'
 If you also forgot password, please follow this link:
 http://'.$cfg['server_url'].$_SERVER['PHP_SELF'].'?account='.$player->attrs['account'].'&key='.$key.'
 If you don\'t want to recover your account, simply ignore this letter.';
@@ -94,7 +94,7 @@ If you don\'t want to recover your account, simply ignore this letter.';
 			$account->setPassword($password);
 			//show the password
 			$msg = new IOBox('message');
-			$msg->addMsg('A new password has been set for you!<br/>Account: <b>'.$account->attrs['accno'].'</b><br/>Password: <b>'.$password.'</b>');
+			$msg->addMsg('A new password has been set for you!<br/>Account: <b>'.$account->attrs['name'].'</b><br/>Password: <b>'.$password.'</b>');
 			$msg->addClose('Finish');
 			$msg->show();
 			//save password, remove recovery key

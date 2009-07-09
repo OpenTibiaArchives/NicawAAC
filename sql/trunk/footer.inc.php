@@ -1,9 +1,4 @@
-<span id="javacheck" class="exception">This website requires javascript to run correctly.</span><br/>
-<script language="javascript" type="text/javascript">
-//<![CDATA[
-	setStyle('javacheck','display','none');
-//]]>
-</script>
+<noscript class="exception">This website requires javascript to run correctly.</noscript><br/>
 <div id="footer" class="clearer">&nbsp;<span>Powered by <a href="http://nicaw.net/">Nicaw AAC</a> &copy; 2007 under <a href="documents/LICENCE.TXT">GPL</a></span></div>
 </div>
 <?php 

@@ -20,7 +20,7 @@
 include ("../include.inc.php");
 //load account if loged in
 $account = new Account();
-if ($account->load($_SESSION['account']))
+if (isset($_SESSION['account']) && $account->load($_SESSION['account']))
 	if ($account->canVote((int) $_POST['option'])){
 		$account->vote((int) $_POST['option']);
 		//create new message

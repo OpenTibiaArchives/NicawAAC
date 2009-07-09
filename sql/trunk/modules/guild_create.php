@@ -38,7 +38,7 @@ if ($form->exists()){
 						if ($owner->attrs['level'] >= $cfg['guild_leader_level']){
 							//create guild and add owner as a leader
 							$new_guild = Guild::Create($form->attrs['Guild_Name'], $owner->attrs['id']);
-							$new_guild->playerJoin($owner, 1);
+							$new_guild->playerJoin($owner);
 							$account->logAction('Created guild: '.$new_guild->attrs['name']);
 							
 							//success

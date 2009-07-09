@@ -40,6 +40,8 @@ function myImageBlur($im,$distance=1)
 ** AlexGraf@web.de
 */
 
+if (empty($_SESSION['RandomText'])) $_SESSION['RandomText'] = substr(str_shuffle(strtolower('qwertyuipasdfhjklzxcvnm12345789')), 0, 6);
+
 // Create the image with width=150 and height=40
 $width = 250;
 $height = 40;

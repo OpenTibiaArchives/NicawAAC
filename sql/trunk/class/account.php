@@ -81,15 +81,8 @@ class Account {
         $acc['password'] = $this->attrs['password'];
         $acc['email'] = $this->attrs['email'];
 
-        if ($this->exists()) {
-            if (!$this->sql->myUpdate('accounts',$acc, array('id' => $this->attrs['accno'])))
-                throw new Exception('Cannot save account:<br/>'.$this->sql->getError());
-        }else {
-            if (!$this->sql->myInsert('accounts',$acc))
-                throw new Exception('Cannot save account:<br/>'.$this->sql->getError());
-            else
-                $this->attrs['accno'] = $this->insert_id();
-        }
+        if (!$this->sql->myUpdate('accounts',$acc, array('id' => $this->attrs['accno'])))
+            throw new Exception('Cannot save account:<br/>'.$this->sql->getError());
 
         $nicaw_acc['account_id'] = $this->attrs['accno'];
         $nicaw_acc['rlname'] = $this->attrs['rlname'];
@@ -102,6 +95,39 @@ class Account {
             throw new Exception('Cannot save account:<br/>'.$this->sql->getError());
 
         return true;
+    }
+
+    public function hasPlayer($pid) {
+        $players = $this->__get('players');
+        foreach($players as $p) {
+            if ($p['id'] == $pid) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static public function Create($name, $password, $email, $rlname = '', $location = '') {
+        $SQL = AAC::$SQL;
+
+        unset($d);
+        $d['name'] = $name;
+        $d['password'] = Account::encodePassword($password);
+        $d['email'] = $email;
+        if (!$SQL->myInsert('accounts',$d)) throw new Exception('Account::Create() Cannot insert attributes:<br/>'.$SQL->getError());
+        $aid = $SQL->insert_id();
+
+        unset($d);
+        $d['account_id'] = $aid;
+        $d['rlname'] = $rlname;
+        $d['location'] = $location;
+        $SQL->myInsert('nicaw_accounts',$d);
+
+        $account = new Account();
+        if($account->load($aid))
+            return $account;
+        else
+            return null;
     }
 
     public function __get($attr) {
@@ -124,14 +150,19 @@ class Account {
         $this->attrs[$attr] = $value;
     }
 
-    public function setPassword($new) {global $cfg;
-        if (empty($new)) throw new Exception('Empty password is not allowed.');
-        $new = $new.$cfg['password_salt'];
+    public function setPassword($pass) {
+        if(empty($pass)) return false;
+        $this->attrs['password'] = Account::encodePassword($pass);
+        return true;
+    }
+
+    static private function encodePassword($pass){global $cfg;
+        $pass = $pass.$cfg['password_salt'];
         if ($cfg['password_type'] == 'md5')
-            $new = md5($new);
+            $pass = md5($new);
         elseif ($cfg['password_type'] == 'sha1')
-            $new = sha1($new);
-        $this->attrs['password'] = $new;
+            $pass = sha1($new);
+        return $pass;
     }
 
     public function checkPassword($pass) {global $cfg;
@@ -145,17 +176,10 @@ class Account {
         return $this->attrs['password'] == (string)$pass && !empty($pass);
     }
 
-    public function exists() {
-        $this->sql->myQuery('SELECT * FROM `accounts` WHERE `id` = '.$this->sql->quote($this->attrs['accno']));
-        if ($this->sql->failed()) throw new Exception('Account::exists() cannot determine whether account exists');
-        if ($this->sql->num_rows() > 0) return true;
-        return false;
-    }
-
-    public function existsName() {
-        $this->sql->myQuery('SELECT * FROM `accounts` WHERE `name` = '.$this->sql->quote($this->attrs['name']));
-        if ($this->sql->failed()) throw new Exception('Account::existsName() failed. If your server doesn\'t support account names pelase use AAC release v3.20');
-        if ($this->num_rows() > 0) return true;
+    static public function existsName($name) {
+        AAC::$SQL->myQuery('SELECT * FROM `accounts` WHERE `name` = '.AAC::$SQL->quote($name));
+        if (AAC::$SQL->failed()) throw new Exception('Account::existsName() failed. If your server doesn\'t support account names pelase use AAC release v3.20');
+        if (AAC::$SQL->num_rows() > 0) return true;
         return false;
     }
 

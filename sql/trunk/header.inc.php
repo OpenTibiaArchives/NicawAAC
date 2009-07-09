@@ -8,24 +8,23 @@
 <link rel="stylesheet" href="<?php echo $cfg['skin_url'].$cfg['skin']?>.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="print.css" type="text/css" media="print" />
 <link rel="alternate" type="application/rss+xml" title="News" href="news.php?RSS2" />
-<script language="javascript" type="text/javascript" src="javascript/prototype.js"></script>
-<script language="javascript" type="text/javascript" src="javascript/main.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $cfg['skin_url'].$cfg['skin']?>.js"></script>
+<script type="text/javascript" src="javascript/prototype.js"></script>
+<script type="text/javascript" src="javascript/main.js"></script>
 <link rel="shortcut icon" href="resource/favicon.ico" />
-<?php if ($cfg['secure_session'] && !empty($_SESSION['account']) && empty($_COOKIE['remember'])){?>
-<script language="javascript" type="text/javascript">
+<?php if (!empty($_SESSION['account']) && empty($_COOKIE['remember'])){?>
+<script type="text/javascript">
 //<![CDATA[
-	function tick()
-	{
-		ticker++;
-		if (ticker > <?php echo $cfg['timeout_session'];?>){
-			self.window.location.href = 'login.php?logout&redirect=account.php';
-		}else{
-			setTimeout ("tick()",1000);
-		}
-	}
-	ticker = 0;
-	tick();
+function tick()
+    {
+        ticker++;
+        if (ticker > <?php echo $cfg['timeout_session'];?>){
+            self.window.location.href = 'login.php?logout&redirect=account.php';
+        }else{
+            setTimeout ("tick()",1000);
+        }
+    }
+    ticker = 0;
+    tick();
 //]]>
 </script>
 <?php }?>
@@ -61,20 +60,15 @@ if(!empty($_SESSION['account'])) {
 }
 ?>
 <div id="server_state">
-<?php include('status.php');?>
-</div>
-</div>
-<div class="bot"></div>
-</div>
-<div id="friends">
-<div class="top">Sponsor</div>
-<div class="mid">
-<div id="keywords" style="display:none">
-Games MMORPG Tibia Opentibia Otserv
-</div>
-<script type="text/javascript"
-src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+<span class="offline">Server Offline</span>
+<script type="text/javascript">
+//<![CDATA[
+    new Ajax.PeriodicalUpdater('server_state', 'status.php', {
+      method: 'get', frequency: 60, decay: 1
+    });
+//]]>
 </script>
+</div>
 </div>
 <div class="bot"></div>
 </div>
