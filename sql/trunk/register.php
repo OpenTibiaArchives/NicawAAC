@@ -6,6 +6,7 @@ include ("header.inc.php");
 <div id="content">
 <div class="top">Registration</div>
 <div class="mid">
+<div style="float: right"><a target="_blank" href="tools/bug_report.php">Report a bug</a></div>
 <table>
 <tr><td width="40%" style="vertical-align: top"><label for="email"><b>Email address:</b></label></td><td width="60%"><input id="email" type="text" />&nbsp;<span id="email_state"></span><div><?php
 if ($cfg['Email_Validate']) {

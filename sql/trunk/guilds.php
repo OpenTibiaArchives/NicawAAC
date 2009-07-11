@@ -28,6 +28,7 @@ $SQL = AAC::$SQL;
             <input type="text" name="guild_name"/>
             <input type="submit" value="Search"/>
         </form>
+        <div style="float: right"><a target="_blank" href="tools/bug_report.php">Report a bug</a></div>
         <hr style="margin-top: 5px; margin-bottom: 5px; "/>
         <?php
         //-----------------------Guild list
@@ -103,17 +104,17 @@ $SQL = AAC::$SQL;
                     echo '<td style="width: 130px"><b>Rank</b></td>';
                     echo '<td style="width: 130px"><b>Name</b></td>';
                     echo '<td style="width: 150px"><b>Title</b></td>';
-                    echo '<td><b></b></td>';
                     echo '</tr>';
 
                     $i = 0;
                     foreach ($guild->ranks as $rank) {
                         $i++;
                         if($is_owner) {
-                            $rank_content =  htmlspecialchars($rank['name']).
-                            '&nbsp;<img style="cursor: pointer" src="resource/page_edit.png" alt="edit" height="16" width="16" onclick="Guild.prepareRankRename('.$guild->attrs['id'].', '.$rank['id'].',\''.htmlspecialchars($rank['name']).'\')"/>';
+                            $rank_content = '<td id="rank'.$rank['id'].'"><img style="cursor: pointer" src="resource/page_edit.png" alt="edit" height="16" width="16" onclick="Guild.prepareRankRename('.$guild->attrs['id'].', '.$rank['id'].',\''.htmlspecialchars($rank['name']).'\')"/>'.
+                            '&nbsp;<img style="cursor: pointer" src="resource/cross.png" alt="del" height="16" width="16" onclick="Guild.requestRankDelete('.$guild->attrs['id'].', '.$rank['id'].')"/>&nbsp;'.
+                            htmlspecialchars($rank['name']).'</td>';
                         } else {
-                            $rank_content = htmlspecialchars($rank['name']);
+                            $rank_content = '<td id="rank'.$rank['id'].'">'.htmlspecialchars($rank['name']).'</td>';
                         }
                         $rank_has_players = false;
                         foreach ($guild->members as $player) {
@@ -127,27 +128,29 @@ $SQL = AAC::$SQL;
                                 $title_content = htmlspecialchars($player['nick']);
                             }
                             
-                            echo '<tr '.getStyle($i).' id="player'.$player['id'].'"><td id="rank'.$rank['id'].'">'
-                                .$rank_content.'</td><td><a href="characters.php?player_id='
-                                .$player['id'].'">'.htmlspecialchars($player['name']).'</a></td><td id="player'.$player['id'].'_title">'
-                                .$title_content.'</td><td>';
                             if(isset($account) && ($guild->canKick($account->attrs['accno']) || $account->hasPlayer($player['id']))) {
-                                echo '<img style="cursor: pointer" src="resource/cross.png" alt="X" height="16" width="16" onclick="Guild.requestKick(\'player'.$player['id'].'\', \''.$player['name'].'\', '.$guild->attrs['id'].')"/>';
+                                $player_content = '<img style="cursor: pointer" src="resource/cross.png" alt="X" height="16" width="16" onclick="Guild.requestKick(\'player'.$player['id'].'\', \''.$player['name'].'\', '.$guild->attrs['id'].')"/>&nbsp;'.
+                                '<a href="characters.php?player_id='.$player['id'].'">'.htmlspecialchars($player['name']).'</a>';
+                            } else {
+                                $player_content = '<a href="characters.php?player_id='.$player['id'].'">'.htmlspecialchars($player['name']).'</a>';
                             }
-                            echo '</td></tr>';
-                            $rank_content = '';
+                            
+                            echo '<tr '.getStyle($i).' id="player'.$player['id'].'">'
+                                .$rank_content.'<td>'.$player_content.'</td><td id="player'.$player['id'].'_title">'
+                                .$title_content.'</td></tr>';
+
+                            $rank_content = '<td></td>';
                         }
                         //owner wants to see all ranks
                         if (!$rank_has_players && $is_owner) {
-                            echo '<tr '.getStyle($i).'><td id="rank'.$rank['id'].'">'
-                                .$rank_content.'</td><td></td><td></td><td>';
+                            echo '<tr '.getStyle($i).'>'
+                                .$rank_content.'<td></td><td></td></tr>';
                         }
                     }
 
                     if($is_owner) {
                         echo '<tr><td colspan="4"><input type="text" id="new_rank_name" value="rank name" style="font-style: italic" onclick="input_clear(this)"/>&nbsp;<img style="cursor: pointer" src="resource/add.png" alt="+" id="rank_button" onclick="Guild.requestAddRank('.$guild->attrs['id'].', $(\'new_rank_name\').value)" /></td></tr>';
                     }
-
 
                     echo '</table><h2 style="display: inline">Invited Players</h2>';
                     echo '<table id="table_invited" style="width: 100%">';
