@@ -55,6 +55,7 @@ class Account {
         //load attributes from database
         $acc = $this->sql->myRetrieve('accounts', array('id' => $id));
         $nicaw_acc = $this->sql->myRetrieve('nicaw_accounts', array('account_id' => $id));
+        if ($this->sql->failed()) throw new Exception('Cannot load account:<br/>'.$this->sql->getError());
         if ($acc === false) {
             return false;
         }
