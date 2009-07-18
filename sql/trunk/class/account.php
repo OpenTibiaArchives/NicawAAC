@@ -56,7 +56,6 @@ class Account {
         $acc = $this->sql->myRetrieve('accounts', array('id' => $id));
         $nicaw_acc = $this->sql->myRetrieve('nicaw_accounts', array('account_id' => $id));
         if ($acc === false) {
-                throw new Exception('Cannot load account:<br/>'.$this->sql->getError());
             return false;
         }
         //arranging attributes, ones on the left will be used all over the aac
