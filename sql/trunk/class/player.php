@@ -249,26 +249,35 @@ WHERE t1.kill_id = t2.kill_id
 
         $SQL = AAC::$SQL;
 
-        $d['id']			= NULL;
-        $d['name']			= $name;
+        $group_id = $cfg['vocations'][$vocation]['group'];
+        if ($SQL->isTable('groups')) {
+            $group = $SQL->myRetrieve('groups', array('id' => $group_id));
+            if ($group === false) {
+                throw new Exception('Player::Create() Group #'.$group_id.' does not exist. Check your database and config file.');
+            }
+        }
+        
+
+        $d['id']		= NULL;
+        $d['name']		= $name;
         $d['account_id']	= $account;
-        $d['group_id']		= $cfg['vocations'][$vocation]['group'];
+        $d['group_id']		= $group_id;
         $d['rank_id']		= 0;
         $d['vocation']		= $vocation;
-        $d['sex']			= $sex;
-        $d['level']			= getVocLvl($vocation);
+        $d['sex']		= $sex;
+        $d['level']		= getVocLvl($vocation);
         $d['experience']	= getVocExp($vocation);
         $d['health']		= $cfg['vocations'][$vocation]['health'];
         $d['healthmax']		= $cfg['vocations'][$vocation]['health'];
         $d['looktype']		= $cfg['vocations'][$vocation]['look'][$sex];
         $d['maglevel']		= $cfg['vocations'][$vocation]['maglevel'];
-        $d['mana']			= $cfg['vocations'][$vocation]['mana'];
+        $d['mana']		= $cfg['vocations'][$vocation]['mana'];
         $d['manamax']		= $cfg['vocations'][$vocation]['mana'];
-        $d['cap']			= $cfg['vocations'][$vocation]['cap'];
+        $d['cap']		= $cfg['vocations'][$vocation]['cap'];
         $d['town_id']		= $city;
-        $d['posx']			= $cfg['temple'][$city]['x'];
-        $d['posy']			= $cfg['temple'][$city]['y'];
-        $d['posz']			= $cfg['temple'][$city]['z'];
+        $d['posx']		= $cfg['temple'][$city]['x'];
+        $d['posy']		= $cfg['temple'][$city]['y'];
+        $d['posz']		= $cfg['temple'][$city]['z'];
         $d['conditions']	= '';
 
         if (!$SQL->myInsert('players',$d)) throw new Exception('Player::Create() Cannot insert attributes:<br/>'.$SQL->getError());
