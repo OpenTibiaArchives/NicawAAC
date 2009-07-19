@@ -79,7 +79,7 @@ include ("header.inc.php");
 if (isset($_POST['login_submit'])) {
 	$account = $_POST['account'];
 	$password = $_POST['password'];
-}elseif (!empty($_COOKIE['remember'])){
+}elseif (!empty($_COOKIE['remember']) && isset($_COOKIE['account']) && isset($_COOKIE['password'])){
 	$account = $_COOKIE['account'];
 	$password = $_COOKIE['password'];
 }else{
