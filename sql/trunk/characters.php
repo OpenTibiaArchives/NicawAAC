@@ -31,7 +31,7 @@ include("header.inc.php");
         $player = new Player();
         if (!empty($_GET['player_id']) && $player->load($_GET['player_id']) || !empty($_GET['player_name']) && $player->find($_GET['player_name'])) {
             $account = new Account();
-            if(!$account->load($player->attrs['account'])) throw new Exception('Cannot load account for player '.$player->attrs['name']);
+            if(!$account->load($player->attrs['account'])) throw new aacException('Cannot load account for player '.$player->attrs['name']);
 
             echo '<hr/><table style="width: 100%"><tr><td><b>Name:</b> '.htmlspecialchars($player->attrs['name']).'&nbsp;';
             if($player->isOnline()) echo '<span style="color:green">[Online]</span>'."<br/>\n";

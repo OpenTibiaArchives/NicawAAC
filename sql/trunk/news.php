@@ -26,7 +26,7 @@ echo '<?xml version="1.0"?><rss version="2.0" xmlns:dc="http://purl.org/dc/eleme
 $mysql = AAC::$SQL;
 $sql = $mysql->myQuery('SELECT * FROM `nicaw_news` ORDER BY `date` DESC LIMIT 10');
 if ($sql === false) 
-	throw new Exception('SQL query failed:<br/>'.$SQL->getError());
+	throw new aacException('SQL query failed:<br/>'.$SQL->getError());
 while ($a = $mysql->fetch_array()){
   echo '<item>';
   echo '<guid>http://'.htmlspecialchars($cfg['server_url'].$_SERVER['PHP_SELF'].'?id='.$a['id']).'</guid>';
@@ -59,7 +59,7 @@ if (isset($_GET['id']))
 else
 	$mysql->myQuery('SELECT * FROM `nicaw_news` ORDER BY `date` DESC LIMIT 10');
 if ($mysql->failed())
-	throw new Exception('SQL query failed:<br/>'.$mysql->getError());
+	throw new aacException('SQL query failed:<br/>'.$mysql->getError());
 while ($a = $mysql->fetch_array()){
   echo '<i>'.date("jS F Y",$a['date']).'</i>';
   echo ' - <b>'.htmlspecialchars($a['creator']).'</b>';

@@ -65,8 +65,9 @@ class AAC {
     static public function HelpLink($issue_id) {
         return '<a href="http://aac.nicaw.net/help.php?issue='.$issue_id.'">More Info</a>';
     }
-
 }
+
+class aacException extends Exception {}
 
 /*
 	this is leftover from older versions
@@ -75,7 +76,7 @@ class AAC {
 
 function exception_handler($exception) {
     global $cfg;
-    echo '<pre style="position: absolute; top: 0px; left: 0px; background-color: white; color: black; border: 3px solid red;"><b>'.htmlspecialchars($exception->getMessage()). '<br/>'.basename($exception->getFile()).' on line: '.$exception->getLine().'</b><br/>Script was terminated because something unexpected happened. You can report this, if you think it\'s a bug.<br/>';
+    echo '<pre style="position: absolute; top: 0px; left: 0px; background-color: white; color: black; border: 3px solid red;"><b>'.$exception->getMessage(). '<br/>'.basename($exception->getFile()).' on line: '.$exception->getLine().'</b><br/>Script was terminated because something unexpected happened. You can report this, if you think it\'s a bug.<br/>';
     echo '<br/><b>Debug Backtrace:</b>';
     if ($cfg['debug_backtrace']) {
         echo '<br/>';

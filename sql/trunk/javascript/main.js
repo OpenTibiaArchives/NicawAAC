@@ -39,7 +39,7 @@ function ajax(element_id, script_url, get, warn) {
 
     new Ajax.Updater(element_id, script_url, { 
         method: 'post',
-        parameters: encodeURI(get) + '&ajax=true',
+        parameters: '?' + get + '&ajax=true',
         onComplete: function() {
             document.getElementById('iobox').style.left = Cookies.get('iobox_x');
             document.getElementById('iobox').style.top = Cookies.get('iobox_y');
@@ -115,40 +115,6 @@ function iobox_mouseup(){
     }
 }
 
-//retrieves input data from element childs
-function getParams(obj) {
-    var getstr = '';
-    for (i=0; i<obj.childNodes.length; i++) {
-        if (obj.childNodes[i].tagName == "INPUT") {
-            if (obj.childNodes[i].type == "text" || obj.childNodes[i].type == "password") {
-                getstr += obj.childNodes[i].name + "=" + obj.childNodes[i].value + "&";
-            }
-            if (obj.childNodes[i].type == "checkbox") {
-                if (obj.childNodes[i].checked) {
-                    getstr += obj.childNodes[i].name + "=" + obj.childNodes[i].value + "&";
-                } else {
-                    getstr += obj.childNodes[i].name + "=&";
-                }
-            }
-            if (obj.childNodes[i].type == "radio") {
-                if (obj.childNodes[i].checked) {
-                    getstr += obj.childNodes[i].name + "=" + obj.childNodes[i].value + "&";
-                }
-            }
-        }
-        if (obj.childNodes[i].tagName == "SELECT") {
-            var sel = obj.childNodes[i];
-            getstr += sel.name + "=" + sel.options[sel.selectedIndex].value + "&";
-        }
-        if (obj.childNodes[i].tagName == "TEXTAREA") {
-            var sel = obj.childNodes[i];
-            getstr += sel.name + "=" + sel.value + "&";
-        }
-     
-    }
-    return getstr;
-}
-
 function calcFlags(){
     var flags = 0;
     var flagNode = document.getElementById('groups');
@@ -183,12 +149,16 @@ function parseXML(txt) {
         xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
         xmlDoc.async="false";
         xmlDoc.loadXML(txt);
-        return xmlDoc;
     }
     catch(e)
     {
         parser=new DOMParser();
         xmlDoc=parser.parseFromString(txt,"text/xml");
+    }
+    if (xmlDoc.getElementsByTagName('response').length != 1) {
+        document.write('Cannot parse XML string: '+txt);
+        return false;
+    } else {
         return xmlDoc;
     }
 }

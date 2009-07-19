@@ -29,7 +29,7 @@ include ("header.inc.php");
         if ($SQL->failed())
             $SQL->myQuery('SELECT name, vocation, level FROM players WHERE lastlogin > lastlogout ORDER BY name ASC');
         if ($SQL->failed())
-            throw new Exception('<b>Your server does not store information on players online state</b><br/>SQL query failed:<br/>'.$SQL->getError());
+            throw new aacException('<b>Your server does not store information on players online state</b><br/>SQL query failed:<br/>'.$SQL->getError());
 
         if ($SQL->num_rows() == 0) {
             echo 'Nobody is online :-O';

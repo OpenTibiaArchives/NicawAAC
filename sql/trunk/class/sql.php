@@ -26,18 +26,18 @@ public function __construct($server, $user, $password, $database){
 
     //warn if MySQL extension is not installed
     if(!extension_loaded('mysql'))
-        throw new Exception('MySQL library is not installed. Database access is impossible. '.AAC::HelpLink(0));
+        throw new aacException('MySQL library is not installed. Database access is impossible. '.AAC::HelpLink(0));
 
     //establish a link to MySQL
     $con = mysql_connect($server,$user,$password);
     if ($con === false){
-        throw new Exception('Unable to connect to mysql server. Please make sure it is up and running and you have correct user/password in config.inc.php. '.AAC::HelpLink(1));
+        throw new aacException('Unable to connect to mysql server. Please make sure it is up and running and you have correct user/password in config.inc.php. '.AAC::HelpLink(1));
         return false;
     }
 
     //select otserv database
     if (!mysql_select_db($database)){
-        throw new Exception('Unable to select database: '.$database.'. Make sure it exists. '.AAC::HelpLink(2));
+        throw new aacException('Unable to select database: '.$database.'. Make sure it exists. '.AAC::HelpLink(2));
         return false;
     }
 
@@ -79,7 +79,7 @@ public function myQuery($q){
 		$this->last_error = 'Error #'.mysql_errno()."\n".$q."\n" . mysql_error() . "\n";
 		$analysis = $this->analyze();
 		if ($analysis !== false)
-			throw new Exception($analysis."\n".$this->last_error);
+			throw new aacException($analysis."\n".$this->last_error);
 	}
 	return $this->last_query;
 }
@@ -96,9 +96,9 @@ public function fetch_array(){
         if (isset($this->last_query))
             return mysql_fetch_array($this->last_query);
         else
-            throw new Exception('Attempt to fetch a null query.');
+            throw new aacException('Attempt to fetch a null query.');
     else
-      throw new Exception('Attempt to fetch failed query'."\n".$this->last_error);
+      throw new aacException('Attempt to fetch failed query'."\n".$this->last_error);
 }
 
 //Returns the last insert id
@@ -112,7 +112,7 @@ public function num_rows()
     if (!$this->failed())
       return mysql_num_rows($this->last_query);
     else
-      throw new Exception('Attempt to count failed query'."\n".$this->last_error);
+      throw new aacException('Attempt to count failed query'."\n".$this->last_error);
   }
 
 //Quotes a string
@@ -226,7 +226,7 @@ public function myRetrieve($table,$data)
 		$this->myQuery($query);
 		if ($this->failed()) return false;
 		if ($this->num_rows() <= 0) return false;
-		if ($this->num_rows() > 1) throw new Exception('Unexpected SQL answer. More than one item exists.');
+		if ($this->num_rows() > 1) throw new aacException('Unexpected SQL answer. More than one item exists.');
 		return $this->fetch_array();
 	}
 

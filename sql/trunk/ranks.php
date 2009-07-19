@@ -94,7 +94,7 @@ if (isset($query)){
 <?php 
 	$SQL->myQuery($query);
 	if ($SQL->failed())
-		throw new Exception('SQL query failed:<br/>'.$SQL->getError());
+		throw new aacException('SQL query failed:<br/>'.$SQL->getError());
 	else{
 		$i = $cfg['ranks_per_page']*$p;
 		while($a = $SQL->fetch_array())

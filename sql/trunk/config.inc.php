@@ -31,17 +31,18 @@ $cfg['password_salt'] = '';
 /*
  * Look skins/ to find out which skins you have
  * Available skins:
- * default.css - First skin ever created, white
- * swamp.css - Green skin with swamp theme
- * swamp-mini.css - Same as swamp.css, but with compact menu
- * dark.css - Dark version of default.css
- * conquest.css - Customized skin, renaissance theme
- * essense.css - Clean skin with green/blue motives
- * inferno.css - Darker skin with menu on the right
+ * default - First skin ever created, white
+ * swamp - Green skin with swamp theme
+ * swamp-mini - Same as swamp.css, but with compact menu
+ * dark - Dark version of default.css
+ * conquest - Customized skin, renaissance theme
+ * essense - Clean skin with green/blue motives
+ * inferno - Darker skin with menu on the right
+ * silica - Green skin, technology theme
  * Need more? Look http://otfans.net/ and
  * http://sourceforge.net/projects/nicaw-acc/files/
  */
-$cfg['skin'] = 'essense';
+$cfg['skin'] = 'silica';
 
 # In case you want to upload skins somewhere else
 $cfg['skin_url'] = 'skins/';
@@ -69,7 +70,7 @@ $cfg['ranks_per_page'] = 50;
 $cfg['ranks_access'] = 2;
 
 # Home page
-$cfg['start_page'] = 'notes.php';
+$cfg['start_page'] = 'news.php';
 
 # Name shown in window title
 $cfg['server_name'] = 'Nicaw SQL';
@@ -137,6 +138,9 @@ $cfg['guild_manager_enabled'] = true;
 
 # Online status update interval (seconds). Should match statustimeout in your otserv configuration
 $cfg['status_update_interval'] = 5*60;
+
+# Shows more informatin when exception occurs. WARNING! Can reveal sensitive information.
+$cfg['debug_backtrace'] = false;
 
 ##################################################
 #                 Town Config                    #

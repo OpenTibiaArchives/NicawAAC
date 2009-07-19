@@ -84,7 +84,7 @@ public function addLabel($code){
 }
 public function getCode(){
 	if (isset($_POST['ajax']))
-		$code = '<table cellspacing="10px" id="iobox" onmouseup="iobox_mouseup()" class="draggable"><tr><td><fieldset>'.$this->label.'<form id="'.$this->name.'" action="javascript:setStyle(\'iobox\',\'visibility\',\'hidden\'); ajax(document.getElementById(\'iobox\').parentNode.id,\''.htmlspecialchars($this->target).'\',getParams(document.getElementById(\''.$this->name.'\')),true);" method="post">';
+		$code = '<table cellspacing="10px" id="iobox" onmouseup="iobox_mouseup()" class="draggable"><tr><td><fieldset>'.$this->label.'<form id="'.$this->name.'" action="javascript:setStyle(\'iobox\',\'visibility\',\'hidden\'); ajax(document.getElementById(\'iobox\').parentNode.id,\''.htmlspecialchars($this->target).'\', $(\''.$this->name.'\').serialize(),true);" method="post">'."\n";
 	else
 		$code = '<div id="iobox" class="iobox"><fieldset>'.$this->label.'<form id="'.$this->name.'" action="'.htmlspecialchars($this->target).'" method="post">';
 	foreach ($this->elements as $element)

@@ -30,7 +30,7 @@ include ("header.inc.php");
 <div style="height: 500px; overflow: auto; margin: 10px;">
 <?
 $SpellsXML = @simplexml_load_file($cfg['dirdata'].'spells/spells.xml');
-if ($SpellsXML === false) throw new Exception('spells.xml not found');
+if ($SpellsXML === false) throw new aacException('spells.xml not found');
 foreach ($SpellsXML->instant as $spell){
 	if (!empty($_GET['spell']) and (stristr($spell['name'], $_GET['spell']) or stristr($spell['words'], $_GET['spell'])) or !isset($_GET['spell'])){
 		echo '<table><tr><td width="150px"><b>Spell Name</b></td><td>'.$spell['name'].'</td></tr>';

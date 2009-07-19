@@ -28,7 +28,6 @@ $SQL = AAC::$SQL;
             <input type="text" name="guild_name"/>
             <input type="submit" value="Search"/>
         </form>
-        <div style="float: right"><a target="_blank" href="tools/bug_report.php">Report a bug</a></div>
         <hr style="margin-top: 5px; margin-bottom: 5px; "/>
         <?php
         //-----------------------Guild list
@@ -36,7 +35,7 @@ $SQL = AAC::$SQL;
             $query = 'SELECT guilds.id, guilds.name, nicaw_guild_info.description FROM guilds LEFT JOIN nicaw_guild_info ON guilds.id = nicaw_guild_info.id ORDER BY name ASC';
             $SQL->myQuery($query);
             if ($SQL->failed())
-                throw new Exception('SQL query failed:<br/>'.$SQL->getError());
+                throw new aacException('SQL query failed:<br/>'.$SQL->getError());
             while ($a = $SQL->fetch_array()) {
                 if (file_exists('guilds/'.$a['id'].'.gif'))
                     $img_path = 'guilds/'.$a['id'].'.gif';

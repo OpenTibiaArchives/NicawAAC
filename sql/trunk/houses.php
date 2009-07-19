@@ -20,7 +20,7 @@ include ("include.inc.php");
 $ptitle="Houses - $cfg[server_name]";
 include ("header.inc.php");
 if (!is_file($cfg['dirdata'].$cfg['house_file']))
-	throw new Exception('House file not found: '.$cfg['dirdata'].$cfg['house_file']);
+	throw new aacException('House file not found: '.$cfg['dirdata'].$cfg['house_file']);
 ?>
 <div id="content">
 <div class="top">Houses</div>
@@ -33,7 +33,7 @@ $HousesXML = simplexml_load_file($cfg['dirdata'].$cfg['house_file']);
 $MySQL = AAC::$SQL;
 $MySQL->myQuery('SELECT `players`.`name`, `houses`.`id` FROM `players`, `houses` WHERE `houses`.`owner` = `players`.`id`;');
 if ($MySQL->failed())
-	throw new Exception('SQL query failed:<br/>'.$SQL->getError());
+	throw new aacException('SQL query failed:<br/>'.$SQL->getError());
 while ($row = $MySQL->fetch_array()){
 	$houses[(int)$row['id']] = $row['name'];
 }

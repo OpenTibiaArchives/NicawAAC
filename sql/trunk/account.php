@@ -31,9 +31,9 @@ include ("header.inc.php");
 <div class="top">Account</div>
 <div class="mid">
 <table style="width: 100%">
-<tr style="vertical-align: top"><td>
+<tr style="vertical-align: top"><td style="width: 200px;">
 <h3>Pick a Task</h3>
-<ul class="task-menu" style="width: 200px;">
+<ul class="task-menu">
 <li onclick="ajax('ajax','modules/character_create.php','',true)" style="background-image: url(resource/user_add.png);">Create Character</li>
 <li onclick="ajax('ajax','modules/character_delete.php','',true)" style="background-image: url(resource/user_delete.png);">Delete Character</li>
 <?php if ($cfg['char_repair']){?>
@@ -46,7 +46,7 @@ include ("header.inc.php");
 <li onclick="ajax('ajax','modules/guild_create.php','',true)" style="background-image: url(resource/group_add.png);">Create Guild</li>
 <li onclick="window.location.href='login.php?logout&amp;redirect=account.php'" style="background-image: url(resource/resultset_previous.png);">Logout</li>
 </ul>
-</td><td>
+</td><td style="width: 130px;">
 <?php 
 if ($account->players){
 	echo '<h3>Characters</h3>'."\n";
@@ -68,7 +68,7 @@ if ($account->guilds){
 </td></tr>
 </table>
 <?php
-if($account->attrs['premend'] > time()) {
+if(isset($account->attrs['premend']) && $account->attrs['premend'] > time()) {
     echo '<b>Premium status:</b> You have ';
     $days = ceil(($account->attrs['premend'] - time())/(3600*24));
     if($days <= 5) echo '<b style="color: red">';

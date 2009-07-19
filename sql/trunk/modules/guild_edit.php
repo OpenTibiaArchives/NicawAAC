@@ -22,7 +22,7 @@ $account = new Account();
 (isset($_SESSION['account']) && $account->load($_SESSION['account'])) or die('You need to login first.');
 //load guild
 $guild = new Guild();
-if (!$guild->load($_REQUEST['guild_id'])) throw new Exception('Unable to load guild.');
+if (!$guild->load($_REQUEST['guild_id'])) throw new aacException('Unable to load guild.');
 if ($guild->attrs['owner_acc'] != $_SESSION['account']) die('Not your guild');
 //retrieve post data
 $form = new Form('edit');

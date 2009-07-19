@@ -43,7 +43,7 @@ class Account {
     public function load_players() {
         if(empty($this->attrs['accno'])) return false;
         $this->sql->myQuery('SELECT players.id, players.name FROM players WHERE (`account_id`='.$this->sql->quote($this->attrs['accno']).')');
-        if ($this->sql->failed()) throw new Exception($this->sql->getError());
+        if ($this->sql->failed()) throw new aacException($this->sql->getError());
         while ($a = $this->sql->fetch_array()) {
             $this->players[] = array('name' => $a['name'], 'id' => $a['id']);
         }
@@ -55,7 +55,7 @@ class Account {
         //load attributes from database
         $acc = $this->sql->myRetrieve('accounts', array('id' => $id));
         $nicaw_acc = $this->sql->myRetrieve('nicaw_accounts', array('account_id' => $id));
-        if ($this->sql->failed()) throw new Exception('Cannot load account:<br/>'.$this->sql->getError());
+        if ($this->sql->failed()) throw new aacException('Cannot load account:<br/>'.$this->sql->getError());
         if ($acc === false) {
             return false;
         }
@@ -81,7 +81,7 @@ class Account {
         $acc['email'] = $this->attrs['email'];
 
         if (!$this->sql->myUpdate('accounts',$acc, array('id' => $this->attrs['accno'])))
-            throw new Exception('Cannot save account:<br/>'.$this->sql->getError());
+            throw new aacException('Cannot save account:<br/>'.$this->sql->getError());
 
         $nicaw_acc['account_id'] = $this->attrs['accno'];
         $nicaw_acc['rlname'] = $this->attrs['rlname'];
@@ -91,7 +91,7 @@ class Account {
         $nicaw_acc['reveal_characters'] = $this->attrs['reveal_characters'];
 
         if (!$this->sql->myReplace('nicaw_accounts',$nicaw_acc))
-            throw new Exception('Cannot save account:<br/>'.$this->sql->getError());
+            throw new aacException('Cannot save account:<br/>'.$this->sql->getError());
 
         return true;
     }
@@ -113,7 +113,7 @@ class Account {
         $d['name'] = $name;
         $d['password'] = Account::encodePassword($password);
         $d['email'] = $email;
-        if (!$SQL->myInsert('accounts',$d)) throw new Exception('Account::Create() Cannot insert attributes:<br/>'.$SQL->getError());
+        if (!$SQL->myInsert('accounts',$d)) throw new aacException('Account::Create() Cannot insert attributes:<br/>'.$SQL->getError());
         $aid = $SQL->insert_id();
 
         unset($d);
@@ -131,7 +131,7 @@ class Account {
 
     public function __get($attr) {
         if(empty($this->attrs['accno']))
-            throw new Exception('Attempt to get attribute of account that is not loaded.');
+            throw new aacException('Attempt to get attribute of account that is not loaded.');
         if($attr == 'attrs') {
             return $this->attrs;
         }elseif($attr == 'guilds') {
@@ -141,7 +141,7 @@ class Account {
             if(empty($this->players)) $this->load_players();
             return $this->players;
         }else {
-            throw new Exception('Undefined property: '.$attr);
+            throw new aacException('Undefined property: '.$attr);
         }
     }
 
@@ -171,13 +171,13 @@ class Account {
         }elseif ($cfg['password_type'] == 'sha1') {
             $pass = sha1($pass);
         }elseif ($cfg['password_type'] == 'plain') {
-        }else throw new Exception('Unknow password encoding.');
+        }else throw new aacException('Unknow password encoding.');
         return $this->attrs['password'] == (string)$pass && !empty($pass);
     }
 
     static public function existsName($name) {
         AAC::$SQL->myQuery('SELECT * FROM `accounts` WHERE `name` = '.AAC::$SQL->quote($name));
-        if (AAC::$SQL->failed()) throw new Exception('Account::existsName() failed. If your server doesn\'t support account names pelase use AAC release v3.20');
+        if (AAC::$SQL->failed()) throw new aacException('Account::existsName() failed. If your server doesn\'t support account names pelase use AAC release v3.20');
         if (AAC::$SQL->num_rows() > 0) return true;
         return false;
     }
@@ -185,7 +185,7 @@ class Account {
     public function logAction($action) {
         $this->sql->myQuery('INSERT INTO `nicaw_account_logs` (id, ip, account_id, date, action) VALUES(NULL, INET_ATON('.$this->sql->quote($_SERVER['REMOTE_ADDR']).'), '.$this->sql->quote($this->attrs['accno']).', UNIX_TIMESTAMP(NOW()), '.$this->sql->quote($action).')');
         if ($this->sql->failed())
-            throw new Exception($this->sql->getError());
+            throw new aacException($this->sql->getError());
     }
 
     public function removeRecoveryKey() {
@@ -205,13 +205,13 @@ class Account {
     public function vote($option) {
         $this->sql->myQuery('INSERT INTO `nicaw_poll_votes` (option_id, ip, account_id) VALUES('.$this->sql->quote($option).', INET_ATON('.$this->sql->quote($_SERVER['REMOTE_ADDR']).'), '.$this->sql->quote($this->attrs['accno']).')');
         if ($this->sql->failed())
-            throw new Exception($this->sql->getError());
+            throw new aacException($this->sql->getError());
     }
 
     public function getMaxLevel() {
         $this->sql->myQuery('SELECT MAX(level) AS maxlevel FROM `players` WHERE `account_id` = '.$this->sql->quote($this->attrs['accno']));
         if ($this->sql->failed())
-            throw new Exception($this->sql->getError);
+            throw new aacException($this->sql->getError);
         $row = $this->sql->fetch_array();
         return (int) $row['maxlevel'];
     }
@@ -225,9 +225,9 @@ AND nicaw_polls.startdate < UNIX_TIMESTAMP(NOW())
 AND nicaw_polls.enddate > UNIX_TIMESTAMP(NOW())';
         $this->sql->myQuery($query);
         if ($this->sql->failed())
-            throw new Exception($this->sql->getError);
-        if ($this->num_rows() == 0) return false;
-        if ($this->num_rows() > 1) throw new Exception('Unexpected SQL answer.');
+            throw new aacException($this->sql->getError);
+        if ($this->sql->num_rows() == 0) return false;
+        if ($this->sql->num_rows() > 1) throw new aacException('Unexpected SQL answer.');
         $a = $this->sql->fetch_array();
         $poll_id = $a['id'];
         $query = 'SELECT * FROM nicaw_poll_votes, nicaw_poll_options
@@ -237,10 +237,10 @@ AND (account_id = '.$this->sql->quote($this->attrs['accno']).' OR ip = INET_ATON
 )';
         $this->sql->myQuery($query);
         if ($this->sql->failed())
-            throw new Exception($this->sql->getError);
-        if ($this->num_rows() == 0) return true;
-        elseif ($this->num_rows() == 1) return false;
-        else throw new Exception('Unexpected SQL answer.');
+            throw new aacException($this->sql->getError);
+        if ($this->sql->num_rows() == 0) return true;
+        elseif ($this->sql->num_rows() == 1) return false;
+        else throw new aacException('Unexpected SQL answer.');
     }
 }
 ?>

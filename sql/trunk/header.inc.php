@@ -38,7 +38,7 @@ function tick()
 <?php 
 if (file_exists('navigation.xml')){
 	$XML = simplexml_load_file('navigation.xml');
-	if ($XML === false) throw new Exception('Malformed XML');
+	if ($XML === false) throw new aacException('Malformed XML');
 }else{die('Unable to load navigation.xml');}
 foreach ($XML->category as $cat){
 	echo '<div class="top" onclick="menu_toggle(this)" style="cursor: pointer;">'.$cat['name'].'</div><ul>'."\n";

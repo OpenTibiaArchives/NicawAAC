@@ -38,7 +38,7 @@ class Guild {
         if(empty($this->attrs['id'])) return false;
         $this->sql->myQuery('SELECT players.name, players.guildnick, players.id, guild_ranks.id AS rank FROM guild_ranks, players WHERE players.rank_id = guild_ranks.id AND guild_ranks.guild_id = '.$this->sql->quote($this->attrs['id']));
         if ($this->sql->failed())
-            throw new Exception('Failed to load guild members:<br/>'.$this->sql->getError());
+            throw new aacException('Failed to load guild members:<br/>'.$this->sql->getError());
 
         while ($a = $this->sql->fetch_array()) {
             $this->members[$a['id']] = array('id' => $a['id'], 'name' => $a['name'], 'rank' => $a['rank'], 'nick' => $a['guildnick']);
@@ -51,7 +51,7 @@ class Guild {
         if(empty($this->attrs['id'])) return false;
         $this->sql->myQuery('SELECT players.id, players.name, nicaw_guild_invites.rank FROM players, guilds, nicaw_guild_invites WHERE players.id = nicaw_guild_invites.pid AND guilds.id = nicaw_guild_invites.gid AND guilds.id = '.$this->sql->quote($this->attrs['id']));
         if ($this->sql->failed())
-            throw new Exception('Failed to load invited members:<br/>'.$this->sql->getError());
+            throw new aacException('Failed to load invited members:<br/>'.$this->sql->getError());
 
         while ($a = $this->sql->fetch_array())
             $this->invited[$a['id']] = array('id' => $a['id'], 'name' => $a['name'], 'rank' => $a['rank']);
@@ -63,9 +63,9 @@ class Guild {
         $query = 'SELECT players.account_id, guilds.* FROM players, guilds WHERE players.id = guilds.ownerid AND guilds.id = '.$this->sql->quote($id);
         $this->sql->myQuery($query);
         if ($this->sql->failed())
-            throw new Exception('Failed to load guild:<br/>'.$this->sql->getError());
+            throw new aacException('Failed to load guild:<br/>'.$this->sql->getError());
         if ($this->sql->num_rows() > 1)
-            throw new Exception('Unexpected SQL answer. More than one guild exists:<br/>'.$this->sql->getError());
+            throw new aacException('Unexpected SQL answer. More than one guild exists:<br/>'.$this->sql->getError());
         if ($this->sql->num_rows() == 0)
             return false;
         $a = $this->sql->fetch_array();
@@ -78,7 +78,7 @@ class Guild {
         $a = $this->sql->fetch_array();
         $this->attrs['description'] = (string) $a['description'];
 
-        $this->sql->myQuery('SELECT id, name, level FROM guild_ranks WHERE guild_id = '.$this->sql->quote($this->attrs['id']).' ORDER BY level');
+        $this->sql->myQuery('SELECT id, name, level FROM guild_ranks WHERE guild_id = '.$this->sql->quote($this->attrs['id']).' ORDER BY level DESC');
         while ($a = $this->sql->fetch_array()) {
             $this->ranks[$a['id']] = array('id' => $a['id'], 'name' => $a['name'], 'level' => $a['level']);
         }
@@ -87,7 +87,7 @@ class Guild {
     }
 
     public function setDescription($text) {
-        if(empty($this->attrs['id'])) throw new Exception('Guild is not loaded, cannot call setDescription().');
+        if(empty($this->attrs['id'])) throw new aacException('Guild is not loaded, cannot call setDescription().');
 
         if(!$this->sql->myUpdate('nicaw_guild_info',
         array('description' => $text), array('id' => $this->attrs['id'])))
@@ -98,7 +98,7 @@ class Guild {
     }
 
     public function setOwner($player) {
-        if(empty($this->attrs['id'])) throw new Exception('Guild is not loaded, cannot call setOwner().');
+        if(empty($this->attrs['id'])) throw new aacException('Guild is not loaded, cannot call setOwner().');
 
         if(!$this->sql->myUpdate('guilds',
         array('ownerid' => $player->attrs['id']), array('id' => $this->attrs['id'])))
@@ -110,7 +110,7 @@ class Guild {
     }
 
     public function setName($name) {
-        if(empty($this->attrs['id'])) throw new Exception('Guild is not loaded, cannot call setName().');
+        if(empty($this->attrs['id'])) throw new aacException('Guild is not loaded, cannot call setName().');
 
         if(!$this->sql->myUpdate('guilds',
         array('name' => $name), array('id' => $this->attrs['id'])))
@@ -122,7 +122,7 @@ class Guild {
 
     public function __get($attr) {
         if(empty($this->attrs['id']))
-            throw new Exception('Attempt to get attribute of guild that is not loaded.');
+            throw new aacException('Attempt to get attribute of guild that is not loaded.');
         if($attr == 'attrs') {
             return $this->attrs;
         }elseif($attr == 'ranks') {
@@ -134,15 +134,17 @@ class Guild {
             if(empty($this->invited)) $this->load_invited();
             return $this->invited;
         }else {
-            throw new Exception('Undefined property: '.$attr);
+            throw new aacException('Undefined property: '.$attr);
         }
     }
 
     public function addRank($name, $level = null) {
 
         if ($level == null) {
-            $level = $this->ranks[$this->getMinMaxRankId(true)]['level'] + 1;
+            $level = 1;
         }
+
+        $this->shift($level, true);
 
         $d['name'] = (string) $name;
         $d['level'] = (int) $level;
@@ -171,6 +173,7 @@ class Guild {
     public function removeRank($id) {
         if($this->isRankUsed($id)) return false;
         if(isset($this->ranks[$id])) {
+            $this->shift($this->ranks[$id]['level'], false);
             unset($this->ranks[$id]);
             $this->sql->myDelete('guild_ranks', array('id' => $id));
             return true;
@@ -223,6 +226,20 @@ class Guild {
         return $a[0];
     }
 
+    public function shift($lvl, $upDown) {
+        $query = 'UPDATE guild_ranks SET level = level ';
+        if ($upDown) {
+            $query.= '+';
+        } else {
+            $query.= '-';
+        }
+        $query.= ' 1 WHERE guild_id = '.$this->sql->quote($this->attrs['id']).
+        ' AND level >= '.$this->sql->quote($lvl);
+        $this->sql->myQuery($query);
+        if ($this->sql->failed())
+            throw new aacException('SQL failed in Guild::shift()'.$this->sql->getError());
+    }
+
     public function playerInvite($player, $rank_id = null) {
     //player is already a member - do nothing
         if ($this->isMember($player->attrs['id']) || $this->isInvited($player->attrs['id']))
@@ -255,14 +272,14 @@ class Guild {
         if (!$this->isRank($rank_id))
             $rank_id = $this->getMinMaxRankId(false);
         if (!$this->isRank($rank_id))
-            throw new Exception('Cannot find rank for the player.');
+            throw new aacException('Cannot find rank for the player.');
 
         $player->setAttr('rank_id', $rank_id);
 
         if(!$player->save()) return false;
 
         if($this->isInvited($player->attrs['id'])) {
-            if(!$this->unInvite($player->attrs['id'])) throw new Exception('Cant uninvite.'.$this->sql->getError());
+            if(!$this->unInvite($player->attrs['id'])) throw new aacException('Cant uninvite.'.$this->sql->getError());
             $this->members[$player->attrs['id']] = $this->invited[$player->attrs['id']];
             unset($this->invited[$player->attrs['id']]);
         } else {
@@ -299,7 +316,7 @@ class Guild {
     public static function exists($name) {
         $SQL = AAC::$SQL;
         $SQL->myQuery('SELECT * FROM `guilds` WHERE `name` = '.$SQL->quote($name));
-        if ($SQL->failed()) throw new Exception('Guild::exists() cannot determine whether guild exists');
+        if ($SQL->failed()) throw new aacException('Guild::exists() cannot determine whether guild exists');
         if ($SQL->num_rows() > 0) return true;
         return false;
     }
@@ -309,15 +326,15 @@ class Guild {
         $d['ownerid'] = $owner_id;
 
         $SQL = AAC::$SQL;
-        if(!$SQL->myInsert('guilds', $d)) throw new Exception('SQL failed in Guild:Create'.$SQL->getError());
+        if(!$SQL->myInsert('guilds', $d)) throw new aacException('SQL failed in Guild:Create'.$SQL->getError());
 
         $guild = new Guild();
         if(!$guild->load($SQL->insert_id()))
-            throw new Exception('Guild did not load');
+            throw new aacException('Guild did not load');
 
         if(!$SQL->myReplace('nicaw_guild_info',
         array('description' => '', 'id' => $SQL->insert_id())))
-            throw new Exception('SQL failed in Guild:Create'.$SQL->getError());
+            throw new aacException('SQL failed in Guild:Create'.$SQL->getError());
 
         return $guild;
     }
