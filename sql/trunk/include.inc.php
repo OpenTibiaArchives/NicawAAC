@@ -75,6 +75,7 @@ if (!$cfg['secure_session'] && !empty($_COOKIE['remember']) && !array_key_exists
 		$_SESSION['account']=$account->attrs['accno'];
 		$_SESSION['remote_ip']=$_SERVER['REMOTE_ADDR'];
 	}
+        unset($account);
 }
 $_SESSION['last_activity'] = time();
 
