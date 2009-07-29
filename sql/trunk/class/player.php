@@ -192,7 +192,8 @@ WHERE t1.kill_id = t2.kill_id
         $d['rank_id'] = $this->attrs['rank_id'];
         $d['guildnick'] = $this->attrs['guildnick'];
 
-        return $this->sql->myUpdate('players', $d, array('id' => $this->attrs['id']));
+        if(!$this->sql->myUpdate('players', $d, array('id' => $this->attrs['id']))) throw new aacException('Player::save() failed '.$this->sql->getError());
+		return true;
     }
 
     public function setAttr($attr, $val) {
