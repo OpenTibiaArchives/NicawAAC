@@ -50,17 +50,31 @@ if ($form->exists()) {
         $msg->show();
     }
 }else {
-//make a list of member characters
+
+    //create new form
+    $form = new IOBox('edit');
+    $form->target = $_SERVER['PHP_SELF'].'?guild_id='.$guild->attrs['id'];
+    $form->addLabel('Edit Member');
+
+	if(count($guild->members) == 0) {
+		$form->addMsg('Guild has no members.');
+		$form->addClose('Cancel');
+		$form->show();
+		exit();
+	}elseif(count($guild->ranks) <= 1) {
+		$form->addMsg('Guild has no ranks.');
+		$form->addClose('Cancel');
+		$form->show();
+		exit();
+	}
+
+	//make a list of member characters
     foreach ($guild->members as $member)
         $list_players[$member['id']] = $member['name'];
     //make a list of guild ranks
     foreach ($guild->ranks as $rank)
         $list_ranks[$rank['id']] = $rank['name'];
 
-    //create new form
-    $form = new IOBox('edit');
-    $form->target = $_SERVER['PHP_SELF'].'?guild_id='.$guild->attrs['id'];
-    $form->addLabel('Edit Member');
     $form->addMsg('Select the player and its new rank.');
     $form->addSelect('player', $list_players);
     $form->addSelect('rank', $list_ranks);
