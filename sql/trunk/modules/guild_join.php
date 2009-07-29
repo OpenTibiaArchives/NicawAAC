@@ -33,9 +33,11 @@ if (isset($_SESSION['account']) && $account->load($_SESSION['account'])) {
                 if ($guild->isInvited($player->attrs['id'])) {
                     //cant join if player belongs to another guild
                     if ($player->attrs['rank_id'] == 0) {
-                        if ($guild->playerJoin($player)) {
-                            //success
-                        }else $error = 'Cannot join guild';
+						if (!$player->isOnline()) {
+							if ($guild->playerJoin($player)) {
+								//success
+							}else $error = 'Cannot join guild';
+						}else $error = 'Cannot complete action. Player is online.';
                     }else $error = 'Cannot join because you are a member of another guild';
                 }else $error = 'You are not invited';
             }else $error = 'Player does not belong to your account';
