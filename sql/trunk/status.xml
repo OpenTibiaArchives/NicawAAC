@@ -1,4 +1,2 @@
 <?xml version="1.0"?>
-<tsqp version="1.0"><serverinfo uptime="12639" ip="melaniaot.net" servername="Melania" port="7171" location="Europe" url="http://melaniaot.net/" server="The Forgotten Server" version="0.3.5_SVN" client="8.42"/><owner name="Kula" email="@otland.net"/><players online="497" max="1000" peak="808"/><monsters total="24382"/><npcs total="139"/><map name="world" author="Komic" width="38000" height="38000"/><motd>There won't be any character reset! 
-
- Resetu charow nie bedzie!</motd></tsqp>
+<tsqp version="1.0"><serverinfo uptime="11334" ip="84.55.13.19" servername="OTServ" port="7171" location="Germany" url="http://otfans.net" server="Stormserver" version="0.6.3_SVN" client="8.50"/><owner name="Tliff" email="otserv@tibia.de"/><players online="1" max="900" peak="1"/><map name="" author="" width="65000" height="65000"/><motd>Welcome to OTServ 0.6.3!</motd></tsqp>

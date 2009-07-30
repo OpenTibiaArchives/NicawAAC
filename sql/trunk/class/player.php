@@ -163,7 +163,6 @@ WHERE t1.kill_id = t2.kill_id
         $this->attrs['city'] = (int) $player['town_id'];
         $this->attrs['sex'] = (int) $player['sex'];
         $this->attrs['lastlogin'] = (int) $player['lastlogin'];
-        $this->attrs['redskulltime'] = (int) $player['redskulltime'];
         $this->attrs['rank_id'] = (int) $player['rank_id'];
         $this->attrs['guildnick'] = (string) $player['guildnick'];
         $this->attrs['spawn']['x'] = (int) $player['posx'];
@@ -188,7 +187,6 @@ WHERE t1.kill_id = t2.kill_id
         $d['maglevel'] = $this->attrs['maglevel'];
         $d['town_id'] = $this->attrs['city'];
         $d['sex'] = $this->attrs['sex'];
-        $d['redskulltime'] = $this->attrs['redskulltime'];
         $d['rank_id'] = $this->attrs['rank_id'];
         $d['guildnick'] = $this->attrs['guildnick'];
 
