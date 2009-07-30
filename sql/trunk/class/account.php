@@ -59,6 +59,9 @@ class Account {
         if ($acc === false) {
             return false;
         }
+		if (isset($acc['blocked']) && $acc['blocked']) {
+			return false;
+		}
         //arranging attributes, ones on the left will be used all over the aac
         $this->attrs['accno'] = (int) $acc['id'];
         $this->attrs['name'] = (string) $acc['name'];
