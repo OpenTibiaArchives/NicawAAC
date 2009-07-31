@@ -116,7 +116,7 @@ class Guild {
         array('name' => $name), array('id' => $this->attrs['id'])))
             return false;
 
-        $this->atrrs['name'] = $name;
+        $this->attrs['name'] = $name;
         return true;
     }
 
