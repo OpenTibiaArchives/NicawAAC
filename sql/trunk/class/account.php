@@ -161,9 +161,9 @@ class Account {
     static private function encodePassword($pass){global $cfg;
         $pass = $pass.$cfg['password_salt'];
         if ($cfg['password_type'] == 'md5')
-            $pass = md5($new);
+            $pass = md5($pass);
         elseif ($cfg['password_type'] == 'sha1')
-            $pass = sha1($new);
+            $pass = sha1($pass);
         return $pass;
     }
 
