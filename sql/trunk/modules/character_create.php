@@ -29,7 +29,7 @@ if ($form->exists()){
 	$form->attrs['name'] = ucfirst($form->attrs['name']);
 	$newplayer = new Player();
 	//check for correct parameters
-	if ($cfg['temple'][$form->attrs['residence']]['enabled'] && $cfg['vocations'][(int)$form->attrs['vocation']]['enabled'] && ereg("^[01]$",$form->attrs['sex'])){
+	if ($cfg['temple'][$form->attrs['residence']]['enabled'] && $cfg['vocations'][(int)$form->attrs['vocation']]['enabled'] && preg_match("/^[01]$/",$form->attrs['sex'])){
 		//check character number
 		if (count($account->players) < $cfg['maxchars']){
 			//check for valid name

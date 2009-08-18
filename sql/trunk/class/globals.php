@@ -22,7 +22,7 @@ class AAC {
 
     static public function ValidPlayerName($name) {global $cfg;
         foreach ($cfg['invalid_names'] as $baned_name)
-            if (eregi($baned_name,$name))
+            if (preg_match('/'.$baned_name.'/i',$name))
                 return false;
         return preg_match("/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/",$name)
             && strlen($name) <= 25 && strlen($name) >= 4
@@ -39,11 +39,11 @@ class AAC {
     }
 
     static public function ValidAccountName($n) {
-        return eregi('^[A-Z0-9_]{6,30}$',$n);
+        return preg_match('/^[A-Z0-9_]{6,30}$/i',$n);
     }
 
     static public function ValidEmail($email) {
-        return eregi('^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}$',$email);
+        return preg_match('/^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}$/i',$email);
     }
 
     static public function ValidGuildName($name) {
