@@ -23,7 +23,7 @@ $cfg['SQL_Database'] = 'otserv2';
 
 # Must correspond to your OTServ configuration
 # Options: plain, md5, sha1
-$cfg['password_type'] = 'md5';
+$cfg['password_type'] = 'plain';
 
 # Not currently supported by OTServ, leave empty
 $cfg['password_salt'] = '';
