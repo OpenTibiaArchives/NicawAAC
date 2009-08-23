@@ -35,18 +35,20 @@ if ($form->exists()){
 				if ($owner->attrs['account'] == $_SESSION['account']){
 					//check if owner belongs to any guild
 					if (!isset($owner->guild['guild_id'])){
-						if ($owner->attrs['level'] >= $cfg['guild_leader_level']){
-							//create guild and add owner as a leader
-							$new_guild = Guild::Create($form->attrs['Guild_Name'], $owner->attrs['id']);
-							$new_guild->playerJoin($owner);
-							$account->logAction('Created guild: '.$new_guild->attrs['name']);
-							
-							//success
-							$msg = new IOBox('message');
-							$msg->addMsg('Guild was created');
-							$msg->addClose('Finish');
-							$msg->show();
-						}else $error = 'Character level too low';
+						if (!$owner->isOnline()){
+							if ($owner->attrs['level'] >= $cfg['guild_leader_level']){
+								//create guild and add owner as a leader
+								$new_guild = Guild::Create($form->attrs['Guild_Name'], $owner->attrs['id']);
+								$new_guild->playerJoin($owner);
+								$account->logAction('Created guild: '.$new_guild->attrs['name']);
+								
+								//success
+								$msg = new IOBox('message');
+								$msg->addMsg('Guild was created');
+								$msg->addClose('Finish');
+								$msg->show();
+							}else $error = 'Character level too low';
+						}else $error = 'Cannot create the guild because the owner is online.';
 					}else $error = 'This character already belongs to guild';
 				}else $error = 'Not your character';
 			}else $error = 'Cannot load player';
