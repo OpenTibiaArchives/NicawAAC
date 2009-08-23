@@ -19,7 +19,7 @@
 class SQL{
 private $last_query, $last_error, $last_insert_id;
 protected $sql_tables;
-private $sql_connection;
+private $sql_connection, $schema_version;
 
 //creates new connection
 public function __construct($server, $user, $password, $database){
@@ -46,11 +46,24 @@ public function __construct($server, $user, $password, $database){
 	if ($result === false) return false;
 	while ($a = mysql_fetch_array($result))
 	$this->sql_tables[] = $a[0];
+	
+	//retrieve schema version
+	$result = mysql_query('SELECT value FROM schema_info WHERE name = version');
+	if ($result === false) {
+		$this->schema_version = false;
+	} else {
+		$a = mysql_fetch_array($result);
+		$this->schema_version = $a['value'];
+	}
 
     //assign the connection
     $this->sql_connection = $con;
 
 	return true;
+}
+
+public function getSchemaVersion() {
+	return $this->schema_version;
 }
 
 public function isTable($mixed) {
