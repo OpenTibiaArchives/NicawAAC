@@ -24,14 +24,15 @@ class Player {
     }
 
     public function find($name) {
+        if (empty($name)) throw new PlayerNotFoundException();
         $player = $this->sql->myRetrieve('players', array('name' => $name));
-        if ($player === false) return false;
+        if ($player === false) throw new PlayerNotFoundException();
         $this->load($player['id']);
         return true;
     }
 
     private function load_deaths() {
-        if(empty($this->attrs['id'])) return false;
+        if(empty($this->attrs['id'])) throw new PlayerNotLoadedException();
         if($this->sql->isTable('player_killers')) {
             $query = '
 SELECT DISTINCT name AS killer_name, id AS killer_id, date, level AS victim_level FROM
@@ -50,7 +51,6 @@ LIMIT 10) AS t2
 WHERE t1.kill_id = t2.kill_id
 ';
             $this->sql->myQuery($query);
-            if ($this->sql->failed()) throw new aacException('Cannot retrieve deaths! This is only compatible with TFS.'.$this->sql->getError());;
             $i = 0;
             while($a = $this->sql->fetch_array()) {
                 $this->deaths[$i]['killer_name'] = $a['killer_name'];
@@ -62,30 +62,36 @@ WHERE t1.kill_id = t2.kill_id
         } elseif($this->sql->isTable('player_deaths')) {
             $query = "SELECT * FROM `player_deaths` WHERE (`player_id` = '".$this->sql->quote($this->attrs['id'])."') ORDER BY time DESC LIMIT 10";
             $this->sql->myQuery($query);
-            if ($this->sql->failed()) throw new aacException('Cannot retrieve deaths! This is only compatible with TFS.'.$this->sql->getError());;
             $i = 0;
             while($a = $this->sql->fetch_array()) {
                 $killer = new Player();
-                if ($killer->find($a['killed_by']) || $a->load($death['killed_by'])) {
+                try {
+                    $killer->find($a['killed_by']);
                     $this->deaths[$i]['killer_name'] = $killer->attrs['name'];
                     $this->deaths[$i]['killer_id'] = $killer->attrs['id'];
-                } else {
-                    $this->deaths[$i]['killer_name'] = $a['killed_by'];
-                    $this->deaths[$i]['killer_id'] = null;
+                } catch(PlayerNotFoundException $e) {
+                    try {
+                        $killer->load($death['killed_by']);
+                        $this->deaths[$i]['killer_name'] = $killer->attrs['name'];
+                        $this->deaths[$i]['killer_id'] = $killer->attrs['id'];
+                    } catch(PlayerNotFoundException $e) {
+                        $this->deaths[$i]['killer_name'] = $a['killed_by'];
+                        $this->deaths[$i]['killer_id'] = null;
+                    }
                 }
+
                 $this->deaths[$i]['victim_level'] = $a['level'];
                 $this->deaths[$i]['date'] = $a['time'];
                 $i++;
             }
-        } else return false;
+        } else throw new DatabaseException('Deaths data not found in database or it is not compatible.');
 
         return true;
     }
 
     private function load_skills() {
-        if(empty($this->attrs['id'])) return false;
+        if(empty($this->attrs['id'])) throw new PlayerNotLoadedException();
         $this->sql->myQuery('SELECT * FROM `player_skills` WHERE `player_id` = '.$this->sql->quote($this->attrs['id']));
-        if ($this->sql->failed()) throw new aacException('Cannot retrieve player skills<br/>'.$this->sql->getError());
         while($a = $this->sql->fetch_array()) {
             $this->skills[$a['skillid']]['skill'] = (int)$a['value'];
             $this->skills[$a['skillid']]['tries'] = (int)$a['count'];
@@ -94,18 +100,17 @@ WHERE t1.kill_id = t2.kill_id
     }
 
     private function load_storage() {
-        if(empty($this->attrs['id'])) return false;
+        if(empty($this->attrs['id'])) throw new PlayerNotLoadedException();
         $this->sql->myQuery('SELECT * FROM `player_storage` WHERE `player_id` = '.$this->sql->quote($this->attrs['id']));
-        if ($this->sql->failed()) throw new aacException('Cannot retrieve player storage<br/>'.$this->sql->getError());
         while($a = $this->sql->fetch_array())
             $this->storage[$a['key']] = (int)$a['value'];
         return true;
     }
 
     private function load_guild() {
-        if(empty($this->attrs['rank_id']) || $this->attrs['rank_id'] == 0) return false;
+        if(empty($this->attrs['rank_id']) || $this->attrs['rank_id'] == 0) throw new GuildNotFoundException();
         $this->sql->myQuery("SELECT guild_ranks.level, guild_ranks.name AS rank_name, guilds.id, guilds.name AS guild_name FROM guild_ranks, guilds WHERE guilds.id = guild_ranks.guild_id AND guild_ranks.id = ".$this->sql->quote($this->attrs['rank_id']));
-        if (!$this->sql->failed() && $this->sql->num_rows() == 1) {
+        if ($this->sql->num_rows() == 1) {
             $a = $this->sql->fetch_array();
             $this->guild['guild_nick'] = $this->attrs['guildnick'];
             $this->guild['guild_level'] = $a['level'];
@@ -118,23 +123,22 @@ WHERE t1.kill_id = t2.kill_id
     }
 
     public function reload() {
-        if(!empty($this->attrs['id'])) {
-            unset($this->skills, $this->storage, $this->deaths, $this->guild);
-            load($this->attrs['id']);
-            return true;
-        }
-        return false;
+        if(!empty($this->attrs['id'])) throw new PlayerNotLoadedException();
+        unset($this->skills, $this->storage, $this->deaths, $this->guild);
+        load($this->attrs['id']);
+        return true;
     }
 
     public function load($id) {
-    //Load player attributes
+        if (!is_numeric($id)) throw new PlayerNotFoundException();
+        
+        //Load player attributes
         $player = $this->sql->myRetrieve('players', array('id' => $id));
-        if ($player === false) return false;
+        if ($player === false) throw new PlayerNotFoundException();
         $group = $this->sql->myRetrieve('groups', array('id' => (int) $player['group_id']));
         if ($group === false)
             $this->attrs['access'] = 0;
         else {
-            $this->attrs['group'] = (int) $player['group_id'];
             $this->attrs['access'] = (int) $group['access'];
             $this->attrs['position'] = (string) $group['name'];
         }
@@ -153,6 +157,7 @@ WHERE t1.kill_id = t2.kill_id
         } else {
             $this->is_online = false;
         }
+        $this->attrs['group'] = (int) $player['group_id'];
         $this->attrs['id'] = (int) $player['id'];
         $this->attrs['name'] = (string) $player['name'];
         $this->attrs['account'] = (int) $player['account_id'];
@@ -175,7 +180,7 @@ WHERE t1.kill_id = t2.kill_id
 
     public function save() {
     //cannot save player unless it's offline
-        if($this->is_online) return false;
+        if($this->is_online) throw new PlayerIsOnlineException();
 
         //only save these fields
         $d['group_id'] = $this->attrs['group'];
@@ -190,15 +195,25 @@ WHERE t1.kill_id = t2.kill_id
         $d['rank_id'] = $this->attrs['rank_id'];
         $d['guildnick'] = $this->attrs['guildnick'];
 
-        if(!$this->sql->myUpdate('players', $d, array('id' => $this->attrs['id']))) throw new aacException('Player::save() failed '.$this->sql->getError());
-		return true;
+        $this->sql->myUpdate('players', $d, array('id' => $this->attrs['id']));
+        return true;
     }
+
+    public function save_guild() {
+        $d['rank_id'] = $this->attrs['rank_id'];
+        $d['guildnick'] = $this->attrs['guildnick'];
+
+        $this->sql->myUpdate('players', $d, array('id' => $this->attrs['id']));
+
+        return true;
+    }
+
 
     public function setAttr($attr, $val) {
         if(array_key_exists($attr, $this->attrs))
             $this->attrs[$attr] = $val;
         else
-            throw new aacException('Parameter '.$attr.' does not exist.');
+            throw new ClassException('Parameter '.$attr.' does not exist.');
     }
 
     public function isOnline() {
@@ -208,14 +223,13 @@ WHERE t1.kill_id = t2.kill_id
     static public function exists($name) {
         $SQL = AAC::$SQL;
         $SQL->myQuery('SELECT * FROM `players` WHERE `name` = '.$SQL->quote($name));
-        if ($SQL->failed()) throw new aacException('Player::exists() cannot determine whether player exists');
         if ($SQL->num_rows() > 0) return true;
         return false;
     }
 
     public function __get($attr) {
         if(empty($this->attrs['id']))
-            throw new aacException('Attempt to get attribute of player that is not loaded.');
+            throw new ClassException('Attempt to get attribute of player that is not loaded.');
         if($attr == 'attrs') {
             return $this->attrs;
         }elseif($attr == 'skills') {
@@ -231,17 +245,18 @@ WHERE t1.kill_id = t2.kill_id
             if(empty($this->guild)) $this->load_guild();
             return $this->guild;
         }else {
-            throw new aacException('Undefined property: '.$attr);
+            throw new ClassException('Undefined property: '.$attr);
         }
     }
 
     public function delete() {
-        return $this->sql->myDelete('players',array('id' => $this->attrs['id']),0)
+        $this->sql->myDelete('players',array('id' => $this->attrs['id']),0)
             && $this->sql->myDelete('player_items',array('player_id' => $this->attrs['id']),0)
             && $this->sql->myDelete('player_depotitems',array('player_id' => $this->attrs['id']),0)
             && $this->sql->myDelete('player_skills',array('player_id' => $this->attrs['id']),0)
             && $this->sql->myDelete('player_storage',array('player_id' => $this->attrs['id']),0)
-            && $this->sql->myDelete('player_viplist',array('player_id' => $this->attrs['id']),0);
+            && $this->sql->myDelete('player_viplist',array('player_id' => $this->attrs['id']),0)
+            && $this->sql->myDelete('guilds',array('ownerid' => $this->attrs['id']),0);
     }
 
     static public function Create($name, $account, $vocation, $sex, $city) {global $cfg;
@@ -252,10 +267,10 @@ WHERE t1.kill_id = t2.kill_id
         if ($SQL->isTable('groups')) {
             $group = $SQL->myRetrieve('groups', array('id' => $group_id));
             if ($group === false) {
-                throw new aacException('Player::Create() Group #'.$group_id.' does not exist. Check your database and config file.'.AAC::HelpLink(6));
+                throw new ClassException('Player::Create() Group #'.$group_id.' does not exist. Check your database and config file.', 6);
             }
         }
-        
+
 
         $d['id']		= NULL;
         $d['name']		= $name;
@@ -279,7 +294,7 @@ WHERE t1.kill_id = t2.kill_id
         $d['posz']		= $cfg['temple'][$city]['z'];
         $d['conditions']	= '';
 
-        if (!$SQL->myInsert('players',$d)) throw new aacException('Player::Create() Cannot insert attributes:<br/>'.$SQL->getError());
+        $SQL->myInsert('players',$d);
         $pid = $SQL->insert_id();
 
         unset($d);
@@ -294,7 +309,7 @@ WHERE t1.kill_id = t2.kill_id
             $d['itemtype']	= $item;
             $d['attributes']= '';
 
-            if (!$SQL->myInsert('player_items',$d)) throw new aacException('Player::make() Cannot insert items:<br/>'.$SQL->getError());
+            $SQL->myInsert('player_items',$d);
             unset($d);
             next($cfg['vocations'][$vocation]['equipment']);
         }
@@ -307,30 +322,26 @@ WHERE t1.kill_id = t2.kill_id
             $skill_id	= key($cfg['vocations'][$vocation]['skills']);
 
             if ($a['count'] == 0) {
-                if (!$SQL->myInsert('player_skills',array('player_id' => $pid, 'skillid' => $skill_id, 'value' => $skill, 'count' => 0)))
-                    throw new aacException('Player::make() Cannot insert skills:<br/>'.$SQL->getError());
+                $SQL->myInsert('player_skills',array('player_id' => $pid, 'skillid' => $skill_id, 'value' => $skill, 'count' => 0));
             }else {
-                if (!$SQL->myUpdate('player_skills',array('value' => $skill),array('player_id' => $pid, 'skillid' => $skill_id)))
-                    throw new aacException('Player::make() Cannot update skills:<br/>'.$SQL->getError());
+                $SQL->myUpdate('player_skills',array('value' => $skill),array('player_id' => $pid, 'skillid' => $skill_id));
             }
 
             next($cfg['vocations'][$vocation]['skills']);
         }
         $player = new Player();
-        if($player->load($pid))
-            return $player;
-        else
-            return null;
+        $player->load($pid);
+        return $player;
     }
 
     public function repair() {global $cfg;
         $lvl = $this->attrs['level'];
         $exp = AAC::getExperienceByLevel($lvl);
-        if (!$this->sql->myUpdate('players',array(
-        'posx' => $cfg['temple'][$this->attrs['city']]['x'],
-        'posy' => $cfg['temple'][$this->attrs['city']]['y'],
-        'posz' => $cfg['temple'][$this->attrs['city']]['z']
-			/*, 'experience' => $exp*/), array('id' => $this->attrs['id']))) throw new aacException($this->sql->getError());
+        $this->sql->myUpdate('players',array(
+            'posx' => $cfg['temple'][$this->attrs['city']]['x'],
+            'posy' => $cfg['temple'][$this->attrs['city']]['y'],
+            'posz' => $cfg['temple'][$this->attrs['city']]['z']
+            ), array('id' => $this->attrs['id']));
     }
 }
 ?>

@@ -17,61 +17,72 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 include ("../include.inc.php");
+
+try {
 //load account if loged in
-$account = new Account();
-($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
-//retrieve post data
-$form = new Form('delete');
-//check if any data was submited
-if ($form->exists()){
-	//check for correct password
-	if ($account->checkPassword($form->attrs['password'])){
-		//load player
-		$player = new Player();
-		if ($player->load($form->attrs['character'])){
-			//check if player really belongs to account
-			if ($player->attrs['account'] === $account->attrs['accno']){
-				//"omg, GM recover my character" protection
-				if (time() - $player->attrs['lastlogin'] > $cfg['player_delete_interval']){
-					//delete the player
-					if ($player->delete()){
-						$account->logAction('Deleted character '.$player->attrs['name']);
-						//create new message
-						$msg = new IOBox('message');
-						$msg->addMsg('Your character was deleted.');
-						$msg->addRefresh('Finish');
-						$msg->show();
-					}else $error = $player->getError();
-				}else $error ='Your character must be inactive for '.ceil(($cfg['player_delete_interval']-time()+$player->attrs['lastlogin'])/3600).' hour(s) before deletion.';
-			}else $error ='Player does not belong to account';
-		}else $error ='Unable to load player';
-	}else $error ='Wrong password';
-	if (!empty($error)){
-		//create new message
-		$msg = new IOBox('message');
-		$msg->addMsg($error);
-		$msg->addReload('<< Back');
-		$msg->addClose('OK');
-		$msg->show();
-	}
-}else{
-	if ($account->players)
-		foreach ($account->players as $player)
-			$list[$player['id']] = $player['name'];
-	//create new form
-	$form = new IOBox('delete');
-	$form->target = $_SERVER['PHP_SELF'];
-	$form->addLabel('Delete Character');
-	if (empty($list)){
-		$form->addMsg('Your account does not have any characters to delete.');
-		$form->addClose('Close');
-	}else{
-		$form->addMsg('Which character do you want to delete?<br/>Enter your password to confirm.');
-		$form->addSelect('character',$list);
-		$form->addInput('password','password');
-		$form->addClose('Cancel');
-		$form->addSubmit('Next >>');
-	}
-	$form->show();
+    $account = new Account();
+    $account->load($_SESSION['account']);
+
+    //retrieve post data
+    $form = new Form('delete');
+
+    //check for correct password
+    if (!$account->checkPassword($form->attrs['password']))
+        throw new ModuleException('Wrong password.');
+
+    //load player
+    $player = new Player();
+    $player->load($form->attrs['character']);
+
+    //check if player really belongs to account
+    if ($player->attrs['account'] !== $account->attrs['accno'])
+        throw new ModuleException('Player does not belong to account.');
+
+    //"omg, GM recover my character" protection
+    if (time() - $player->attrs['lastlogin'] < $cfg['player_delete_interval'])
+        throw new ModuleException('Your character must be inactive for '.ceil(($cfg['player_delete_interval']-time()+$player->attrs['lastlogin'])/3600).' hour(s) before deletion.');
+
+    //delete the player
+    $player->delete();
+    $account->logAction('Deleted character '.$player->attrs['name']);
+
+    //create new message
+    $msg = new IOBox('message');
+    $msg->addMsg('Your character was deleted.');
+    $msg->addRefresh('Finish');
+    $msg->show();
+    
+} catch(FormNotFoundException $e) {
+    if ($account->players)
+        foreach ($account->players as $player)
+            $list[$player['id']] = $player['name'];
+    //create new form
+    $form = new IOBox('delete');
+    $form->target = $_SERVER['PHP_SELF'];
+    $form->addLabel('Delete Character');
+    if (empty($list)) {
+        $form->addMsg('Your account does not have any characters to delete.');
+        $form->addClose('Close');
+    }else {
+        $form->addMsg('Which character do you want to delete?<br/>Enter your password to confirm.');
+        $form->addSelect('character',$list);
+        $form->addInput('password','password');
+        $form->addClose('Cancel');
+        $form->addSubmit('Next >>');
+    }
+    $form->show();
+
+} catch(ModuleException $e) {
+    $msg = new IOBox('message');
+    $msg->addMsg($e->getMessage());
+    $msg->addReload('<< Back');
+    $msg->addClose('OK');
+    $msg->show();
+
+} catch (AccountNotFoundException $e) {
+    $msg = new IOBox('message');
+    $msg->addMsg('There was a problem loading your account. Try to login again.');
+    $msg->addRefresh('OK');
+    $msg->show();
 }
 ?>

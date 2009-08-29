@@ -18,33 +18,47 @@
 */
 include ("../include.inc.php");
 
+$responseXML = new SimpleXMLElement('<response/>');
+
+try {
 //load account if loged in
-$account = new Account();
-if (isset($_SESSION['account']) && $account->load($_SESSION['account'])) {
+    $account = new Account();
+    $account->load($_SESSION['account']);
+    
     //load guild
     $guild = new Guild();
-    if (isset($_REQUEST['guild_id']) && $guild->load($_REQUEST['guild_id'])) {
-        //check if user has rights to invite
-        if ($guild->canInvite($_SESSION['account'])) {
-            if (count($guild->invited) <= 20) {
-                $player = new Player();
-                if ($player->find($_REQUEST['player_name'])) {
-                    if ($guild->playerInvite($player)) {
-                        //success
-                    }else $error = 'Cannot invite player';
-                }else $error = 'Cannot find this player';
-            }else $error = 'Too many invited players';
-        }else $error = 'You do not have permission';
-    }else $error = 'Cannot load guild';
-}else $error = 'You are not logged in';
+    $guild->load($_REQUEST['guild_id']);
 
-$responseXML = new SimpleXMLElement('<response/>');
-if (empty($error)) {
+    //check if user has rights to invite
+    if (!$guild->canInvite($account->attrs['accno']))
+        throw new ModuleException('You do not have permission for this action.');
+
+    if (count($guild->invited) > 20)
+        throw new ModuleException('Too many invited players');
+
+    $player = new Player();
+    $player->find($_REQUEST['player_name']);
+    $guild->playerInvite($player);
     $responseXML->addChild('error', 0);
     $responseXML->addChild('player', $player->attrs['name']);
-} else {
+
+} catch(ModuleException $e) {
     $responseXML->addChild('error', 1);
-    $responseXML->addChild('message', $error);
+    $responseXML->addChild('message', $e->getMessage());
+
+} catch(MemberExistsException $e) {
+    $responseXML->addChild('error', 1);
+    $responseXML->addChild('message', 'This player already belongs to your guild.');
+
+} catch(AccountNotFoundException $e) {
+    $responseXML->addChild('error', 1);
+    $responseXML->addChild('message', 'There was a problem loading your account. Try to login again.');
+
+} catch(PlayerNotFoundException $e) {
+    $responseXML->addChild('error', 1);
+    $responseXML->addChild('message', 'Player not found. Check your spelling.');
+
 }
+
 echo $responseXML->asXML();
 ?>

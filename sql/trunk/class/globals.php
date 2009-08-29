@@ -34,10 +34,6 @@ class AAC {
         return strlen($pass) > 5 && strlen($pass) <= 50 && preg_match('/^[a-zA-Z0-9~!@#%&;,:\\\^\$\.\|\?\*\+\(\)]*$/',$pass);
     }
 
-    static public function ValidAccountNumber($n) {
-        return is_numeric($n) && $n > 100000 && $n < 100000000;
-    }
-
     static public function ValidAccountName($n) {
         return preg_match('/^[A-Z0-9_]{6,30}$/i',$n);
     }
@@ -62,29 +58,33 @@ class AAC {
         return floor(50*($lvl-1)*($lvl*$lvl-5*$lvl+12)/3);
     }
 
-    static public function HelpLink($issue_id) {
-        return '<a href="http://aac.nicaw.net/help.php?issue='.$issue_id.'">More Info</a>';
+    static public function ExceptionHandler($exception) {
+        global $cfg;
+        echo '<pre style="position: absolute; top: 0px; left: 0px; background-color: white; color: black; border: 3px solid red;">';
+        echo '<b>Fatal error:</b> Uncaught exception \''.get_class($exception).'\'<br/>';
+        echo '<b>Message:</b> '.$exception->getMessage().'<br/>';
+        if (($exception instanceof aacException) && $exception->getHelpId()) {
+            echo '<b>Online help:</b> '.$exception->getHelpLink().'</b><br/>';
+        }
+        if (($exception instanceof DatabaseQueryException)) {
+            echo '<b>SQL query:</b> '.$exception->getQueryStr().'</b><br/>';
+        }
+        echo '<b>File:</b> '.basename($exception->getFile()).' on line: '.$exception->getLine().'</b><br/>';
+        echo 'Script was terminated because something unexpected happened. You can report this, if you think it\'s a bug.<br/>';
+        echo '<br/><b>Debug Backtrace:</b>';
+        if ($cfg['debug_backtrace']) {
+            echo '<br/>';
+            print_R(debug_backtrace());
+        } else {
+            echo 'Disabled';
+        }
     }
 }
-
-class aacException extends Exception {}
 
 /*
 	this is leftover from older versions
 	TODO: clean it up
 */
-
-function exception_handler($exception) {
-    global $cfg;
-    echo '<pre style="position: absolute; top: 0px; left: 0px; background-color: white; color: black; border: 3px solid red;"><b>'.$exception->getMessage(). '<br/>'.basename($exception->getFile()).' on line: '.$exception->getLine().'</b><br/>Script was terminated because something unexpected happened. You can report this, if you think it\'s a bug.<br/>';
-    echo '<br/><b>Debug Backtrace:</b>';
-    if ($cfg['debug_backtrace']) {
-        echo '<br/>';
-        print_R(debug_backtrace());
-    } else {
-        echo 'Disabled';
-    }
-}
 
 function strToDate($str) {
     $pieces = explode('-',$str);

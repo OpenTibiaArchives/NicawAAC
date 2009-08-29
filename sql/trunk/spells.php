@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Copyright (C) 2007  Nicaw
 
@@ -28,9 +28,9 @@ include ("header.inc.php");
 <input type="submit" value="Search"/> 
 </form>
 <div style="height: 500px; overflow: auto; margin: 10px;">
-<?
+<?php
 $SpellsXML = @simplexml_load_file($cfg['dirdata'].'spells/spells.xml');
-if ($SpellsXML === false) throw new aacException('spells.xml not found');
+if ($SpellsXML === false) throw new aacException($cfg['dirdata'].'spells/spells.xml not found');
 foreach ($SpellsXML->instant as $spell){
 	if (!empty($_GET['spell']) and (stristr($spell['name'], $_GET['spell']) or stristr($spell['words'], $_GET['spell'])) or !isset($_GET['spell'])){
 		echo '<table><tr><td width="150px"><b>Spell Name</b></td><td>'.$spell['name'].'</td></tr>';
@@ -66,4 +66,4 @@ foreach ($SpellsXML->conjure as $spell){
 </div>
 <div class="bot"></div>
 </div>
-<?include ("footer.inc.php");?>
+<?php include ("footer.inc.php");?>

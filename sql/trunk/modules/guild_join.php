@@ -19,39 +19,45 @@
 
 include ("../include.inc.php");
 
-//load account if loged in
-$account = new Account();
-if (isset($_SESSION['account']) && $account->load($_SESSION['account'])) {
-//load guild
-    $guild = new Guild();
-    if (isset($_REQUEST['guild_id']) && $guild->load($_REQUEST['guild_id'])) {
-        //load the player
-        $player = new Player();
-        if ($player->find($_REQUEST['player_name'])) {
-        //check if player belong to current account
-            if ($player->attrs['account'] == $_SESSION['account']) {
-                if ($guild->isInvited($player->attrs['id'])) {
-                    //cant join if player belongs to another guild
-                    if ($player->attrs['rank_id'] == 0) {
-						if (!$player->isOnline()) {
-							if ($guild->playerJoin($player)) {
-								//success
-							}else $error = 'Cannot join guild';
-						}else $error = 'Cannot complete action. Player is online.';
-                    }else $error = 'Cannot join because you are a member of another guild';
-                }else $error = 'You are not invited';
-            }else $error = 'Player does not belong to your account';
-        }else $error = 'Cannot find this player';
-    }else $error = 'Cannot load guild';
-}else $error = 'You are not logged in';
-
 $responseXML = new SimpleXMLElement('<response/>');
-if (empty($error)) {
+
+try {
+//load account if loged in
+    $account = new Account();
+    $account->load($_SESSION['account']);
+    
+    //load guild
+    $guild = new Guild();
+    $guild->load($_REQUEST['guild_id']);
+
+    //load the player
+    $player = new Player();
+    $player->find($_REQUEST['player_name']);
+
+    //check if player belong to current account
+    if (!$account->hasPlayer($player->attrs['id']))
+        throw new ModuleException('Player does not belong to your account.');
+
+    if (!$guild->isInvited($player->attrs['id']))
+        throw new ModuleException('You are not invited.');
+
+    //cant join if player belongs to another guild
+    if ($player->attrs['rank_id'] != 0)
+        throw new ModuleException('Cannot join because you are a member of another guild.');
+
+    $guild->playerJoin($player);
+
     $responseXML->addChild('error', 0);
     $responseXML->addChild('player', $player->attrs['name']);
-} else {
+
+} catch(ModuleException $e) {
     $responseXML->addChild('error', 1);
-    $responseXML->addChild('message', $error);
+    $responseXML->addChild('message', $e->getMessage());
+
+} catch(AccountNotFoundException $e) {
+    $responseXML->addChild('error', 1);
+    $responseXML->addChild('message', 'There was a problem loading your account. Try to login again.');
 }
+
 echo $responseXML->asXML();
 ?>

@@ -28,10 +28,17 @@ include("header.inc.php");
             <input type="submit" value="Search"/>
         </form>
         <?php
-        $player = new Player();
-        if (!empty($_GET['player_id']) && $player->load($_GET['player_id']) || !empty($_GET['player_name']) && $player->find($_GET['player_name'])) {
+        try {
+            $player = new Player();
+            if (!empty($_GET['player_id'])) {
+                $player->load($_GET['player_id']);
+            } elseif (!empty($_GET['player_name'])) {
+                $player->find($_GET['player_name']);
+            } else {
+                throw new PlayerException();
+            }
             $account = new Account();
-            if(!$account->load($player->attrs['account'])) throw new aacException('Cannot load account for player '.$player->attrs['name']);
+            $account->load($player->attrs['account']);
 
             echo '<hr/><table style="width: 100%"><tr><td><b>Name:</b> '.htmlspecialchars($player->attrs['name']).'&nbsp;';
             if($player->isOnline()) echo '<span style="color:green">[Online]</span>'."<br/>\n";
@@ -40,9 +47,9 @@ include("header.inc.php");
             echo '<b>Magic Level:</b> '.$player->attrs['maglevel']."<br/>\n";
             echo '<b>Vocation:</b> '.$cfg['vocations'][$player->attrs['vocation']]['name']."<br/>\n";
 
-            if ($player->guild) {
+            try {
                 echo '<b>Guild:</b> '.$player->guild['guild_rank_name'].' of <a href="guilds.php?guild_id='.$player->guild['guild_id'].'">'.htmlspecialchars($player->guild['guild_name']).'</a><br/>'."\n";
-            }
+            } catch(GuildNotFoundException $e) {}
 
             $gender = Array('Female','Male');
             echo '<b>Gender:</b> '.$gender[$player->attrs['sex']].'<br/>'."\n";
@@ -98,7 +105,9 @@ include("header.inc.php");
                     }
                 }
             }
-        }elseif (isset($_GET['player_id']) || isset($_GET['player_name'])) echo 'Player not found';
+        } catch(PlayerNotFoundException $e) {
+            echo 'Player not found';
+        } catch(PlayerException $e) {}
         ?>
     </div>
     <div class="bot"></div>

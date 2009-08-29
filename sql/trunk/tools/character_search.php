@@ -28,7 +28,7 @@ if ($form->exists()){
 		$query =  'SELECT name FROM players WHERE `name` LIKE \'%'.$form->attrs['name'].'%\'';
 		$SQL = AAC::$SQL;
 		$SQL->myQuery($query);
-		if ($SQL->failed() || $SQL->num_rows() == 0){
+		if ($SQL->num_rows() == 0){
 			//create new message
 			$msg = new IOBox('message');
 			$msg->addMsg('Nothing found.');

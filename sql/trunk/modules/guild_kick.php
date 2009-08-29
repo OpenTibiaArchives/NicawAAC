@@ -18,32 +18,41 @@
 */
 include ("../include.inc.php");
 
-//load account if loged in
-$account = new Account();
-if (isset($_SESSION['account']) && $account->load($_SESSION['account'])) {
-//load guild
-    $guild = new Guild();
-    if (isset($_POST['guild_id']) && $guild->load($_POST['guild_id'])) {
-        //load the player
-        $player = new Player();
-        if ($player->find($_POST['player_name'])) {
-        //check if user has rights to kick
-            if ($guild->canKick($account->attrs['accno']) || $account->hasPlayer($player->attrs['id'])) {
-                if ($guild->playerLeave($player)) {
-                //success
-                }else $error = 'Cannot remove this player';
-            }else $error = 'You do not have permission';
-        }else $error = 'Cannot find this player';
-    }else $error = 'Cannot load guild';
-}else $error = 'You are not logged in';
-
 $responseXML = new SimpleXMLElement('<response/>');
-if (empty($error)) {
+
+try {
+//load account if loged in
+    $account = new Account();
+    $account->load($_SESSION['account']);
+
+    //load guild
+    $guild = new Guild();
+    $guild->load($_POST['guild_id']);
+
+    //load the player
+    $player = new Player();
+    $player->find($_POST['player_name']);
+
+    //check if user has rights to kick
+    if (! ($guild->canKick($account->attrs['accno']) || $account->hasPlayer($player->attrs['id'])) )
+        throw new ModuleException('You do not have permission.');
+        
+    $guild->playerLeave($player);
     $responseXML->addChild('error', 0);
     $responseXML->addChild('player', $player->attrs['name']);
-} else {
+
+} catch(ModuleException $e) {
     $responseXML->addChild('error', 1);
-    $responseXML->addChild('message', $error);
+    $responseXML->addChild('message', $e->getMessage());
+
+} catch(AccountNotFoundException $e) {
+    $responseXML->addChild('error', 1);
+    $responseXML->addChild('message', 'There was a problem loading your account. Try to login again.');
+
+} catch(PlayerNotFoundException $e) {
+    $responseXML->addChild('error', 1);
+    $responseXML->addChild('message', 'Player not found.');
 }
+
 echo $responseXML->asXML();
 ?>

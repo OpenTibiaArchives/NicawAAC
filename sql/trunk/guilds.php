@@ -22,6 +22,7 @@ include ("header.inc.php");
 $SQL = AAC::$SQL;
 ?>
 <div id="content">
+    <script type="text/javascript" src="javascript/guild.js"></script>
     <div class="top">Guilds</div>
     <div class="mid">
         <form method="get" action="guilds.php">
@@ -34,8 +35,7 @@ $SQL = AAC::$SQL;
         if (!isset($_GET['guild_id']) && !isset($_GET['guild_name'])) {
             $query = 'SELECT guilds.id, guilds.name, nicaw_guild_info.description FROM guilds LEFT JOIN nicaw_guild_info ON guilds.id = nicaw_guild_info.id ORDER BY name ASC';
             $SQL->myQuery($query);
-            if ($SQL->failed())
-                throw new aacException('SQL query failed:<br/>'.$SQL->getError());
+
             while ($a = $SQL->fetch_array()) {
                 if (file_exists('guilds/'.$a['id'].'.gif'))
                     $img_path = 'guilds/'.$a['id'].'.gif';
@@ -51,50 +51,99 @@ $SQL = AAC::$SQL;
         </table>
 
             <?php }
-        }else {
+        } else {
         //-------------------------Member list
-            $guild = new Guild();
-            if (!empty($_GET['guild_id']) && !$guild->load($_GET['guild_id']))
-                echo 'Guild not found.';
-            elseif (!empty($_GET['guild_name']) && !$guild->find($_GET['guild_name']))
-                echo 'Guild not found.';
-            else {
+            try {
+                $guild = new Guild();
+                if (!empty($_GET['guild_id'])) {
+                    $guild->load($_GET['guild_id']);
+                } elseif (!empty($_GET['guild_name'])) {
+                    $guild->find($_GET['guild_name']);
+                }
+
                 if (file_exists('guilds/'.$guild->attrs['id'].'.gif'))
                     $img_path = 'guilds/'.$guild->attrs['id'].'.gif';
                 else
                     $img_path = 'resource/guild_default.gif';
+
+                try {
+                    $is_owner = false;
+                    $account = new Account();
+                    $account->load($_SESSION['account']);
+                    $is_owner = $guild->attrs['owner_acc'] == $account->attrs['accno'];
+                    $invited = false;
+                    $member = false;
+                    foreach ($account->players as $player) {
+                        if ($guild->isInvited($player['id']))
+                            $invited = true;
+                        if ($guild->isMember($player['id']))
+                            $member = true;
+                    }
+                } catch (AccountException $e) {
+                    unset($account);
+                }
                 ?>
-        <table style="width: 100%"><tr><td style="width: 64px; height: 64px; padding: 10px;"><img src="<?php echo $img_path?>" alt="Guild IMG" height="64" width="64"/></td><td style="text-align: center">
+        <table style="width: 100%"><tr><td style="width: 64px; height: 64px; padding: 10px;"><img id="guild_img1" src="<?php echo $img_path?>" alt="Guild IMG" height="64" width="64"/></td><td style="text-align: center">
                     <h1 style="display: inline"><?php echo htmlspecialchars($guild->attrs['name'])?>
                     </h1></td><td style="width: 64px; height: 64px; padding: 10px;">
-                    <img src="<?php echo $img_path?>" alt="Guild IMG" height="64" width="64"/></td></tr>
+                    <img id="guild_img2" src="<?php echo $img_path?>" alt="Guild IMG" height="64" width="64"/>
+                            <?php if($is_owner) {?>
+                </td></tr><tr><td colspan="3">
+                    <button id="guild_image_upload">Upload Image</button>
+                            <?php } //is owner ?>
+                </td></tr>
         </table>
         <p><?php echo htmlspecialchars($guild->attrs['description'])?></p><hr/>
         <ul class="task-menu" style="width: 200px;">
-            <li style="background-image: url(resource/book_previous.png);" onclick="self.window.location.href='guilds.php'">Back</li>
-                    <?php
-                    $is_owner = false;
-                    if (!empty($_SESSION['account'])) {
-                        $account = new Account();
-                        if (!$account->load($_SESSION['account'])) die('Cannot load account');
-                        $is_owner = $guild->attrs['owner_acc'] == $account->attrs['accno'];
-                        $invited = false;
-                        $member = false;
-                        foreach ($account->players as $player) {
-                            if ($guild->isInvited($player['id']))
-                                $invited = true;
-                            if ($guild->isMember($player['id']))
-                                $member = true;
+                    <?php if ($is_owner) {?>
+            <script type="text/javascript" src="javascript/ajaxupload.js"></script>
+            <script type="text/javascript">
+                //<![CDATA[
+                document.observe("dom:loaded", function() {
+
+                    new Ajax_upload('#guild_image_upload', {
+                        action: 'modules/guild_image.php',
+
+                        onSubmit : function(file , ext){
+                            if (ext && /^(jpg|png|jpeg|gif)$/.test(ext)){
+                                /* Setting data */
+                                this.setData({
+                                    'guild_id': <?php echo $guild->attrs['id']?>
+                                });
+
+                                $('guild_image_upload').innerHTML = 'Uploading ' + file;
+                            } else {
+
+                                // extension is not allowed
+                                alert('Sorry, this file type is not allowed.');
+                                // cancel upload
+                                return false;
+                            }
+
+                        },
+                        onComplete : function(file, response){
+                            $('guild_image_upload').innerHTML = 'Upload Image';
+
+                            var XML = parseXML(response);
+                            if (XML.getElementsByTagName('error')[0].childNodes[0].nodeValue == 0) {
+                                var d = new Date();
+                                $('guild_img1').src = '<?php echo $img_path?>?'+d.getTime();
+                                $('guild_img2').src = '<?php echo $img_path?>?'+d.getTime();
+                            } else {
+                                alert(XML.getElementsByTagName('message')[0].childNodes[0].nodeValue);
+                            }
                         }
-                        if ($is_owner) {?>
+                    });
+                });
+                //]]>
+            </script>
             <li style="background-image: url(resource/user_edit.png);" onclick="ajax('form','modules/guild_edit.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Promote / Demote</li>
-            <li style="background-image: url(resource/image_add.png);" onclick="ajax('form','modules/guild_image.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Upload Image</li>
             <li style="background-image: url(resource/page_edit.png);" onclick="ajax('form','modules/guild_comments.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Edit Description</li>
-                    <?php 	}?>
-            <li style="background-image: url(resource/resultset_previous.png);" onclick="self.window.location.href='login.php?logout&amp;redirect=account.php'">Logout</li>
-                    <?php }else {?>
+            <li style="background-image: url(resource/page_edit.png);" onclick="ajax('form','modules/guild_pass_leadership.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Pass Leadership</li>
+                    <?php }//is owner
+                    if (!isset($account)) {?>
             <li style="background-image: url(resource/resultset_next.png);" onclick="self.window.location.href='login.php?redirect=guilds.php'">Login</li>
-                    <?php }?>
+                    <?php } ?>
         </ul><hr/>
         <h2 style="display: inline">Guild Members</h2>
         <table style="width: 100%">
@@ -110,8 +159,8 @@ $SQL = AAC::$SQL;
                         $i++;
                         if($is_owner) {
                             $rank_content = '<td id="rank'.$rank['id'].'"><img style="cursor: pointer" src="resource/page_edit.png" alt="edit" height="16" width="16" onclick="Guild.prepareRankRename('.$guild->attrs['id'].', '.$rank['id'].',\''.htmlspecialchars($rank['name']).'\')"/>'.
-                            '&nbsp;<img style="cursor: pointer" src="resource/cross.png" alt="del" height="16" width="16" onclick="Guild.requestRankDelete('.$guild->attrs['id'].', '.$rank['id'].')"/>&nbsp;'.
-                            htmlspecialchars($rank['name']).'</td>';
+                                '&nbsp;<img style="cursor: pointer" src="resource/cross.png" alt="del" height="16" width="16" onclick="Guild.requestRankDelete('.$guild->attrs['id'].', '.$rank['id'].')"/>&nbsp;'.
+                                htmlspecialchars($rank['name']).'</td>';
                         } else {
                             $rank_content = '<td id="rank'.$rank['id'].'">'.htmlspecialchars($rank['name']).'</td>';
                         }
@@ -119,21 +168,21 @@ $SQL = AAC::$SQL;
                         foreach ($guild->members as $player) {
                             if ($player['rank'] != $rank['id']) continue;
                             $rank_has_players = true;
-                            
+
                             if($is_owner) {
                                 $title_content = htmlspecialchars($player['nick']).
                                     '&nbsp;<img style="cursor: pointer" src="resource/page_edit.png" alt="edit" height="16" width="16" onclick="Guild.prepareNickChange('.$guild->attrs['id'].', '.$player['id'].',\''.htmlspecialchars($player['nick']).'\')"/>';
                             } else {
                                 $title_content = htmlspecialchars($player['nick']);
                             }
-                            
+
                             if(isset($account) && ($guild->canKick($account->attrs['accno']) || $account->hasPlayer($player['id']))) {
                                 $player_content = '<img style="cursor: pointer" src="resource/cross.png" alt="X" height="16" width="16" onclick="Guild.requestKick(\'player'.$player['id'].'\', \''.$player['name'].'\', '.$guild->attrs['id'].')"/>&nbsp;'.
-                                '<a href="characters.php?player_id='.$player['id'].'">'.htmlspecialchars($player['name']).'</a>';
+                                    '<a href="characters.php?player_id='.$player['id'].'">'.htmlspecialchars($player['name']).'</a>';
                             } else {
                                 $player_content = '<a href="characters.php?player_id='.$player['id'].'">'.htmlspecialchars($player['name']).'</a>';
                             }
-                            
+
                             echo '<tr '.getStyle($i).' id="player'.$player['id'].'">'
                                 .$rank_content.'<td>'.$player_content.'</td><td id="player'.$player['id'].'_title">'
                                 .$title_content.'</td></tr>';
@@ -171,8 +220,10 @@ $SQL = AAC::$SQL;
                     }
                     echo '</table>';
 
-            }//guild loading
-            }//display guild
+                } catch(GuildNotFoundException $e) {
+                    echo 'Guild not found.';
+                }
+            }
             ?>
     </div>
     <div class="bot"></div>

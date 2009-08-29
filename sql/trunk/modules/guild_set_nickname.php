@@ -25,36 +25,39 @@ include ("../include.inc.php");
  * nickname
  */
 
-//load account if loged in
-$account = new Account();
-if (isset($_SESSION['account']) && $account->load($_SESSION['account'])) {
-//load guild
-    $guild = new Guild();
-    if (isset($_POST['guild_id']) && $guild->load($_POST['guild_id'])) {
-        if ($guild->canInvite($account->attrs['accno'])) {
-            $player = new Player();
-            if ($player->load($_POST['player_id'])) {
-                if ($guild->isMember($player->attrs['id'])) {
-                    $_POST['nickname'] = ucfirst($_POST['nickname']);
-                    if (AAC::ValidGuildNick($_POST['nickname'])) {
-                        $player->setAttr('guildnick', $_POST['nickname']);
-                        if ($player->save()) {
-                            //success
-                        }else $error = 'Cannot save player. Make sure it is offline.';
-                    }else $error = 'Not a valid nickname';
-                }else $error = 'Player does not belong to this guild';
-            }else $error = 'Cannot load player';
-        }else $error = 'You do not have permission';
-    }else $error = 'Cannot load guild';
-}else $error = 'You are not logged in';
+try {
 
-$responseXML = new SimpleXMLElement('<response/>');
-if (empty($error)) {
+//load account if loged in
+    $account = new Account();
+    $account->load($_SESSION['account']);
+
+    //load guild
+    $guild = new Guild();
+    $guild->load($_POST['guild_id']);
+
+    if (!$guild->canInvite($account->attrs['accno']))
+        throw new ModuleException('Permission denied.');
+
+    $player = new Player();
+    $player->load($_POST['player_id']);
+
+    if (!$guild->isMember($player->attrs['id']))
+        throw new ModuleException('Player does not belong to this guild.');
+
+    $_POST['nickname'] = ucfirst($_POST['nickname']);
+    if (!AAC::ValidGuildNick($_POST['nickname']))
+        throw new ModuleException('Not a valid nickname.');
+
+    $player->setAttr('guildnick', $_POST['nickname']);
+    $player->save_guild();
+    
     $responseXML->addChild('error', 0);
-    $responseXML->addChild('nickname', $_POST['nickname']);
-} else {
+    $responseXML->addChild('nickname', $player->attrs['guildnick']);
+
+} catch(ModuleException $e) {
     $responseXML->addChild('error', 1);
-    $responseXML->addChild('message', $error);
+    $responseXML->addChild('message', $e->getMessage());
 }
+
 echo $responseXML->asXML();
 ?>

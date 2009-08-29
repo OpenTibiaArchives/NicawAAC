@@ -18,12 +18,14 @@
 */
 include ("include.inc.php");
 
-$account = new Account();
-if (!array_key_exists('account', $_SESSION) || !$account->load($_SESSION['account'])){
-	$_SESSION['account'] = '';
-	header('location: login.php?redirect=account.php');
-	die();
-}else{
+try {
+    $account = new Account();
+    $account->load($_SESSION['account']);
+} catch(AccountNotFoundException $e) {
+    $_SESSION['account'] = '';
+    header('location: login.php?redirect=account.php');
+    die();
+}
 $ptitle="Account - $cfg[server_name]";
 include ("header.inc.php");
 ?>
@@ -81,6 +83,5 @@ if(isset($account->attrs['premend']) && $account->attrs['premend'] > time()) {
 <div class="bot"></div>
 </div>
 <?php 
-}
 include ("footer.inc.php");
 ?>

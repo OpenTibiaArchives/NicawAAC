@@ -17,35 +17,38 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 include ("../include.inc.php");
-
 /*
  * REQUIRED POST DATA
  * guild_id
  * rank_id
  */
 
-//load account if loged in
-$account = new Account();
-if (isset($_SESSION['account']) && $account->load($_SESSION['account'])) {
-//load guild
-    $guild = new Guild();
-    if (isset($_POST['guild_id']) && $guild->load($_POST['guild_id'])) {
-        if ($guild->attrs['owner_acc'] == $account->attrs['accno']) {
-            if ($guild->isRank($_POST['rank_id'])) {
-                if ($guild->removeRank($_POST['rank_id'])) {
-                    //success
-                }else $error = 'Cannot delete. Make sure no player is assigned to this rank.';
-            }else $error = 'Rank not found';
-        }else $error = 'You do not have permission';
-    }else $error = 'Cannot load guild';
-}else $error = 'You are not logged in';
-
 $responseXML = new SimpleXMLElement('<response/>');
-if (empty($error)) {
+
+try {
+
+//load account if loged in
+    $account = new Account();
+    $account->load($_SESSION['account']);
+    
+    //load guild
+    $guild = new Guild();
+    $guild->load($_POST['guild_id']);
+
+    if ($guild->attrs['owner_acc'] != $account->attrs['accno'])
+        throw new ModuleException('Permission denied.');
+
+    $guild->removeRank($_POST['rank_id']);
     $responseXML->addChild('error', 0);
-} else {
+
+} catch(ModuleException $e) {
     $responseXML->addChild('error', 1);
-    $responseXML->addChild('message', $error);
+    $responseXML->addChild('message', $e->getMessage());
+
+} catch(RankIsUsedException $e) {
+    $responseXML->addChild('error', 1);
+    $responseXML->addChild('message', 'This rank is used. Please remove all players from it and try again.');
 }
+
 echo $responseXML->asXML();
 ?>

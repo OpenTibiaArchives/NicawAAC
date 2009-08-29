@@ -80,9 +80,6 @@ $cfg['server_name'] = 'Nicaw SQL';
 $cfg['server_ip'] = '127.0.0.1';
 $cfg['server_port'] = 7171;
 
-# Allow teleportation to temple?
-$cfg['char_repair'] = false;
-
 # Force users to validate their emails when registering?
 # For email functions to work, SMTP server must be configured correctly
 $cfg['Email_Validate'] = false;
@@ -96,7 +93,7 @@ $cfg['SMTP_Port'] = 25;
 $cfg['SMTP_Auth'] = false;
 $cfg['SMTP_User'] = 'user@gmail.com';
 $cfg['SMTP_Password'] = 'user';
-$cfg['SMTP_From'] = 'mail@nicaw.net';
+$cfg['SMTP_From'] = 'mail@local.net';
 
 /*
 # Example configuration for gmail
@@ -140,7 +137,16 @@ $cfg['guild_manager_enabled'] = true;
 $cfg['status_update_interval'] = 5*60;
 
 # Shows more informatin when exception occurs. WARNING! Can reveal sensitive information.
-$cfg['debug_backtrace'] = false;
+$cfg['debug_backtrace'] = true;
+
+# Schema control override. Disables/enables compatibility check for OTServ schema version.
+$cfg['schema_check'] = false;
+
+/*
+ * This will affect date displaying
+ * Look http://www.google.com/search?q=php+timezones for supported timezones.
+ */
+$cfg['timezone'] = 'UTC';
 
 ##################################################
 #                 Town Config                    #

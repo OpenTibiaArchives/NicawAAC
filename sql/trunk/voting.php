@@ -48,8 +48,7 @@ $params
 LEFT OUTER JOIN nicaw_poll_votes ON a1.option_id = nicaw_poll_votes.option_id
 GROUP BY a1.option_id';
 $sql->myQuery($query);
-if ($sql->failed()) 
-	throw new aacException('SQL query failed:<br/>'.$mysql->getError());
+
 //sort the data by poll_id
 while ($a = $sql->fetch_array()){
 	$polls[$a['poll_id']]['question'] = $a['question'];

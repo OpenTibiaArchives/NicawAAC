@@ -25,11 +25,15 @@ include ("header.inc.php");
     <div class="mid">
         <?php
         $SQL = AAC::$SQL;
-        $SQL->myQuery('SELECT name, vocation, level FROM players WHERE online = 1 ORDER BY name ASC');
-        if ($SQL->failed())
-            $SQL->myQuery('SELECT name, vocation, level FROM players WHERE lastlogin > lastlogout ORDER BY name ASC');
-        if ($SQL->failed())
-            throw new aacException('<b>Your server does not store information on players online state</b><br/>SQL query failed:<br/>'.$SQL->getError());
+        try {
+            $SQL->myQuery('SELECT name, vocation, level FROM players WHERE online = 1 ORDER BY name ASC');
+        } catch(DatabaseQueryException $e) {
+            try {
+                $SQL->myQuery('SELECT name, vocation, level FROM players WHERE lastlogin > lastlogout ORDER BY name ASC');
+            } catch(DatabaseQueryException $e) {
+                throw new DatabaseException('Your server does not store information on players online state.');
+            }
+        }
 
         if ($SQL->num_rows() == 0) {
             echo 'Nobody is online :-O';

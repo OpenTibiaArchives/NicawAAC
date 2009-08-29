@@ -18,24 +18,34 @@
 */
 
 include ("../include.inc.php");
-//load account if loged in
-$account = new Account();
-if (isset($_SESSION['account']) && $account->load($_SESSION['account']))
-	if ($account->canVote((int) $_POST['option'])){
-		$account->vote((int) $_POST['option']);
-		//create new message
-		$msg = new IOBox('message');
-		$msg->addMsg('Your vote has been registered. Please vote only once.');
-		$msg->addRefresh('OK');
-		$msg->show();
-	}else $error = 'You cannot vote in this poll';
-else $error = 'You are not logged in';
 
-if (!empty($error)){
-	//create new message
-	$msg = new IOBox('message');
-	$msg->addMsg($error);
-	$msg->addClose('OK');
-	$msg->show();
+try {
+//load account if loged in
+    $account = new Account();
+    $account->load($_SESSION['account']);
+    
+    if (!$account->canVote((int) $_POST['option']))
+        throw new ModuleException('You cannot vote in this poll.');
+
+    $account->vote((int) $_POST['option']);
+
+    //create new message
+    $msg = new IOBox('message');
+    $msg->addMsg('Your vote has been registered. Please vote only once.');
+    $msg->addRefresh('OK');
+    $msg->show();
+
+} catch(ModuleException $e) {
+    $msg = new IOBox('message');
+    $msg->addMsg($e->getMessage());
+    $msg->addReload('<< Back');
+    $msg->addClose('OK');
+    $msg->show();
+
+} catch (AccountNotFoundException $e) {
+    $msg = new IOBox('message');
+    $msg->addMsg('There was a problem loading your account. Try to login again.');
+    $msg->addRefresh('OK');
+    $msg->show();
 }
 ?>

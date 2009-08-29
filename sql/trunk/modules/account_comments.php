@@ -17,32 +17,31 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 include ("../include.inc.php");
-//load account if loged in
-$account = new Account();
-($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
 
-//retrieve post data
-$form = new Form('comments');
-//check if any data was submited
-if ($form->exists()){
-	$account->setAttr('comment',$form->attrs['comment']);
-	if (!$account->save()) $error = 'Failed saving comments';
-		if (!empty($error)){
-			//create new message
-			$msg = new IOBox('message');
-			$msg->addMsg($error);
-			$msg->addReload('<< Back');
-			$msg->addClose('OK');
-			$msg->show();
-		}
-}else{
-	//create new form
-	$form = new IOBox('comments');
-	$form->target = $_SERVER['PHP_SELF'];
-	$form->addLabel('Edit Comments');
-	$form->addTextbox('comment',htmlspecialchars($account->attrs['comment']));
-	$form->addClose('Cancel');
-	$form->addSubmit('Save');
-	$form->show();
+try {
+    $account = new Account();
+    $account->load($_SESSION['account']);
+
+    $form = new Form('comments');
+
+    $account->setAttr('comment',$form->attrs['comment']);
+    $account->save();
+  
+} catch (FormNotFoundException $e)  {
+    //create new form
+    $form = new IOBox('comments');
+    $form->target = $_SERVER['PHP_SELF'];
+    $form->addLabel('Edit Comments');
+    $form->addTextbox('comment',htmlspecialchars($account->attrs['comment']));
+    $form->addClose('Cancel');
+    $form->addSubmit('Save');
+    $form->show();
+
+} catch (AccountNotFoundException $e)  {
+    $msg = new IOBox('message');
+    $msg->addMsg('There was a problem loading your account. Try to login again.');
+    $msg->addRefresh('OK');
+    $msg->show();
+    
 }
 ?>

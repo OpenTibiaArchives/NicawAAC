@@ -22,36 +22,38 @@ $SQL = AAC::$SQL;
 
 //retrieve post data
 $form = new Form('groups');
-if ($form->exists()){
-  $d['id'] = $form->attrs['id'];
-  $d['name'] = $form->attrs['name'];
-  $d['access'] = $form->attrs['access'];
-  $d['flags'] = $form->attrs['flags'];
-  $d['maxdepotitems'] = $form->attrs['depot_size'];
-  $d['maxviplist'] = $form->attrs['vip_size'];
-  if ($SQL->myInsert('groups',$d)){
-		$msg = new IOBox('message');
-		$msg->addMsg('Group created!');
-		$msg->addClose('Finish');
-		$msg->show();
-	}else{
-		if ($SQL->myUpdate('groups',$d,array('id' => (int)$form->attrs['id']))){
-			$msg = new IOBox('message');
-			$msg->addMsg('Group ID: '.$form->attrs['id'].' was <b>updated</b>');
-			$msg->addClose('OK');
-			$msg->show();
-		}else{
-			$msg = new IOBox('message');
-			$msg->addMsg('Cannot save group.');
-			$msg->addClose('OK');
-			$msg->show();
-		}
-	}
-}else{
-$msg = new IOBox('groups');
-$msg->target = $_SERVER['PHP_SELF'];
-$msg->addLabel('Create Group');
-$msg->addMsg('<table id="flagtable" border="1px" cellspacing="0" width="440px">
+if ($form->exists()) {
+    $d['id'] = $form->attrs['id'];
+    $d['name'] = $form->attrs['name'];
+    $d['access'] = $form->attrs['access'];
+    $d['flags'] = $form->attrs['flags'];
+    $d['maxdepotitems'] = $form->attrs['depot_size'];
+    $d['maxviplist'] = $form->attrs['vip_size'];
+    try {
+        $SQL->myInsert('groups',$d);
+        $msg = new IOBox('message');
+        $msg->addMsg('Group created!');
+        $msg->addClose('Finish');
+        $msg->show();
+    } catch(DatabaseQueryException $e) {
+        try {
+            $SQL->myUpdate('groups',$d,array('id' => (int)$form->attrs['id']));
+            $msg = new IOBox('message');
+            $msg->addMsg('Group ID: '.$form->attrs['id'].' was <b>updated</b>');
+            $msg->addClose('OK');
+            $msg->show();
+        } catch(DatabaseQueryException $e) {
+            $msg = new IOBox('message');
+            $msg->addMsg('Cannot save group.');
+            $msg->addClose('OK');
+            $msg->show();
+        }
+    }
+}else {
+    $msg = new IOBox('groups');
+    $msg->target = $_SERVER['PHP_SELF'];
+    $msg->addLabel('Create Group');
+    $msg->addMsg('<table id="flagtable" border="1px" cellspacing="0" width="440px">
   <tr>
     <td colspan="2"><b>Privileges</b></td>
   </tr>
@@ -109,16 +111,16 @@ $msg->addMsg('<table id="flagtable" border="1px" cellspacing="0" width="440px">
 		<input type="checkbox" value="268435456" onclick="calcFlags()"> Do not gain skill<br/>
 		<input type="checkbox" value="2147483648" onclick="calcFlags()"> Can not gain loot<br/>
     </td><td>');
-$msg->addInput('id','text','0');
-$msg->addInput('name','text');
-$msg->addInput('flags','text','0');
-$msg->addInput('access','text','0');
-$msg->addInput('depot size','text','1000');
-$msg->addInput('vip size','text','100');
-$msg->addClose('Cancel');
-$msg->addSubmit('Save');
-$msg->addMsg('</td></tr></table>');
-$msg->show();
+    $msg->addInput('id','text','0');
+    $msg->addInput('name','text');
+    $msg->addInput('flags','text','0');
+    $msg->addInput('access','text','0');
+    $msg->addInput('depot size','text','1000');
+    $msg->addInput('vip size','text','100');
+    $msg->addClose('Cancel');
+    $msg->addSubmit('Save');
+    $msg->addMsg('</td></tr></table>');
+    $msg->show();
 }
 
 ?>

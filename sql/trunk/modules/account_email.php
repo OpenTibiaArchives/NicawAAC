@@ -17,46 +17,56 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 include ("../include.inc.php");
-//load account if loged in
-$account = new Account();
-($account->load($_SESSION['account'])) or die('You need to login first. '.$account->getError());
 
-//retrieve post data
-$form = new Form('email');
-//check if any data was submited
-if ($form->exists()){
-	//validate email
-	if (AAC::ValidEmail($form->attrs['email'])){
-		//check if password match
-		if ($account->checkPassword($form->attrs['password'])){
-			$account->logAction($account->attrs['email'].' changed to '.$form->attrs['email']);
-			$account->setAttr('email',$form->attrs['email']);
-			if ($account->save()){
-				//create new message
-				$msg = new IOBox('message');
-				$msg->addMsg('Email was successfuly changed.');
-				$msg->addClose('Finish');
-				$msg->show();
-			}else $error = 'Failed saving account';
-		}else{$error = "Incorrect password";}
-	}else{$error = "Bad email address";}
-	if (!empty($error)){
-		//create new message
-		$msg = new IOBox('message');
-		$msg->addMsg($error);
-		$msg->addReload('<< Back');
-		$msg->addClose('OK');
-		$msg->show();
-	}
-}else{
-	//create new form
-	$form = new IOBox('email');
-	$form->target = $_SERVER['PHP_SELF'];
-	$form->addLabel('Change Email');
-	$form->addInput('password','password');
-	$form->addInput('email','text',$account->attrs['email']);
-	$form->addClose('Cancel');
-	$form->addSubmit('Next >>');
-	$form->show();
+try {
+//load account if loged in
+    $account = new Account();
+    $account->load($_SESSION['account']);
+
+    //retrieve post data
+    $form = new Form('email');
+
+    //validate email
+    if (!AAC::ValidEmail($form->attrs['email']))
+        throw new ModuleException('Incorrect password');
+
+    //check if password match
+    if (!$account->checkPassword($form->attrs['password']))
+        throw new ModuleException('Not a valid email address');
+
+    $account->logAction($account->attrs['email'].' changed to '.$form->attrs['email']);
+    $account->setAttr('email',$form->attrs['email']);
+    $account->save();
+
+    //create new message
+    $msg = new IOBox('message');
+    $msg->addMsg('Email was successfuly changed.');
+    $msg->addClose('Finish');
+    $msg->show();
+
+} catch(FormNotFoundException $e) {
+//create new form
+    $form = new IOBox('email');
+    $form->target = $_SERVER['PHP_SELF'];
+    $form->addLabel('Change Email');
+    $form->addInput('password','password');
+    $form->addInput('email','text',$account->attrs['email']);
+    $form->addClose('Cancel');
+    $form->addSubmit('Next >>');
+    $form->show();
+
+} catch(ModuleException $e) {
+    $msg = new IOBox('message');
+    $msg->addMsg($e->getMessage());
+    $msg->addReload('<< Back');
+    $msg->addClose('OK');
+    $msg->show();
+    
+} catch (AccountNotFoundException $e)  {
+    $msg = new IOBox('message');
+    $msg->addMsg('There was a problem loading your account. Try to login again.');
+    $msg->addRefresh('OK');
+    $msg->show();
+
 }
 ?>

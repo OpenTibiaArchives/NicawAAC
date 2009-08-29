@@ -1,6 +1,7 @@
 <?php
 /*
     Copyright (C) 2007 - 2009  Nicaw
+    Created by Rafael Hamdan
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,47 +21,47 @@
 include ("../include.inc.php");
 
 try {
-//retrieve post data
-    $form = new Form('password');
-
-    //load account if loged in
+//load account if loged in
     $account = new Account();
     $account->load($_SESSION['account']);
 
-    //check if password valid
-    if (!AAC::ValidPassword($form->attrs['new']))
-        throw new ModuleException('Valid password contains:<ul><li>Letters A-Z</li><li>Digits 0-9</li><li>Symbols '.htmlspecialchars('~!@#%&;,:\\^$.|?*+()"').'</li></ul>');
+    //load guild
+    $guild = new Guild();
+    $guild->load($_REQUEST['guild_id']);
+    
+    //retrieve post data
+    $form = new Form('passownership');
 
-    //passwords must match
-    if ($form->attrs['new']!=$form->attrs['confirm'])
-        throw new ModuleException('Passwords do not match.');
+    if ($guild->attrs['owner_acc'] != $account->attrs['accno'])
+        throw new ModuleException('Permission denied.');
 
-    //password can't be account number
-    if ($form->attrs['new']==$account->attrs['name'])
-        throw new ModuleException('Password may not match your account name.');
+    if (!$guild->isMember($form->attrs['player']))
+        throw new ModuleException('This character is not a member of this guild.');
 
-    //check if old password correct
-    if (!$account->checkPassword($form->attrs['old']))
-        throw new ModuleException('Old password incorrect.');
+    $player = new Player();
+    $player->load($form->attrs['player']);
 
-    //change password
-    $account->setPassword($form->attrs['new']);
-    //save account
-    $account->save();
-    //create new message
+    $guild->setOwner($player);
+
     $msg = new IOBox('message');
-    $msg->addMsg('Password was successfuly changed.');
-    $msg->addClose('Finish');
+    $msg->addMsg('The character ['.$player->attrs['name'].'] is now the owner of the guild.');
+    $msg->addRefresh('OK');
     $msg->show();
 
 } catch(FormNotFoundException $e) {
-//create new form
-    $form = new IOBox('password');
-    $form->target = $_SERVER['PHP_SELF'];
-    $form->addLabel('Change Password');
-    $form->addInput('old','password');
-    $form->addInput('new','password');
-    $form->addInput('confirm','password');
+//make a list of member characters (owner is not included)
+    foreach ($guild->members as $member) {
+        if($member['id'] != $guild->attrs['owner_id']) {
+            $list_players[$member['id']] = $member['name'];
+        }
+    }
+
+    //create new form
+    $form = new IOBox('passownership');
+    $form->target = $_SERVER['PHP_SELF'].'?guild_id='.$guild->attrs['id'];
+    $form->addLabel('Pass leadership');
+    $form->addMsg('Please choose the character that will be the owner of this guild.');
+    $form->addSelect('player', $list_players);
     $form->addClose('Cancel');
     $form->addSubmit('Next >>');
     $form->show();
@@ -72,7 +73,7 @@ try {
     $msg->addClose('OK');
     $msg->show();
 
-} catch (AccountNotFoundException $e)  {
+} catch (AccountException $e) {
     $msg = new IOBox('message');
     $msg->addMsg('There was a problem loading your account. Try to login again.');
     $msg->addRefresh('OK');

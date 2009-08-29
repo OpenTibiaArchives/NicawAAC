@@ -17,31 +17,48 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 include ("../include.inc.php");
-//load guild and check owner
-$guild = new Guild();
-if (!($guild->load($_REQUEST['guild_id']) && $guild->attrs['owner_acc'] == $_SESSION['account'] && !empty($_SESSION['account']))) die("Access denied.");
 
-//retrieve post data
-$form = new Form('comments');
-//check if any data was submited
-if ($form->exists()){
-	if (strlen($form->attrs['comment']) <= 250){
-		$guild->setDescription($form->attrs['comment']);
-	}else{
-		$msg = new IOBox('comments');
-		$msg->addMsg('Description is too long.');
+try {
+//load guild and check owner
+    $guild = new Guild();
+    $guild->load($_REQUEST['guild_id']);
+
+    //load account if loged in
+    $account = new Account();
+    $account->load($_SESSION['account']);
+
+    if ($guild->attrs['owner_acc'] != $account->attrs['accno'])
+        throw new ModuleException('You do not have access to this guild. Scram!');
+
+    //retrieve post data
+    $form = new Form('comments');
+
+    if (strlen($form->attrs['comment']) <= 250) {
+        $guild->setDescription($form->attrs['comment']);
+    }else {
+        $msg = new IOBox('comments');
+        $msg->addMsg('Description is too long.');
         $msg->addClose('OK');
-		$msg->show();
-	}
-}else{
-	//create new form
-	$form = new IOBox('comments');
-	$form->target = $_SERVER['PHP_SELF'].'?guild_id='.(int)$_REQUEST['guild_id'];
-	$form->addLabel('Edit Description');
-	$form->addMsg('Max 250 symbols');
-	$form->addTextbox('comment',htmlspecialchars($guild->attrs['description']));
-	$form->addClose('Cancel');
-	$form->addSubmit('Save');
-	$form->show();
+        $msg->show();
+    }
+
+} catch(FormNotFoundException $e) {
+//create new form
+    $form = new IOBox('comments');
+    $form->target = $_SERVER['PHP_SELF'].'?guild_id='.(int)$_REQUEST['guild_id'];
+    $form->addLabel('Edit Description');
+    $form->addMsg('Max 250 symbols');
+    $form->addTextbox('comment',htmlspecialchars($guild->attrs['description']));
+    $form->addClose('Cancel');
+    $form->addSubmit('Save');
+    $form->show();
+
+} catch(ModuleException $e) {
+    $msg = new IOBox('message');
+    $msg->addMsg($e->getMessage());
+    $msg->addReload('<< Back');
+    $msg->addClose('OK');
+    $msg->show();
+
 }
 ?>

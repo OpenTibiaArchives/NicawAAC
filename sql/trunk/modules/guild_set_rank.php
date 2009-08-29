@@ -25,35 +25,43 @@ include ("../include.inc.php");
  * rank_id
  */
 
-//load account if loged in
-$account = new Account();
-if (isset($_SESSION['account']) && $account->load($_SESSION['account'])) {
-//load guild
-    $guild = new Guild();
-    if (isset($_POST['guild_id']) && $guild->load($_POST['guild_id'])) {
-        if ($guild->attrs['owner_acc'] == $account->attrs['accno']) {
-            $player = new Player();
-            if ($player->load($_POST['player_id'])) {
-                if ($guild->isMember($player->attrs['id'])) {
-                    if ($guild->isRank($_POST['rank_id'])) {
-                        $player->setAttr('rank_id', $_POST['rank_id']);
-                        if ($player->save()) {
-                            //success
-                        }else $error = 'Cannot save player. Make sure it is offline.';
-                    }else $error = 'Not a valid rank id';
-                }else $error = 'Player does not belong to this guild';
-            }else $error = 'Cannot load player';
-        }else $error = 'You do not have permission';
-    }else $error = 'Cannot load guild';
-}else $error = 'You are not logged in';
-
 $responseXML = new SimpleXMLElement('<response/>');
-if (empty($error)) {
+
+try {
+
+//load account if loged in
+    $account = new Account();
+    $account->load($_SESSION['account']);
+    
+    //load guild
+    $guild = new Guild();
+    $guild->load($_POST['guild_id']);
+    
+    if ($guild->attrs['owner_acc'] != $account->attrs['accno'])
+        throw new ModuleException('Permission denied.');
+
+    $player = new Player();
+    $player->load($_POST['player_id']);
+    if (!$guild->isMember($player->attrs['id']))
+        throw new ModuleException('Player does not belong to this guild.');
+
+    if (!$guild->isRank($_POST['rank_id']))
+        throw new ModuleException('Rank does not exist.');
+        
+    $player->setAttr('rank_id', $_POST['rank_id']);
+    $player->save_guild();
+
     $responseXML->addChild('error', 0);
     $responseXML->addChild('rankname', $guild->ranks[$_POST['rank_id']]['name']);
-} else {
+
+} catch(ModuleException $e) {
     $responseXML->addChild('error', 1);
-    $responseXML->addChild('message', $error);
+    $responseXML->addChild('message', $e->getMessage());
+
+} catch(AccountNotFoundException $e) {
+    $responseXML->addChild('error', 1);
+    $responseXML->addChild('message', 'There was a problem loading your account. Try to login again.');
 }
+
 echo $responseXML->asXML();
 ?>

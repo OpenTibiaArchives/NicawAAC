@@ -32,8 +32,7 @@ if (!is_file($cfg['dirdata'].$cfg['house_file']))
 $HousesXML = simplexml_load_file($cfg['dirdata'].$cfg['house_file']);
 $MySQL = AAC::$SQL;
 $MySQL->myQuery('SELECT `players`.`name`, `houses`.`id` FROM `players`, `houses` WHERE `houses`.`owner` = `players`.`id`;');
-if ($MySQL->failed())
-	throw new aacException('SQL query failed:<br/>'.$SQL->getError());
+
 while ($row = $MySQL->fetch_array()){
 	$houses[(int)$row['id']] = $row['name'];
 }
