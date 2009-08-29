@@ -19,26 +19,36 @@
 include ("../include.inc.php");
 require ('check.php');
 
+try {
 //retrieve post data
-$form = new Form('tablerepair');
-//check if any data was submited
-if ($form->exists() && $form->getBool('confirm')){
-	$SQL = AAC::$SQL;
-	$SQL->repairTables();
-	//create new message
-	$form = new IOBox('tablerepair');
-	$form->target = $_SERVER['PHP_SELF'];
-	$form->addMsg('Done');
-	$form->addClose('OK');
-	$form->show();
-}else{
-	//create new form
-	$form = new IOBox('tablerepair');
-	$form->target = $_SERVER['PHP_SELF'];
-	$form->addMsg('AAC will attempt to repair MySQL tables. This can solve crashed database problem.<br/>Please make a backup before continuing.');
-	$form->addCheckbox('confirm');
-	$form->addClose('Cancel');
-	$form->addSubmit('Continue');
-	$form->show();
+    $form = new Form('tablerepair');
+    //check if any data was submited
+    if (!$form->getBool('confirm'))
+        throw new ModuleException('You have to confirm your choise.');
+    $SQL = AAC::$SQL;
+    $SQL->repairTables();
+    //create new message
+    $form = new IOBox('tablerepair');
+    $form->target = $_SERVER['PHP_SELF'];
+    $form->addMsg('Done');
+    $form->addClose('OK');
+    $form->show();
+
+} catch(ModuleException $e) {
+    $msg = new IOBox('message');
+    $msg->addMsg($e->getMessage());
+    $msg->addReload('<< Back');
+    $msg->addClose('OK');
+    $msg->show();
+
+} catch(FormNotFoundException $e) {
+//create new form
+    $form = new IOBox('tablerepair');
+    $form->target = $_SERVER['PHP_SELF'];
+    $form->addMsg('AAC will attempt to repair MySQL tables. This can solve crashed database problem.<br/>Please make a backup before continuing.');
+    $form->addCheckbox('confirm');
+    $form->addClose('Cancel');
+    $form->addSubmit('Continue');
+    $form->show();
 }
 ?>

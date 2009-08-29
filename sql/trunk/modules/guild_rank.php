@@ -38,8 +38,7 @@ try {
     if ($guild->attrs['owner_acc'] != $account->attrs['accno'])
         throw new ModuleException('Permission denied.');
 
-    $_POST['rank_name'] = ucfirst($_POST['rank_name']);
-    if (AAC::ValidGuildRank($_POST['rank_name']))
+    if (!AAC::ValidGuildRank($_POST['rank_name']))
         throw new ModuleException('Not a valid rank name.');
 
     if (isset($_POST['rank_id'])) {

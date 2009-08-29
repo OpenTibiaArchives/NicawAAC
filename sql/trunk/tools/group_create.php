@@ -18,11 +18,13 @@
 */
 include ("../include.inc.php");
 require ('check.php');
-$SQL = AAC::$SQL;
 
-//retrieve post data
-$form = new Form('groups');
-if ($form->exists()) {
+try {
+    $SQL = AAC::$SQL;
+
+    //retrieve post data
+    $form = new Form('groups');
+
     $d['id'] = $form->attrs['id'];
     $d['name'] = $form->attrs['name'];
     $d['access'] = $form->attrs['access'];
@@ -49,7 +51,7 @@ if ($form->exists()) {
             $msg->show();
         }
     }
-}else {
+} catch(FormNotFoundException $e) {
     $msg = new IOBox('groups');
     $msg->target = $_SERVER['PHP_SELF'];
     $msg->addLabel('Create Group');

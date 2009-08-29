@@ -139,7 +139,7 @@ $SQL = AAC::$SQL;
             </script>
             <li style="background-image: url(resource/user_edit.png);" onclick="ajax('form','modules/guild_edit.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Promote / Demote</li>
             <li style="background-image: url(resource/page_edit.png);" onclick="ajax('form','modules/guild_comments.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Edit Description</li>
-            <li style="background-image: url(resource/page_edit.png);" onclick="ajax('form','modules/guild_pass_leadership.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Pass Leadership</li>
+            <li style="background-image: url(resource/shield_go.png);" onclick="ajax('form','modules/guild_pass_leadership.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Pass Leadership</li>
                     <?php }//is owner
                     if (!isset($account)) {?>
             <li style="background-image: url(resource/resultset_next.png);" onclick="self.window.location.href='login.php?redirect=guilds.php'">Login</li>
@@ -158,7 +158,7 @@ $SQL = AAC::$SQL;
                     foreach ($guild->ranks as $rank) {
                         $i++;
                         if($is_owner) {
-                            $rank_content = '<td id="rank'.$rank['id'].'"><img style="cursor: pointer" src="resource/page_edit.png" alt="edit" height="16" width="16" onclick="Guild.prepareRankRename('.$guild->attrs['id'].', '.$rank['id'].',\''.htmlspecialchars($rank['name']).'\')"/>'.
+                            $rank_content = '<td id="rank'.$rank['id'].'"><img style="cursor: pointer" src="resource/page_edit.png" alt="edit" height="16" width="16" onclick="Guild.prepareRankRename('.$guild->attrs['id'].', '.$rank['id'].',\''.addcslashes(htmlspecialchars($rank['name']), "'").'\')"/>'.
                                 '&nbsp;<img style="cursor: pointer" src="resource/cross.png" alt="del" height="16" width="16" onclick="Guild.requestRankDelete('.$guild->attrs['id'].', '.$rank['id'].')"/>&nbsp;'.
                                 htmlspecialchars($rank['name']).'</td>';
                         } else {
@@ -171,13 +171,13 @@ $SQL = AAC::$SQL;
 
                             if($is_owner) {
                                 $title_content = htmlspecialchars($player['nick']).
-                                    '&nbsp;<img style="cursor: pointer" src="resource/page_edit.png" alt="edit" height="16" width="16" onclick="Guild.prepareNickChange('.$guild->attrs['id'].', '.$player['id'].',\''.htmlspecialchars($player['nick']).'\')"/>';
+                                    '&nbsp;<img style="cursor: pointer" src="resource/page_edit.png" alt="edit" height="16" width="16" onclick="Guild.prepareNickChange('.$guild->attrs['id'].', '.$player['id'].',\''.addcslashes(htmlspecialchars($player['nick']), "'").'\')"/>';
                             } else {
                                 $title_content = htmlspecialchars($player['nick']);
                             }
 
                             if(isset($account) && ($guild->canKick($account->attrs['accno']) || $account->hasPlayer($player['id']))) {
-                                $player_content = '<img style="cursor: pointer" src="resource/cross.png" alt="X" height="16" width="16" onclick="Guild.requestKick(\'player'.$player['id'].'\', \''.$player['name'].'\', '.$guild->attrs['id'].')"/>&nbsp;'.
+                                $player_content = '<img style="cursor: pointer" src="resource/cross.png" alt="X" height="16" width="16" onclick="Guild.requestKick(\'player'.$player['id'].'\', \''.addcslashes($player['name'], "'") .'\', '.$guild->attrs['id'].')"/>&nbsp;'.
                                     '<a href="characters.php?player_id='.$player['id'].'">'.htmlspecialchars($player['name']).'</a>';
                             } else {
                                 $player_content = '<a href="characters.php?player_id='.$player['id'].'">'.htmlspecialchars($player['name']).'</a>';
@@ -208,10 +208,10 @@ $SQL = AAC::$SQL;
                     foreach ($guild->invited as $a) {
                         echo '<tr '.getStyle($i++).' id="player'.$a['id'].'"><td>'.$a['name'].'</td><td>';
                         if(isset($account) && ($guild->canKick($account->attrs['accno']) || $account->hasPlayer($a['id']))) {
-                            echo '<img style="cursor: pointer" src="resource/cross.png" alt="X" height="16" width="16" onclick="Guild.requestKick(\'player'.$a['id'].'\', \''.$a['name'].'\', '.$guild->attrs['id'].')"/>';
+                            echo '<img style="cursor: pointer" src="resource/cross.png" alt="X" height="16" width="16" onclick="Guild.requestKick(\'player'.$a['id'].'\', \''.addcslashes($a['name'], "'").'\', '.$guild->attrs['id'].')"/>';
                         }
                         if(isset($account) && $account->hasPlayer($a['id'])) {
-                            echo '<img style="cursor: pointer" src="resource/accept.png" alt="V" height="16" width="16" onclick="Guild.requestJoin(\''.$a['name'].'\', '.$guild->attrs['id'].')"/>';
+                            echo '<img style="cursor: pointer" src="resource/accept.png" alt="V" height="16" width="16" onclick="Guild.requestJoin(\''.addcslashes($a['name'], "'").'\', '.$guild->attrs['id'].')"/>';
                         }
                         echo '</td></tr>';
                     }

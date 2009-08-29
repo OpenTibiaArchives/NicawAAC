@@ -47,11 +47,11 @@ class AAC {
     }
 
     static public function ValidGuildRank($name) {
-        return preg_match("/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/",$name);
+        return preg_match('/^([A-Za-z0-9]+[ \'\-]?){1,4}$/',$name) && strlen($name) <= 20;
     }
 
     static public function ValidGuildNick($name) {
-        return preg_match("/^[A-Z][a-z]{1,20}([ '-][A-Za-z][a-z]{1,15}){0,3}$/",$name);
+        return preg_match('/^([A-Za-z0-9!@#$%*]+[ \'\-]?)+$/',$name) && strlen($name) <= 20;
     }
 
     static public function getExperienceByLevel($lvl) {

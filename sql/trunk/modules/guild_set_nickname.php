@@ -25,6 +25,8 @@ include ("../include.inc.php");
  * nickname
  */
 
+$responseXML = new SimpleXMLElement('<response/>');
+
 try {
 
 //load account if loged in
@@ -44,7 +46,6 @@ try {
     if (!$guild->isMember($player->attrs['id']))
         throw new ModuleException('Player does not belong to this guild.');
 
-    $_POST['nickname'] = ucfirst($_POST['nickname']);
     if (!AAC::ValidGuildNick($_POST['nickname']))
         throw new ModuleException('Not a valid nickname.');
 

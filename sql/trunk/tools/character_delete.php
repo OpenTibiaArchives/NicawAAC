@@ -19,35 +19,33 @@
 include ("../include.inc.php");
 require ('check.php');
 
-//retrieve post data
-$form = new Form('admin');
-
 //name send by GET param and character deleted
-if (isset($_GET['name'])){
-	//load player
-	$player = new Player();
-	if ($player->find($_GET['name'])){
-			//delete the player
-			if ($player->delete()){
-				//create new message
-				$msg = new IOBox('message');
-				$msg->addMsg('Character was deleted.');
-				$msg->addClose('Finish');
-				$msg->show();
-			}else $error = $player->getError();
-	}else $error ='Unable to load player';
-//check if any data was submited
-}elseif ($form->exists()){
-         //create new message
+try {
+//load player
+    $player = new Player();
+    $player->find($_GET['name']);
+    $player->delete();
+
+    //create new message
+    $msg = new IOBox('message');
+    $msg->addMsg('Character was deleted.');
+    $msg->addClose('Finish');
+    $msg->show();
+
+} catch(PlayerNotFoundException $e) {
+    
+    try {
+        $form = new Form('admin');
+        //create new message
         $msg = new IOBox('delete');
         $msg->target = $_SERVER['PHP_SELF'].'?name='.$form->attrs['list'];
         $msg->addMsg('Are you sure you want to delete: '.$form->attrs['list']);
         $msg->addSubmit('Yes');
         $msg->addClose('No');
         $msg->show();
+    } catch(FormNotFoundException $e) {
 
-}else{
-         //create new message
+    //create new message
         $msg = new IOBox('admin');
         $msg->target = $_SERVER['PHP_SELF'];
         $msg->addMsg('Enter character name to delete');
@@ -55,13 +53,6 @@ if (isset($_GET['name'])){
         $msg->addSubmit('Delete');
         $msg->addClose('Cancel');
         $msg->show();
-}
-if (!empty($error)){
-	//create new message
-	$msg = new IOBox('message');
-	$msg->addMsg($error);
-	$msg->addReload('<< Back');
-	$msg->addClose('OK');
-	$msg->show();
+    }
 }
 ?>

@@ -19,25 +19,24 @@
 include ("../include.inc.php");
 require ('check.php');
 
+try {
 //retrieve post data
-$form = new Form('addrss');
-//check if any data was submited
-if ($form->exists()){
-		//insert news
-		$sql = AAC::$SQL;
+    $form = new Form('addrss');
+    //insert news
+    $sql = AAC::$SQL;
     $sql->myInsert('nicaw_news',array('id' => null, 'title' => $form->attrs['title'], 'creator' => $form->attrs['creator'], 'date' => time(), 'text' => $form->attrs['text'], 'html' => $form->getBool('html')));
-    echo $sql->getError();
-}else{
-	//create new form
-	$form = new IOBox('addrss');
-	$form->target = $_SERVER['PHP_SELF'];
-	$form->addLabel('Create News');
-	$form->addInput('title');
-	$form->addInput('creator');
-	$form->addTextBox('text');
-	$form->addCheckBox('html',false);
-	$form->addClose('Cancel');
-	$form->addSubmit('Save');
-	$form->show();
+
+} catch(FormNotFoundException $e) {
+//create new form
+    $form = new IOBox('addrss');
+    $form->target = $_SERVER['PHP_SELF'];
+    $form->addLabel('Create News');
+    $form->addInput('title');
+    $form->addInput('creator');
+    $form->addTextBox('text');
+    $form->addCheckBox('html',false);
+    $form->addClose('Cancel');
+    $form->addSubmit('Save');
+    $form->show();
 }
 ?>

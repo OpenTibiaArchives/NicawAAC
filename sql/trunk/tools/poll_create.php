@@ -19,13 +19,14 @@
 include ("../include.inc.php");
 require ('check.php');
 
+try {
 //retrieve post data
-$form = new Form('poll');
-//check if any data was submited
-if ($form->exists()) {
-//make an array of options
+    $form = new Form('poll');
+
+    //make an array of options
     $options = explode("\n",trim($form->attrs['options']));
     $sql = AAC::$SQL;
+    
     //store poll question
     $sql->myInsert('nicaw_polls',array('id' => null, 'minlevel' => (int)$form->attrs['level'], 'question' => $form->attrs['question'], 'startdate' => strToDate($form->attrs['startdate']), 'enddate' => strToDate($form->attrs['enddate']), 'hidden' => $form->getBool('hidden')));
     $poll_id = $sql->insert_id();
@@ -33,6 +34,7 @@ if ($form->exists()) {
     //store all poll options
     foreach($options as $option)
         $sql->myInsert('nicaw_poll_options',array('id' => null, 'poll_id' => $poll_id, 'option' => $option));
+        
     //create news message
     if ($form->getBool('announce')) {
         $pollMsg = '<b>'.$form->attrs['question']."</b><br/>\n";
@@ -46,7 +48,7 @@ if ($form->exists()) {
             "<br/>\n".'Characters of level '.(int)$form->attrs['level'].' or above may vote by clinking this link:'."<br/>\n".'<a href="'.$link.'">'.$link.'</a>';
         $sql->myInsert('nicaw_news',array('id' => null, 'title' => 'New Poll', 'creator' => 'PollMan', 'date' => time(), 'text' => $pollMsg, 'html' => true));
     }
-}else {
+} catch(FormNotFoundException $e) {
 //create new form
     $form = new IOBox('poll');
     $form->target = $_SERVER['PHP_SELF'];

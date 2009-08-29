@@ -117,7 +117,7 @@ var Guild = {
         }
     },
     prepareRankRename : function(guild_id, rank_id, value) {
-        $('rank'+rank_id).innerHTML = '<input id="rank'+rank_id+'_rename" type="text" value="'+ value +'" style="width: 100px;"/><img style="cursor: pointer" src="resource/accept.png" alt="OK" height="16" width="16" onclick="Guild.requestRankRename('+guild_id+', '+rank_id+', \''+value+'\', $(\'rank'+rank_id+'_rename\').value)"/>'
+        $('rank'+rank_id).innerHTML = '<input id="rank'+rank_id+'_rename" type="text" value="'+ value +'" style="width: 100px;"/><img style="cursor: pointer" src="resource/accept.png" alt="OK" height="16" width="16" onclick="Guild.requestRankRename('+guild_id+', '+rank_id+', \''+value.replace(/'/g, '\\\'')+'\', $(\'rank'+rank_id+'_rename\').value)"/>'
     },
     requestRankRename : function(guild_id, rank_id, old_name, new_name) {
         $('rank'+rank_id).innerHTML = new_name;
@@ -146,13 +146,13 @@ var Guild = {
             name = param.old_name;
         }
         $('rank'+param.rank_id).innerHTML =
-        '<img style="cursor: pointer" src="resource/page_edit.png" alt="edit" height="16" width="16" onclick="Guild.prepareRankRename('+param.guild_id+', '+param.rank_id+',\''+name+'\')"/>&nbsp;' +
+        '<img style="cursor: pointer" src="resource/page_edit.png" alt="edit" height="16" width="16" onclick="Guild.prepareRankRename('+param.guild_id+', '+param.rank_id+',\''+name.replace(/'/g, '\\\'')+'\')"/>&nbsp;' +
         '<img style="cursor: pointer" src="resource/cross.png" alt="del" height="16" width="16" onclick="Guild.requestRankDelete('+param.guild_id+', '+param.rank_id+')"/>&nbsp;' +
         name;
 
     },
     prepareNickChange : function(guild_id, player_id, value) {
-        $('player'+player_id+'_title').innerHTML = '<input id="player'+player_id+'_rename" type="text" value="'+ value +'" style="width: 100px;"/><img style="cursor: pointer" src="resource/accept.png" alt="OK" height="16" width="16" onclick="Guild.requestNickChange('+guild_id+', '+player_id+', \''+value+'\', $(\'player'+player_id+'_rename\').value)"/>'
+        $('player'+player_id+'_title').innerHTML = '<input id="player'+player_id+'_rename" type="text" value="'+ value +'" style="width: 100px;"/><img style="cursor: pointer" src="resource/accept.png" alt="OK" height="16" width="16" onclick="Guild.requestNickChange('+guild_id+', '+player_id+', \''+value.replace(/'/g, '\\\'')+'\', $(\'player'+player_id+'_rename\').value)"/>'
     },
     requestNickChange : function(guild_id, player_id, old_name, new_name) {
         $('player'+player_id+'_title').innerHTML = new_name;
@@ -181,6 +181,6 @@ var Guild = {
             name = param.old_name;
         }
         $('player'+param.player_id+'_title').innerHTML = name + '&nbsp;' +
-          '<img style="cursor: pointer" src="resource/page_edit.png" alt="edit" height="16" width="16" onclick="Guild.prepareNickChange('+param.guild_id+', '+param.player_id+',\''+name+'\')"/>';
+          '<img style="cursor: pointer" src="resource/page_edit.png" alt="edit" height="16" width="16" onclick="Guild.prepareNickChange('+param.guild_id+', '+param.player_id+',\''+name.replace(/'/g, '\\\'')+'\')"/>';
     }
 }
