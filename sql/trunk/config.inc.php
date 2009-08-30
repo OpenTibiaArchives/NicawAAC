@@ -140,7 +140,7 @@ $cfg['guild_manager_enabled'] = true;
 $cfg['status_update_interval'] = 5*60;
 
 # Shows more informatin when exception occurs. WARNING! Can reveal sensitive information.
-$cfg['debug_backtrace'] = true;
+$cfg['debug_backtrace'] = false;
 
 # Schema control override. Disables/enables compatibility check for OTServ schema version.
 $cfg['schema_check'] = false;

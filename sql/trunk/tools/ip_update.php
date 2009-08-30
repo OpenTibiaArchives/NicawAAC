@@ -24,7 +24,7 @@ if (!empty($ip)) {
     $config = @file_get_contents($cfg['dirdata'].'../config.lua');
     if ($config) {
         if (long2ip(ip2long($ip)) === $ip) {
-            $new = preg_replace('/ip\s=\s".+?"/', 'ip = "'.$ip.'"',$config,1,$count);
+            $new = preg_replace('/ip\s=\s".+?"/i', 'ip = "'.$ip.'"',$config,1,$count);
             if ($count == 1) {
                 file_put_contents($cfg['dirdata'].'../config.lua',$new);
                 $msg = 'IP updated to: '.$ip;

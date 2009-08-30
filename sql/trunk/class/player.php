@@ -135,12 +135,12 @@ WHERE t1.kill_id = t2.kill_id
         //Load player attributes
         $player = $this->sql->myRetrieve('players', array('id' => $id));
         if ($player === false) throw new PlayerNotFoundException();
-        $group = $this->sql->myRetrieve('groups', array('id' => (int) $player['group_id']));
-        if ($group === false)
-            $this->attrs['access'] = 0;
-        else {
+        try {
+            $group = $this->sql->myRetrieve('groups', array('id' => (int) $player['group_id']));
             $this->attrs['access'] = (int) $group['access'];
             $this->attrs['position'] = (string) $group['name'];
+        } catch(DatabaseQueryException $e) {
+            $this->attrs['access'] = 0;
         }
         if(isset($player['online'])) {
             if((bool) $player['online'] == true) {

@@ -38,13 +38,12 @@ try {
 } catch(ModuleException $e) {
     $msg = new IOBox('message');
     $msg->addMsg($e->getMessage());
-    $msg->addReload('<< Back');
     $msg->addClose('OK');
     $msg->show();
 
 } catch (AccountNotFoundException $e) {
     $msg = new IOBox('message');
-    $msg->addMsg('There was a problem loading your account. Try to login again.');
+    $msg->addMsg('Please login.');
     $msg->addRefresh('OK');
     $msg->show();
 }
