@@ -29,7 +29,7 @@ try {
 
     //check if password valid
     if (!AAC::ValidPassword($form->attrs['new']))
-        throw new ModuleException('Valid password contains:<ul><li>Letters A-Z</li><li>Digits 0-9</li><li>Symbols '.htmlspecialchars('~!@#%&;,:\\^$.|?*+()"').'</li></ul>');
+        throw new ModuleException('Valid password contains:<ul><li>Letters A-Z</li><li>Digits 0-9</li><li>Symbols '.htmlspecialchars('~!@#%&;,:\\^$.|?*+()"').'</li><li>At least 6 characters long</li></ul>');
 
     //passwords must match
     if ($form->attrs['new']!=$form->attrs['confirm'])

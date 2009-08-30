@@ -64,7 +64,7 @@ class IOBox {
         $this->elements[]= '<textarea name="'.$this->name.'__'.$name.'" cols="'.$cols.'" rows="'.$rows.'">'.$value.'</textarea>';
     }
     public function addSubmit($text) {
-        $this->buttons[]= '<input style="width: 100px; height: 25px;" type="submit" name="'.$this->name.'__'.$this->name.'" value="'.$text.'"/>';
+        $this->buttons[]= '<input style="width: 100px; height: 25px;" type="submit" name="'.$this->name.'__!submit" value="'.$text.'"/>';
     }
     public function addReload($text) {
         $this->buttons[]= '<input style="width: 100px; height: 25px;" onclick="$(\'iobox\').style[\'visibility\'] = \'hidden\'; ajax($(\'iobox\').parentNode.id,\''.htmlspecialchars($_SERVER['PHP_SELF']).'\',\'\',true);" type="button" name="'.$this->name.'__'.$this->name.'" value="'.$text.'"/>';

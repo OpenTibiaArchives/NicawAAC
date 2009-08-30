@@ -28,11 +28,11 @@ try {
 
     //validate email
     if (!AAC::ValidEmail($form->attrs['email']))
-        throw new ModuleException('Incorrect password');
+        throw new ModuleException('Not a valid email address.');
 
     //check if password match
     if (!$account->checkPassword($form->attrs['password']))
-        throw new ModuleException('Not a valid email address');
+        throw new ModuleException('Incorrect password.');
 
     $account->logAction($account->attrs['email'].' changed to '.$form->attrs['email']);
     $account->setAttr('email',$form->attrs['email']);

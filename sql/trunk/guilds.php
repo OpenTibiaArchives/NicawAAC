@@ -140,6 +140,7 @@ $SQL = AAC::$SQL;
             <li style="background-image: url(resource/user_edit.png);" onclick="ajax('form','modules/guild_edit.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Promote / Demote</li>
             <li style="background-image: url(resource/page_edit.png);" onclick="ajax('form','modules/guild_comments.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Edit Description</li>
             <li style="background-image: url(resource/shield_go.png);" onclick="ajax('form','modules/guild_pass_leadership.php','guild_id=<?php echo $guild->attrs['id']?>',true)">Pass Leadership</li>
+            <li style="background-image: url(resource/cross.png);" onclick="if(confirm('Are you sure?')){ajax('form','modules/guild_disband.php','guild_id=<?php echo $guild->attrs['id']?>',true);}">Disband guild</li>
                     <?php }//is owner
                     if (!isset($account)) {?>
             <li style="background-image: url(resource/resultset_next.png);" onclick="self.window.location.href='login.php?redirect=guilds.php'">Login</li>

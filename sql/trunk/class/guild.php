@@ -322,7 +322,7 @@ class Guild {
     }
 
     public function remove() {
-        $this->sql->myQuery('UPDATE players SET rank_id = 0, guildnick = \'\' WHERE players.rank_id = guild_ranks.id AND guild_ranks.guild_id = '.$this->sql->quote($this->attrs['id']));
+        $this->sql->myQuery('UPDATE players SET rank_id = 0, guildnick = \'\' WHERE players.rank_id IN (SELECT id FROM guild_ranks WHERE guild_id = '.$this->sql->quote($this->attrs['id']).')');
         $this->sql->myQuery('DELETE FROM guilds WHERE id = '.$this->sql->quote($this->attrs['id']));
         $this->sql->myQuery('DELETE FROM nicaw_guild_info WHERE id = '.$this->sql->quote($this->attrs['id']));
         $this->sql->myQuery('DELETE FROM nicaw_guild_invites WHERE gid = '.$this->sql->quote($this->attrs['id']));

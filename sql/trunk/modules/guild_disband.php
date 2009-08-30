@@ -1,7 +1,6 @@
 <?php
 /*
     Copyright (C) 2007 - 2009  Nicaw
-    Created by Rafael Hamdan
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,7 +16,6 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-
 include ("../include.inc.php");
 
 try {
@@ -25,51 +23,18 @@ try {
     $account = new Account();
     $account->load($_SESSION['account']);
 
-    //load guild
+    //load guild and check owner
     $guild = new Guild();
-    $guild->load($_REQUEST['guild_id']);
-    
-    //retrieve post data
-    $form = new Form('passownership');
+    $guild->load($_POST['guild_id']);
 
     if ($guild->attrs['owner_acc'] != $account->attrs['accno'])
         throw new ModuleException('Permission denied.');
 
-    if (!$guild->isMember($form->attrs['player']))
-        throw new ModuleException('This character is not a member of this guild.');
-
-    $player = new Player();
-    $player->load($form->attrs['player']);
-
-    $guild->setOwner($player);
-
+    $guild->remove();
     $msg = new IOBox('message');
-    $msg->addMsg('The character ['.$player->attrs['name'].'] is now the owner of the guild.');
+    $msg->addMsg('The guild was disbanded successfully.');
     $msg->addRefresh('OK');
     $msg->show();
-
-} catch(FormNotFoundException $e) {
-//make a list of member characters (owner is not included)
-    foreach ($guild->members as $member) {
-        if($member['id'] != $guild->attrs['owner_id']) {
-            $list_players[$member['id']] = $member['name'];
-        }
-    }
-
-    //create new form
-    $form = new IOBox('passownership');
-    $form->target = $_SERVER['PHP_SELF'].'?guild_id='.$guild->attrs['id'];
-    $form->addLabel('Pass leadership');
-    if (empty($list_players)) {
-        $form->addMsg('No characters found.');
-        $form->addClose('Cancel');
-    } else {
-        $form->addMsg('Please choose the character that will be the owner of this guild.');
-        $form->addSelect('player', $list_players);
-        $form->addClose('Cancel');
-        $form->addSubmit('Next >>');
-    }
-    $form->show();
 
 } catch(ModuleException $e) {
     $msg = new IOBox('message');
@@ -84,4 +49,5 @@ try {
     $msg->addRefresh('OK');
     $msg->show();
 }
+
 ?>

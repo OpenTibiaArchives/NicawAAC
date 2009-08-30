@@ -80,6 +80,9 @@ $cfg['server_name'] = 'Nicaw SQL';
 $cfg['server_ip'] = '127.0.0.1';
 $cfg['server_port'] = 7171;
 
+# Allow teleportation to temple?
+$cfg['char_repair'] = false;
+
 # Force users to validate their emails when registering?
 # For email functions to work, SMTP server must be configured correctly
 $cfg['Email_Validate'] = false;

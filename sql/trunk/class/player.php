@@ -123,7 +123,7 @@ WHERE t1.kill_id = t2.kill_id
     }
 
     public function reload() {
-        if(!empty($this->attrs['id'])) throw new PlayerNotLoadedException();
+        if(empty($this->attrs['id'])) throw new PlayerNotLoadedException();
         unset($this->skills, $this->storage, $this->deaths, $this->guild);
         load($this->attrs['id']);
         return true;
@@ -250,6 +250,12 @@ WHERE t1.kill_id = t2.kill_id
     }
 
     public function delete() {
+        if(empty($this->attrs['id'])) throw new PlayerNotLoadedException();
+        try {
+            $guild = new Guild();
+            $guild->load($this->guild['guild_id']);
+            $guild->remove();
+        } catch (GuildNotFoundException $e) {}
         $this->sql->myDelete('players',array('id' => $this->attrs['id']),0)
             && $this->sql->myDelete('player_items',array('player_id' => $this->attrs['id']),0)
             && $this->sql->myDelete('player_depotitems',array('player_id' => $this->attrs['id']),0)

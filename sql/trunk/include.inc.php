@@ -52,7 +52,7 @@ require ('class/iobox.php');
 date_default_timezone_set($cfg['timezone']);
 
 //Set AAC version
-$cfg['aac_version'] = 'sql_3.26a';
+$cfg['aac_version'] = 'svn19a';
 $cfg['schema_version'] = 19;
 
 //set custom exception handler

@@ -44,7 +44,7 @@ try {
         throw new ModuleException('You do not own this character. Get lost!');
 
     //check if owner belongs to any guild
-    if (isset($owner->guild['guild_id']))
+    if ($owner->attrs['rank_id'] > 0)
         throw new ModuleException('This character already belongs to guild');
 
     //Guild leader must have a certain level
