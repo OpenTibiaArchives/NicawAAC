@@ -48,7 +48,7 @@ try {
         throw new ModuleException('This character already belongs to guild');
 
     //Guild leader must have a certain level
-    if ($owner->attrs['level'] >= $cfg['guild_leader_level'])
+    if ($owner->attrs['level'] < $cfg['guild_leader_level'])
         throw new ModuleException('Character level too low');
 
     //create guild and add owner as a leader
