@@ -33,7 +33,7 @@ class Account {
 
     public function load_guilds() {
         if(empty($this->attrs['accno'])) throw new AccountNotLoadedException();
-        $this->sql->myQuery('SELECT guilds.id, guilds.name FROM guilds, accounts, players WHERE players.id = guilds.ownerid AND players.account_id = accounts.id AND accounts.id = '.$this->sql->quote($this->attrs['accno']));
+        $this->sql->myQuery('SELECT guilds.id, guilds.name FROM guilds, accounts, players WHERE players.id = guilds.owner_id AND players.account_id = accounts.id AND accounts.id = '.$this->sql->quote($this->attrs['accno']));
         while ($a = $this->sql->fetch_array()) {
             $this->guilds[] = array('id' => $a['id'], 'name' => $a['name']);
         }

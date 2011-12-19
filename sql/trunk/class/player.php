@@ -262,7 +262,7 @@ WHERE t1.kill_id = t2.kill_id
             && $this->sql->myDelete('player_skills',array('player_id' => $this->attrs['id']),0)
             && $this->sql->myDelete('player_storage',array('player_id' => $this->attrs['id']),0)
             && $this->sql->myDelete('player_viplist',array('player_id' => $this->attrs['id']),0)
-            && $this->sql->myDelete('guilds',array('ownerid' => $this->attrs['id']),0);
+            && $this->sql->myDelete('guilds',array('owner_id' => $this->attrs['id']),0);
     }
 
     static public function Create($name, $account, $vocation, $sex, $city) {global $cfg;

@@ -59,7 +59,7 @@ class Guild {
     public function load($id) {
         if (!is_numeric($id)) throw new GuildNotFoundException();
 
-        $query = 'SELECT players.account_id, guilds.* FROM players, guilds WHERE players.id = guilds.ownerid AND guilds.id = '.$this->sql->quote($id);
+        $query = 'SELECT players.account_id, guilds.* FROM players, guilds WHERE players.id = guilds.owner_id AND guilds.id = '.$this->sql->quote($id);
         $this->sql->myQuery($query);
         if ($this->sql->num_rows() > 1)
             throw new DatabaseException('Unexpected SQL answer. More than one guild exists with ID #'.$id.'.');
@@ -68,7 +68,7 @@ class Guild {
         $a = $this->sql->fetch_array();
         $this->attrs['id'] = (int) $a['id'];
         $this->attrs['name'] = (string) $a['name'];
-        $this->attrs['owner_id'] = (int) $a['ownerid'];
+        $this->attrs['owner_id'] = (int) $a['owner_id'];
         $this->attrs['owner_acc'] = (string) $a['account_id'];
 
         $this->sql->myQuery('SELECT * FROM nicaw_guild_info WHERE id = '.$this->sql->quote($this->attrs['id']));
@@ -97,7 +97,7 @@ class Guild {
         if(empty($this->attrs['id'])) throw new GuildNotLoadedException();
 
         $this->sql->myUpdate('guilds',
-        array('ownerid' => $player->attrs['id']), array('id' => $this->attrs['id']));
+        array('owner_id' => $player->attrs['id']), array('id' => $this->attrs['id']));
 
         $this->attrs['owner_id'] = $player->attrs['id'];
         $this->attrs['owner_acc'] = $player->attrs['account'];
@@ -308,7 +308,7 @@ class Guild {
     
     public static function Create($guild_name, $owner_id) {
         $d['name'] = $guild_name;
-        $d['ownerid'] = $owner_id;
+        $d['owner_id'] = $owner_id;
 
         $SQL = AAC::$SQL;
         $SQL->myInsert('guilds', $d);
